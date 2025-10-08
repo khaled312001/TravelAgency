@@ -31,7 +31,7 @@ export const useDestinations = () => {
           ar: 'حضري'
         }
       },
-      mainImage: '/images/destinations/saudi/riyadh/Ryiadh1.jpeg',
+      mainImage: '/images/destinations/saudi/riyadh/Riyadh1.jpeg',
       touristSpots: [
         {
           id: 'kingdom-centre',
