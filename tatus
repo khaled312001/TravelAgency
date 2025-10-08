@@ -1,5 +1,4 @@
-[33m22f4ad4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m fix: Remove sensitive Twilio credentials from UPDATE_ENV_FILE.md
-[33meaaf589[m Refactor admin layout and styles for consistency; reduce spacing in various admin pages
-[33m7f8e08b[m Update admin pages and add new features
-[33m8c58197[m first commit
-[33m0dbea1a[m Add complete TravelinAgency project with admin system and database setup
+[33m8fc176c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Fix Vercel deployment: Remove build files from Git tracking and update .gitignore
+[33m17164c4[m Add experimental WASM support and clean up Vercel configuration
+[33mf731b48[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix Vercel deployment configuration - change preset from cloudflare_pages to vercel and add vercel.json
+[33mfea6423[m Initial commit: Travel Agency Nuxt.js application with admin dashboard
