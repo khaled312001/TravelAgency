@@ -244,7 +244,7 @@ export default defineNuxtConfig({
 
   i18n: {
     baseUrl: process.env.NODE_ENV === 'production'
-      ? productionURL
+      ? 'https://travel-agency-seven-henna.vercel.app'
       : 'http://localhost:3000',
     vueI18n: './i18n.config.ts',
     defaultLocale: 'ar-SA',
@@ -283,7 +283,7 @@ export default defineNuxtConfig({
   // Schema.org configuration for multiple languages
   schemaOrg: {
     siteUrl: process.env.NODE_ENV === 'production'
-      ? productionURL
+      ? 'https://travel-agency-seven-henna.vercel.app'
       : 'http://localhost:3000'
   },
 

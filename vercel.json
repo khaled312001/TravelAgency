@@ -4,6 +4,12 @@
   "framework": "nuxtjs",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
