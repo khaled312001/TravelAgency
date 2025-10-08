@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعداد الإدارة - الحل المباشر</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .sql-code {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .step {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: right;
+        }
+        .credentials {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: right;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: right;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 إعداد نظام الإدارة - الحل المباشر</h1>
+        <p>بما أن هناك مشكلة في الاتصال، سنستخدم الحل المباشر عبر Supabase Dashboard</p>
+        
+        <div class="step">
+            <h3>الخطوة 1: اذهب إلى Supabase Dashboard</h3>
+            <p>افتح هذا الرابط في تبويب جديد:</p>
+            <a href="https://supabase.com/dashboard/project/jjhdknguyooesyafsacf/sql" target="_blank" class="btn">
+                فتح Supabase SQL Editor
+            </a>
+        </div>
+        
+        <div class="step">
+            <h3>الخطوة 2: انسخ والصق الكود التالي</h3>
+            <p>انسخ الكود أدناه والصقه في SQL Editor:</p>
+            <div class="sql-code">
+-- إنشاء جدول admin_users
+CREATE TABLE IF NOT EXISTS admin_users (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'admin' CHECK (role IN ('admin', 'super_admin')),
+    is_active BOOLEAN DEFAULT true,
+    last_login TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إنشاء جدول admin_sessions
+CREATE TABLE IF NOT EXISTS admin_sessions (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    admin_user_id UUID REFERENCES admin_users(id) ON DELETE CASCADE,
+    session_token VARCHAR(255) UNIQUE NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إنشاء جدول admin_activity_logs
+CREATE TABLE IF NOT EXISTS admin_activity_logs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    admin_user_id UUID REFERENCES admin_users(id) ON DELETE SET NULL,
+    action VARCHAR(255) NOT NULL,
+    resource_type VARCHAR(100),
+    resource_id UUID,
+    details JSONB,
+    ip_address INET,
+    user_agent TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إدراج حساب الإدارة الرئيسي
+INSERT INTO admin_users (email, password_hash, name, role, is_active)
+VALUES (
+    'admin@wonderland.com', 
+    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
+    'مدير النظام', 
+    'super_admin', 
+    true
+)
+ON CONFLICT (email) DO UPDATE SET
+    password_hash = EXCLUDED.password_hash,
+    name = EXCLUDED.name,
+    role = EXCLUDED.role,
+    is_active = EXCLUDED.is_active,
+    updated_at = NOW();
+
+-- إدراج حساب المدير
+INSERT INTO admin_users (email, password_hash, name, role, is_active)
+VALUES (
+    'manager@wonderland.com', 
+    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
+    'مدير المحتوى', 
+    'admin', 
+    true
+)
+ON CONFLICT (email) DO UPDATE SET
+    password_hash = EXCLUDED.password_hash,
+    name = EXCLUDED.name,
+    role = EXCLUDED.role,
+    is_active = EXCLUDED.is_active,
+    updated_at = NOW();
+
+-- التحقق من البيانات
+SELECT 
+    id,
+    email,
+    name,
+    role,
+    is_active,
+    created_at
+FROM admin_users
+ORDER BY created_at;
+            </div>
+            <button class="copy-btn" onclick="copySQL()">نسخ الكود</button>
+        </div>
+        
+        <div class="step">
+            <h3>الخطوة 3: تشغيل الكود</h3>
+            <p>بعد لصق الكود، انقر على "Run" في Supabase SQL Editor</p>
+        </div>
+        
+        <div class="step">
+            <h3>الخطوة 4: تسجيل الدخول</h3>
+            <p>بعد تشغيل الكود بنجاح، اذهب إلى:</p>
+            <a href="http://localhost:3000/admin/login" target="_blank" class="btn">
+                لوحة التحكم
+            </a>
+        </div>
+        
+        <div class="credentials">
+            <h3>🔑 بيانات الدخول:</h3>
+            <p><strong>الحساب الرئيسي:</strong></p>
+            <p>📧 البريد: admin@wonderland.com</p>
+            <p>🔐 كلمة المرور: admin123</p>
+            <br>
+            <p><strong>حساب المدير:</strong></p>
+            <p>📧 البريد: manager@wonderland.com</p>
+            <p>🔐 كلمة المرور: manager123</p>
+        </div>
+        
+        <div class="info">
+            <h3>📋 ما سيتم إنشاؤه:</h3>
+            <ul style="text-align: right;">
+                <li>جدول admin_users (المستخدمين)</li>
+                <li>جدول admin_sessions (الجلسات)</li>
+                <li>جدول admin_activity_logs (سجل الأنشطة)</li>
+                <li>حساب الإدارة الرئيسي</li>
+                <li>حساب المدير</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function copySQL() {
+            const sqlCode = `-- إنشاء جدول admin_users
+CREATE TABLE IF NOT EXISTS admin_users (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'admin' CHECK (role IN ('admin', 'super_admin')),
+    is_active BOOLEAN DEFAULT true,
+    last_login TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إنشاء جدول admin_sessions
+CREATE TABLE IF NOT EXISTS admin_sessions (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    admin_user_id UUID REFERENCES admin_users(id) ON DELETE CASCADE,
+    session_token VARCHAR(255) UNIQUE NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إنشاء جدول admin_activity_logs
+CREATE TABLE IF NOT EXISTS admin_activity_logs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    admin_user_id UUID REFERENCES admin_users(id) ON DELETE SET NULL,
+    action VARCHAR(255) NOT NULL,
+    resource_type VARCHAR(100),
+    resource_id UUID,
+    details JSONB,
+    ip_address INET,
+    user_agent TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إدراج حساب الإدارة الرئيسي
+INSERT INTO admin_users (email, password_hash, name, role, is_active)
+VALUES (
+    'admin@wonderland.com', 
+    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
+    'مدير النظام', 
+    'super_admin', 
+    true
+)
+ON CONFLICT (email) DO UPDATE SET
+    password_hash = EXCLUDED.password_hash,
+    name = EXCLUDED.name,
+    role = EXCLUDED.role,
+    is_active = EXCLUDED.is_active,
+    updated_at = NOW();
+
+-- إدراج حساب المدير
+INSERT INTO admin_users (email, password_hash, name, role, is_active)
+VALUES (
+    'manager@wonderland.com', 
+    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
+    'مدير المحتوى', 
+    'admin', 
+    true
+)
+ON CONFLICT (email) DO UPDATE SET
+    password_hash = EXCLUDED.password_hash,
+    name = EXCLUDED.name,
+    role = EXCLUDED.role,
+    is_active = EXCLUDED.is_active,
+    updated_at = NOW();
+
+-- التحقق من البيانات
+SELECT 
+    id,
+    email,
+    name,
+    role,
+    is_active,
+    created_at
+FROM admin_users
+ORDER BY created_at;`;
+            
+            navigator.clipboard.writeText(sqlCode).then(function() {
+                alert('تم نسخ الكود بنجاح! يمكنك الآن لصقه في Supabase SQL Editor');
+            }, function(err) {
+                console.error('خطأ في النسخ: ', err);
+                alert('خطأ في النسخ. يرجى نسخ الكود يدوياً');
+            });
+        }
+    </script>
+</body>
+</html>
