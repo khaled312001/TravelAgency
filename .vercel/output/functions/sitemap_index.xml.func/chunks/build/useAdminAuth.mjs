@@ -1,2 +1,0 @@
-import{ref as e,computed as t,readonly as u}from"vue";const g=()=>{const a=e(null),o=t((()=>!!a.value)),r=e(!1),n=()=>{a.value=null};return{user:u(a),isAuthenticated:o,isLoading:u(r),login:async e=>{r.value=!0;try{const t=await $fetch("/api/admin/auth/login",{method:"POST",body:e});return t.success&&t.user&&t.sessionToken&&(a.value=t.user),t}catch(e){throw console.error("Login error:",e),e}finally{r.value=!1}},logout:async()=>{r.value=!0,n(),r.value=!1},checkAuth:async()=>{},getAuthHeaders:()=>({}),clearAuth:n}};export{g};
-//# sourceMappingURL=useAdminAuth.mjs.map
