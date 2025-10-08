@@ -1,0 +1,5 @@
+[33m22f4ad4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m fix: Remove sensitive Twilio credentials from UPDATE_ENV_FILE.md
+[33meaaf589[m Refactor admin layout and styles for consistency; reduce spacing in various admin pages
+[33m7f8e08b[m Update admin pages and add new features
+[33m8c58197[m first commit
+[33m0dbea1a[m Add complete TravelinAgency project with admin system and database setup
