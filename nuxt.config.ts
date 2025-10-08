@@ -307,7 +307,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: 'vercel',
+    preset: 'static',
     compressPublicAssets: {
       gzip: true,
       brotli: true
@@ -326,13 +326,19 @@ export default defineNuxtConfig({
       '/icons/**': { static: true },
       '/': { prerender: true },
       '/en-US': { prerender: true },
-      '/en-US/': { prerender: true }
+      '/en-US/': { prerender: true },
+      '/packages/**': { prerender: true },
+      '/destinations/**': { prerender: true },
+      '/about': { prerender: true },
+      '/admin/**': { ssr: false }
     },
-    // Ensure proper Vercel deployment
+    // Ensure proper static deployment
     experimental: {
       wasm: true
     }
   },
+
+  ssr: false,
 
   experimental: {
     viewTransition: true
