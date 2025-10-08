@@ -1083,8 +1083,7 @@ export const useDestinations = () => {
       mainImage: '/images/destinations/global/Paris/Paris1.jpeg',
       gallery: [
         '/images/destinations/global/Paris/Paris1.jpeg',
-        '/images/destinations/global/Paris/Paris2.jpeg',
-        '/images/destinations/global/Paris/Paris3.jpeg'
+        '/images/destinations/global/Paris/Paris2.jpeg'
       ],
       touristSpots: [
         {
@@ -1124,7 +1123,7 @@ export const useDestinations = () => {
             ar: 'احتفال وطني يتضمن العروض العسكرية والألعاب النارية والاحتفالات العامة'
           },
           date: '2025-07-14',
-          image: '/images/destinations/global/Paris/Paris3.jpeg'
+          image: '/images/destinations/global/Paris/Paris2.jpeg'
         }
       ],
       coordinates: {
@@ -1163,8 +1162,7 @@ export const useDestinations = () => {
       mainImage: '/images/destinations/global/SharmElSheikh/SharmElSheikh1.jpeg',
       gallery: [
         '/images/destinations/global/SharmElSheikh/SharmElSheikh1.jpeg',
-        '/images/destinations/global/SharmElSheikh/SharmElSheikh2.jpeg',
-        '/images/destinations/global/SharmElSheikh/SharmElSheikh3.jpeg'
+        '/images/destinations/global/SharmElSheikh/SharmElSheikh2.jpeg'
       ],
       touristSpots: [
         {

@@ -1,1 +1,0 @@
-import{a4 as n,S as i}from"./4AaFNmA5.js";const r=n(t=>{if(t.path.startsWith("/admin")&&t.path!=="/admin/login"){const a=localStorage.getItem("admin_token"),e=localStorage.getItem("admin_user");if(!a||!e)return i("/admin/login")}});export{r as default};
