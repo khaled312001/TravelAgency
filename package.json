@@ -3,11 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt generate",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "build:static": "nuxt generate",
+    "deploy": "npm run generate && echo 'Static files generated in .output/public'"
   },
   "dependencies": {
     "@nuxt/icon": "^1.11.0",

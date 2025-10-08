@@ -6,5 +6,4 @@ node_modules
 .output
 .vercel
 .data
-.env
 dist
