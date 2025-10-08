@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const productionURL = 'https://wonderland1.com'
+const productionURL = 'https://worldtripagency.com'
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
@@ -213,7 +213,7 @@ export default defineNuxtConfig({
         : 'http://localhost:3000'),
       
       // Public site URL for links in notifications
-      publicSiteUrl: process.env.PUBLIC_SITE_URL || 'https://wonderland1.com'
+      publicSiteUrl: process.env.PUBLIC_SITE_URL || 'https://worldtripagency.com'
     }
   },
 
@@ -244,7 +244,7 @@ export default defineNuxtConfig({
 
   i18n: {
     baseUrl: process.env.NODE_ENV === 'production'
-      ? 'https://travel-agency-seven-henna.vercel.app'
+      ? 'https://worldtripagency.com'
       : 'http://localhost:3000',
     vueI18n: './i18n.config.ts',
     defaultLocale: 'ar-SA',
@@ -307,7 +307,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: 'static',
+    preset: 'vercel',
     compressPublicAssets: {
       gzip: true,
       brotli: true
