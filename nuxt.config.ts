@@ -65,12 +65,12 @@ export default defineNuxtConfig({
           type: 'image/png'
         },
         {
-          src: '/icons/icon512x512.png',
+          src: '/icons/icon-512x512.png',
           sizes: '512x512',
           type: 'image/png'
         },
         {
-          src: '/icons/icon512x512.png',
+          src: '/icons/icon-512x512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any maskable'
@@ -302,7 +302,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: 'cloudflare_pages',
+    preset: 'vercel',
     compressPublicAssets: {
       gzip: true,
       brotli: true
