@@ -1,4 +1,5 @@
 import type { NotificationResult, PackageInquiry, DestinationInquiry } from '~/types/whatsapp'
+import type { Database } from '~/types/supabase'
 import { ref } from 'vue'
 
 export const useWhatsApp = () => {
@@ -24,8 +25,8 @@ export const useWhatsApp = () => {
   }
 
   /**
-   * Send a WhatsApp notification via Twilio for package inquiries
-   * @param data Form data to send in the notification
+   * Store package inquiry in Supabase and provide WhatsApp link
+   * @param data Form data to store
    * @returns Notification result with success status and optional error
    */
   const sendPackageNotification = async (data: Partial<PackageInquiry>): Promise<NotificationResult> => {
@@ -33,40 +34,43 @@ export const useWhatsApp = () => {
     notificationError.value = null
     
     try {
-      const response = await $fetch<{
-        success: boolean;
-        inquiryId: string;
-        notificationSent: boolean;
-        notificationId?: string;
-        error?: string;
-      }>('/api/package-contact-form', {
-        method: 'POST',
-        body: {
-          ...data,
-          locale: locale.value
-        }
-      })
+      const client = useSupabaseClient<Database>()
       
-      if (response.success) {
-        notificationSent.value = true
-      } else {
-        notificationError.value = response.error || 'Unknown error occurred'
+      // Store inquiry in Supabase
+      const { data: inquiryData, error: dbError } = await client
+        .from('package_inquiries')
+        .insert({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          package_id: data.packageId,
+          package_name: data.packageName,
+          message: data.message,
+          created_at: new Date().toISOString(),
+          locale: locale.value,
+          notification_sent: false
+        })
+        .select()
+
+      if (dbError) {
+        throw new Error(`Database error: ${dbError.message}`)
       }
+
+      notificationSent.value = true
       
       return {
-        success: response.notificationSent,
-        messageId: response.notificationId,
-        error: response.error
+        success: true,
+        messageId: inquiryData?.[0]?.id,
+        error: undefined
       }
     } catch (error: any) {
-      console.error('Failed to send WhatsApp notification:', error)
+      console.error('Failed to store package inquiry:', error)
       
-      notificationError.value = error.message || 'Failed to send notification'
+      notificationError.value = error.message || 'Failed to store inquiry'
       
-      // Return error information for the UI
       return {
         success: false,
-        error: notificationError.value || 'Failed to send notification'
+        error: notificationError.value || 'Failed to store inquiry'
       }
     } finally {
       isLoading.value = false
@@ -74,8 +78,8 @@ export const useWhatsApp = () => {
   }
 
   /**
-   * Send a WhatsApp notification via Twilio for destination inquiries
-   * @param data Form data to send in the notification
+   * Store destination inquiry in Supabase and provide WhatsApp link
+   * @param data Form data to store
    * @returns Notification result with success status and optional error
    */
   const sendDestinationNotification = async (data: Partial<DestinationInquiry>): Promise<NotificationResult> => {
@@ -83,40 +87,42 @@ export const useWhatsApp = () => {
     notificationError.value = null
     
     try {
-      const response = await $fetch<{
-        success: boolean;
-        inquiryId: string;
-        notificationSent: boolean;
-        notificationId?: string;
-        error?: string;
-      }>('/api/destination-contact-form', {
-        method: 'POST',
-        body: {
-          ...data,
-          locale: locale.value
-        }
-      })
+      const client = useSupabaseClient<Database>()
       
-      if (response.success) {
-        notificationSent.value = true
-      } else {
-        notificationError.value = response.error || 'Unknown error occurred'
+      // Store inquiry in Supabase
+      const { data: inquiryData, error: dbError } = await client
+        .from('destination_inquiries')
+        .insert({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          destination_name: data.destinationName,
+          message: data.message,
+          created_at: new Date().toISOString(),
+          locale: locale.value,
+          notification_sent: false
+        })
+        .select()
+
+      if (dbError) {
+        throw new Error(`Database error: ${dbError.message}`)
       }
+
+      notificationSent.value = true
       
       return {
-        success: response.notificationSent,
-        messageId: response.notificationId,
-        error: response.error
+        success: true,
+        messageId: inquiryData?.[0]?.id,
+        error: undefined
       }
     } catch (error: any) {
-      console.error('Failed to send destination WhatsApp notification:', error)
+      console.error('Failed to store destination inquiry:', error)
       
-      notificationError.value = error.message || 'Failed to send notification'
+      notificationError.value = error.message || 'Failed to store inquiry'
       
-      // Return error information for the UI
       return {
         success: false,
-        error: notificationError.value || 'Failed to send notification'
+        error: notificationError.value || 'Failed to store inquiry'
       }
     } finally {
       isLoading.value = false

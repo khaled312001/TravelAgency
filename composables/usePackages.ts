@@ -1,4 +1,4 @@
-// import type { Database } from '~/types/supabase'
+import type { Database } from '~/types/supabase'
 import { ref } from 'vue'
 import { useAsyncData } from '#app'
 
@@ -26,12 +26,40 @@ export interface Package {
 
 
 export function usePackages() {
-  // Fetch packages from API (SSR/CSR compatible, SWR caching)
+  const client = useSupabaseClient<Database>()
+  
+  // Fetch packages from Supabase directly (client-side)
   const { data: packages, pending, error, refresh } = useAsyncData('packages', async () => {
-    const res = await fetch('/api/packages')
-    if (!res.ok) throw new Error('Failed to fetch packages')
-    const result = await res.json()
-    return result.packages as Package[]
+    const { data, error: fetchError } = await client
+      .from('packages')
+      .select(`
+        id, image_url, title_ar, title_en, description_ar, description_en, travel_period, duration_days, price, max_persons, featured,
+        package_options:package_options (flight, hotel, transportation, hotel_grade)
+      `)
+      .order('created_at', { ascending: false })
+
+    if (fetchError) throw fetchError
+
+    // Format to match expected structure
+    return (data || []).map(pkg => ({
+      id: pkg.id,
+      image_url: pkg.image_url,
+      title_ar: pkg.title_ar,
+      title_en: pkg.title_en,
+      description_ar: pkg.description_ar,
+      description_en: pkg.description_en,
+      travel_period: pkg.travel_period,
+      duration_days: pkg.duration_days,
+      price: pkg.price,
+      max_persons: pkg.max_persons,
+      featured: pkg.featured,
+      included_options: pkg.package_options ? {
+        flight: pkg.package_options.flight,
+        hotel: pkg.package_options.hotel,
+        transportation: pkg.package_options.transportation,
+        hotelGrade: pkg.package_options.hotel_grade,
+      } : undefined,
+    })) as Package[]
   })
 
   // Get all packages

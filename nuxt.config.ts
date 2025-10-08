@@ -307,7 +307,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: 'vercel',
+    preset: 'static',
     compressPublicAssets: {
       gzip: true,
       brotli: true
