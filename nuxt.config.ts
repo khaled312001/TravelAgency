@@ -319,6 +319,10 @@ export default defineNuxtConfig({
     routeRules: {
       '/images/**': { static: true },
       '/icons/**': { static: true }
+    },
+    // Ensure proper Vercel deployment
+    experimental: {
+      wasm: true
     }
   },
 

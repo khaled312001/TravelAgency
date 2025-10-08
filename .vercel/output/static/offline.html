@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wonder Land Agency - Offline</title>
+  <style>
+    /* Mobile-first styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .logo {
+      width: 120px;
+      height: auto;
+      margin: 0 auto 20px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: #2563eb;
+    }
+    
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #2563eb;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 16px;
+      transition: background-color 0.2s;
+    }
+    
+    .btn:hover {
+      background-color: #1d4ed8;
+    }
+    
+    .offline-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      color: #2563eb;
+    }
+    
+    /* Tablet and desktop styles */
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 32px;
+      }
+      
+      p {
+        font-size: 18px;
+      }
+      
+      .logo {
+        width: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="offline-icon">📶</div>
+    <h1>You're currently offline</h1>
+    <p>It seems you're not connected to the internet right now. Wonder Land Travel Agency requires an internet connection to show you our latest travel packages and offers.</p>
+    <p>Please check your connection and try again.</p>
+    <a href="/" class="btn">Try Again</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,2 @@
+import{createClient as e}from"@supabase/supabase-js";import{b as s}from"./nitro.mjs";const serverSupabaseServiceRole=o=>{const{supabase:{serviceKey:r},public:{supabase:{url:t}}}=s(o);if(!r)throw new Error("Missing `SUPABASE_SERVICE_KEY` in `.env`");return o.context._supabaseServiceRole||(o.context._supabaseServiceRole=e(t,r,{auth:{detectSessionInUrl:!1,persistSession:!1,autoRefreshToken:!1}})),o.context._supabaseServiceRole};export{serverSupabaseServiceRole as s};
+//# sourceMappingURL=serverSupabaseServiceRole.mjs.map

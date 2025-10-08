@@ -9,12 +9,6 @@
       "runtime": "nodejs18.x"
     }
   },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",
