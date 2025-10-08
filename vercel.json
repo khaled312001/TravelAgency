@@ -6,8 +6,12 @@
   "devCommand": "npm run dev",
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/"
+      "source": "/en-US/(.*)",
+      "destination": "/en-US/$1"
+    },
+    {
+      "source": "/((?!api|_nuxt|_vercel|favicon.ico|robots.txt|sitemap.xml|.*\\..*).*)",
+      "destination": "/$1"
     }
   ],
   "headers": [

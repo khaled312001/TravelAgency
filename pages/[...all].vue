@@ -7,7 +7,7 @@
         class="w-64 h-64 mx-auto mb-6 animate-float"
         loading="lazy"
       />
-      <h1 class="text-5xl font-extrabold text-white mb-3 md:text-7xl">
+      <h1 class="text-5xl font-extrabold text-primary-600 mb-3 md:text-7xl">
         {{ $t('error.404.title') }}
       </h1>
       <p class="text-lg text-gray-700 dark:text-gray-300 mt-4 mb-8 max-w-md mx-auto">
@@ -27,10 +27,17 @@
 <script setup lang="ts">
 const localePath = useLocalePath();
 const { t } = useI18n();
+
+// Set proper error status
 useHead(() => ({
- status: 404,
- title: t('error.404.title'),
+  status: 404,
+  title: t('error.404.title'),
 }));
+
+// Handle i18n routing properly
+definePageMeta({
+  layout: 'default'
+});
 </script>
 
 <style scoped>

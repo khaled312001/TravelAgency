@@ -266,25 +266,30 @@ export default defineNuxtConfig({
     detectBrowserLanguage: false,
     trailingSlash: true,
     differentDomains: false,
-    lazy: true
+    lazy: true,
+    customRoutes: 'config',
+    pages: {
+      // Define custom page routes for i18n
+      'index': {
+        en: '/',
+        ar: '/'
+      },
+      'packages': {
+        en: '/packages',
+        ar: '/packages'
+      },
+      'about': {
+        en: '/about',
+        ar: '/about'
+      }
+    }
   },
   // Configure sitemap for multiple languages
   sitemap: {
     urls: async () => {
       // Your sitemap URLs generation logic here
       return []
-    },
-    sitemapI18n: {
-      locales: ['en-US', 'ar-SA'],
-      routesNameSeparator: '___'
     }
-  },
-
-  // Schema.org configuration for multiple languages
-  schemaOrg: {
-    siteUrl: process.env.NODE_ENV === 'production'
-      ? 'https://travel-agency-seven-henna.vercel.app'
-      : 'http://localhost:3000'
   },
 
   css: [
@@ -318,7 +323,10 @@ export default defineNuxtConfig({
     ],
     routeRules: {
       '/images/**': { static: true },
-      '/icons/**': { static: true }
+      '/icons/**': { static: true },
+      '/': { prerender: true },
+      '/en-US': { prerender: true },
+      '/en-US/': { prerender: true }
     },
     // Ensure proper Vercel deployment
     experimental: {
