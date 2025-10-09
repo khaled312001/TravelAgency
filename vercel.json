@@ -1,17 +1,12 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": ".output",
+  "outputDirectory": ".output/public",
   "framework": "nuxtjs",
   "redirects": [
     {
       "source": "/www/(.*)",
       "destination": "/$1",
       "permanent": true
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/$1",
-      "permanent": false
     }
   ],
   "headers": [

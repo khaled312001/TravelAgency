@@ -9,23 +9,33 @@
   force = true
 
 [[redirects]]
-  from = "/packages/*"
-  to = "/packages/"
+  from = "/api/*"
+  to = "/api/:splat"
   status = 200
 
 [[redirects]]
-  from = "/destinations/*"
-  to = "/destinations/"
+  from = "/_nuxt/*"
+  to = "/_nuxt/:splat"
   status = 200
 
 [[redirects]]
-  from = "/about/*"
-  to = "/about/"
+  from = "/_ipx/*"
+  to = "/_ipx/:splat"
   status = 200
 
 [[redirects]]
-  from = "/admin/*"
-  to = "/admin/"
+  from = "/images/*"
+  to = "/images/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/videos/*"
+  to = "/videos/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/icons/*"
+  to = "/icons/:splat"
   status = 200
 
 [[redirects]]

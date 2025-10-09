@@ -16,6 +16,11 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase'
   ],
 
+  icon: {
+    serverBundle: 'iconify',
+    collections: ['material-symbols', 'lucide', 'heroicons']
+  },
+
 
   // Supabase module configuration
   supabase: {
@@ -312,7 +317,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: 'vercel',
+    preset: 'node-server',
     compressPublicAssets: {
       gzip: true,
       brotli: true
@@ -326,47 +331,50 @@ export default defineNuxtConfig({
         baseURL: '/'
       }
     ],
+    // Disable prerendering to fix build issues
+    prerender: {
+      crawlLinks: false,
+      routes: []
+    },
     // Handle domain redirects
     experimental: {
       wasm: true
     },
-    // Fix domain issues
-    storage: {
-      redis: {
-        driver: 'redis',
-        /* redis connector options */
-      }
-    },
     routeRules: {
-      '/images/**': { headers: { 'cache-control': 's-maxage=31536000' } },
-      '/icons/**': { headers: { 'cache-control': 's-maxage=31536000' } },
+      '/images/**': { 
+        headers: { 'cache-control': 's-maxage=31536000' }
+      },
+      '/videos/**': { 
+        headers: { 'cache-control': 's-maxage=31536000' }
+      },
+      '/icons/**': { 
+        headers: { 'cache-control': 's-maxage=31536000' }
+      },
       '/_nuxt/*.js': { 
         headers: { 
           'cache-control': 's-maxage=31536000',
           'content-type': 'application/javascript; charset=utf-8'
-        } 
+        }
       },
       '/_nuxt/*.mjs': { 
         headers: { 
           'cache-control': 's-maxage=31536000',
           'content-type': 'application/javascript; charset=utf-8'
-        } 
+        }
       },
       '/_nuxt/*.css': { 
         headers: { 
           'cache-control': 's-maxage=31536000',
           'content-type': 'text/css; charset=utf-8'
-        } 
+        }
       },
-      '/': { prerender: true },
-      '/en-US': { prerender: true },
-      '/en-US/': { prerender: true },
-      '/packages': { prerender: true, index: true },
-      '/packages/': { prerender: true, index: true },
-      '/packages/**': { prerender: true },
-      '/destinations/**': { prerender: true },
-      '/about': { prerender: true },
-      '/admin/**': { ssr: false, index: false }
+      '/_ipx/**': { 
+        headers: { 'cache-control': 's-maxage=31536000' }
+      },
+      '/api/**': { 
+        cors: true
+      },
+      '/admin/**': { ssr: false }
     },
     // Ensure proper static deployment
     experimental: {

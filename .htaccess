@@ -5,6 +5,22 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
 RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 
+# Handle static assets first
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(.*)$ - [L]
+
+# Handle API routes
+RewriteRule ^api/(.*)$ - [L]
+
+# Handle Nuxt assets
+RewriteRule ^_nuxt/(.*)$ - [L]
+RewriteRule ^_ipx/(.*)$ - [L]
+
+# Handle static files
+RewriteRule ^images/(.*)$ - [L]
+RewriteRule ^videos/(.*)$ - [L]
+RewriteRule ^icons/(.*)$ - [L]
+
 # Handle client-side routing for Nuxt.js
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,11 +1,14 @@
+# Netlify redirects file
 # Redirect www to non-www
 https://www.worldtripagency.com/* https://worldtripagency.com/:splat 301!
 
-# Handle SPA routing
-/packages/* /packages/ 200
-/destinations/* /destinations/ 200
-/about/* /about/ 200
-/admin/* /admin/ 200
+# Handle static assets
+/api/* /api/:splat 200
+/_nuxt/* /_nuxt/:splat 200
+/_ipx/* /_ipx/:splat 200
+/images/* /images/:splat 200
+/videos/* /videos/:splat 200
+/icons/* /icons/:splat 200
 
-# Fallback for all other routes
+# Handle SPA routing
 /* /index.html 200
