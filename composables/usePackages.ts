@@ -31,14 +31,13 @@ export function usePackages() {
   const client = useSupabaseClient<Database>()
   
   // Fetch packages from Supabase directly (client-side)
-  const { data: packages, pending, error, refresh } = useAsyncData('packages', async () => {
+  const { data: packages, pending, error, refresh } = useAsyncData('packages-fixed', async () => {
     const { data, error: fetchError } = await client
       .from('packages')
       .select(`
-        id, image_url, title_ar, title_en, description_ar, description_en, travel_period, duration_days, price, max_persons, featured, created_by_admin,
+        id, image_url, title_ar, title_en, description_ar, description_en, travel_period, duration_days, price, max_persons, featured,
         package_options:package_options (flight, hotel, transportation, hotel_grade)
       `)
-      .eq('created_by_admin', true) // Only show admin-created packages
       .order('created_at', { ascending: false })
 
     if (fetchError) throw fetchError
@@ -56,7 +55,6 @@ export function usePackages() {
       price: pkg.price,
       max_persons: pkg.max_persons,
       featured: pkg.featured,
-      created_by_admin: pkg.created_by_admin,
       included_options: pkg.package_options ? {
         flight: pkg.package_options.flight,
         hotel: pkg.package_options.hotel,

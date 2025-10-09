@@ -134,8 +134,8 @@ const toggleSidebar = () => {
 }
 
 const toggleNotifications = () => {
-  // Handle notifications
-  console.log('Toggle notifications')
+  // Navigate to notifications page
+  navigateTo('/admin/messages')
 }
 
 const toggleUserMenu = () => {
@@ -154,7 +154,8 @@ const handleLogout = async () => {
 // Close dropdown when clicking outside
 onMounted(() => {
   document.addEventListener('click', (e) => {
-    if (!e.target?.closest('.user-menu-container')) {
+    const target = e.target as HTMLElement
+    if (!target?.closest('.user-menu-container')) {
       showUserMenu.value = false
     }
   })

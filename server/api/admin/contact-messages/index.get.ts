@@ -1,19 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
-
 export default defineEventHandler(async (event) => {
   try {
-    // Get Supabase client
-    const supabaseUrl = process.env.SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Database configuration error'
-      })
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    // Get Supabase client using Nuxt module
+    const supabase = serverSupabaseServiceRole(event)
 
     // Get query parameters
     const query = getQuery(event)

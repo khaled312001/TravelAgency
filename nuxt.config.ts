@@ -326,6 +326,10 @@ export default defineNuxtConfig({
         baseURL: '/'
       }
     ],
+    // Handle domain redirects
+    experimental: {
+      wasm: true
+    },
     routeRules: {
       '/images/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/icons/**': { headers: { 'cache-control': 's-maxage=31536000' } },

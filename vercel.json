@@ -2,6 +2,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".output",
   "framework": "nuxtjs",
+  "redirects": [
+    {
+      "source": "/www/(.*)",
+      "destination": "/$1",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/_nuxt/(.*\\.js)$",

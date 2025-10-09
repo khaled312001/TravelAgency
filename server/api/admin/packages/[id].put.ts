@@ -30,7 +30,6 @@ export default defineEventHandler(async (event) => {
         travel_period: body.travel_period || null,
         image_url: body.image_url || null,
         featured: body.featured || false,
-        created_by_admin: true, // Ensure it's marked as admin-created
         updated_at: new Date().toISOString()
         // Note: status and category columns don't exist in the current schema
         // status: body.status || 'active',
