@@ -15,6 +15,12 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxtjs/supabase'
   ],
+
+  // Icon module configuration
+  icon: {
+    serverBundle: 'local',
+    clientBundle: 'local'
+  },
   
   // Supabase module configuration
     supabase: {
@@ -304,7 +310,8 @@ export default defineNuxtConfig({
     '~/plugins/i18n.client.ts',
     '~/plugins/language-direction.ts',
     '~/plugins/initial-direction.server.ts',
-    '~/plugins/pwa.client.ts'
+    '~/plugins/pwa.client.ts',
+    '~/plugins/packages-auto-refresh.client.ts'
   ],
 
   nitro: {
@@ -389,7 +396,7 @@ export default defineNuxtConfig({
         output: {
           manualChunks: {
             vendor: ['vue', 'vue-router'],
-            admin: ['@nuxt/icon', 'lucide-vue-next']
+            admin: ['lucide-vue-next']
           }
         }
       }
@@ -398,7 +405,8 @@ export default defineNuxtConfig({
       devSourcemap: false
     },
     optimizeDeps: {
-      include: ['vue', 'vue-router', '@nuxt/icon']
+      include: ['vue', 'vue-router'],
+      exclude: ['@nuxt/icon']
     }
   }
 })
