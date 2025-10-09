@@ -230,13 +230,34 @@
             <div class="setting-content">
               <div class="form-group">
                 <label class="form-label">ارتفاع اللوجو (بالبكسل)</label>
-                <input 
-                  v-model="settings.logo.logoHeight" 
-                  type="number" 
-                  class="form-input"
-                  min="20"
-                  max="100"
-                />
+                <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                  <input 
+                    v-model="settings.logo.logoHeight" 
+                    type="range" 
+                    class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                    min="20"
+                    max="120"
+                    step="4"
+                  />
+                  <input 
+                    v-model="settings.logo.logoHeight" 
+                    type="number" 
+                    class="w-20 form-input text-center"
+                    min="20"
+                    max="120"
+                  />
+                </div>
+                <div class="mt-2 text-sm text-gray-600">
+                  <span class="font-medium">معاينة:</span>
+                  <div class="mt-2 p-3 bg-gray-50 rounded-lg border">
+                    <img 
+                      :src="settings.logo.mainLogo || '/images/home/logo/WonderlandLogo.svg'" 
+                      :style="`height: ${settings.logo.logoHeight}px; width: auto;`"
+                      alt="معاينة اللوجو" 
+                      class="transition-all duration-300"
+                    />
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label class="form-label flex items-center space-x-2 space-x-reverse">
@@ -625,7 +646,7 @@ const tabs = [
 
 const settings = ref<Settings>({
   general: {
-    siteName: 'Wonder Land Traveling Agency',
+    siteName: 'World Trip Agency Traveling Agency',
     siteDescription: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية',
     siteUrl: 'https://worldtripagency.com',
     contactEmail: 'info@worldtripagency.com',
@@ -638,7 +659,7 @@ const settings = ref<Settings>({
     favicon: '/favicon.ico',
     logoHeight: 48,
     showLogoText: true,
-    logoText: 'Wonder Land'
+    logoText: 'World Trip Agency'
   },
   email: {
     smtpHost: '',
@@ -646,7 +667,7 @@ const settings = ref<Settings>({
     smtpUsername: '',
     smtpPassword: '',
     fromEmail: 'noreply@worldtripagency.com',
-    fromName: 'Wonder Land Traveling Agency'
+    fromName: 'World Trip Agency Traveling Agency'
   },
   payment: {
     stripeEnabled: false,
@@ -657,7 +678,7 @@ const settings = ref<Settings>({
     mastercardEnabled: true
   },
   seo: {
-    metaTitle: 'Wonder Land - وكالة سفر متخصصة',
+    metaTitle: 'World Trip Agency - وكالة سفر متخصصة',
     metaDescription: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية والعمرة والحج',
     metaKeywords: 'سفر, رحلات, عمرة, حج, سياحة',
     googleAnalyticsId: '',
@@ -929,6 +950,50 @@ definePageMeta({
 
 .upload-hint {
   @apply text-xs text-gray-500 mt-2;
+}
+
+/* Slider styling */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e5e7eb;
+  outline: none;
+  border-radius: 8px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #8b5cf6;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: #7c3aed;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #8b5cf6;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  background: #7c3aed;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive */

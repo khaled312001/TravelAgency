@@ -8,6 +8,10 @@
           <p class="page-subtitle">إدارة رسائل التواصل من العملاء</p>
         </div>
         <div class="header-right">
+          <button @click="exportMessages" class="export-btn">
+            <Icon name="lucide:download" class="btn-icon" />
+            تصدير الرسائل
+          </button>
           <button @click="markAllAsRead" class="mark-read-btn">
             <Icon name="lucide:check" class="btn-icon" />
             تعيين الكل كمقروء
@@ -140,7 +144,15 @@
           </div>
 
           <div class="message-content">
-            <h4 class="message-subject">{{ message.subject }}</h4>
+            <div class="flex items-center gap-2 mb-2">
+              <h4 class="message-subject">{{ message.subject }}</h4>
+              <span 
+                class="px-2 py-1 text-xs font-medium rounded-full"
+                :class="getMessageTypeBadgeClass(message.message_type)"
+              >
+                {{ getMessageTypeLabel(message.message_type) }}
+              </span>
+            </div>
             <p class="message-preview">{{ message.message }}</p>
           </div>
 
@@ -282,6 +294,7 @@ interface Message {
   status: string
   created_at: string
   updated_at: string
+  message_type?: string
   replies?: Reply[]
 }
 
@@ -389,6 +402,39 @@ const formatDateTime = (dateString: string) => {
   }
 }
 
+const getMessageType = (subject: string) => {
+  if (!subject) return 'general'
+  
+  if (subject.includes('[DESTINATION]')) return 'destination'
+  if (subject.includes('[PACKAGE]')) return 'package'
+  if (subject.includes('[HOME]')) return 'home'
+  if (subject.includes('الوجهة') || subject.includes('destination')) return 'destination'
+  if (subject.includes('الباقة') || subject.includes('package')) return 'package'
+  if (subject.includes('الرئيسية') || subject.includes('home')) return 'home'
+  
+  return 'general'
+}
+
+const getMessageTypeLabel = (type: string) => {
+  const labels = {
+    destination: 'وجهة',
+    package: 'باقة',
+    home: 'رئيسية',
+    general: 'عام'
+  }
+  return labels[type as keyof typeof labels] || 'عام'
+}
+
+const getMessageTypeBadgeClass = (type: string) => {
+  const classes = {
+    destination: 'bg-blue-100 text-blue-800',
+    package: 'bg-green-100 text-green-800',
+    home: 'bg-purple-100 text-purple-800',
+    general: 'bg-gray-100 text-gray-800'
+  }
+  return classes[type as keyof typeof classes] || 'bg-gray-100 text-gray-800'
+}
+
 const loadMessages = async () => {
   try {
     loading.value = true
@@ -415,7 +461,8 @@ const loadMessages = async () => {
         status: msg.status,
         created_at: msg.created_at,
         updated_at: msg.updated_at,
-        package_name: msg.package_name
+        package_name: msg.package_name,
+        message_type: getMessageType(msg.subject)
       }))
     } else {
       throw new Error('Failed to load messages')
@@ -490,6 +537,210 @@ const deleteMessage = async (message: Message) => {
       alert('حدث خطأ أثناء حذف الرسالة')
     }
   }
+}
+
+const exportMessages = async () => {
+  // Show export options modal
+  const format = await showExportOptions()
+  if (!format) return
+  
+  try {
+    loading.value = true
+    
+    // Prepare messages data for export
+    const exportData = messages.value.map(message => ({
+      id: message.id,
+      sender_name: message.sender_name,
+      sender_email: message.sender_email,
+      sender_phone: message.sender_phone,
+      subject: message.subject,
+      message: message.message,
+      status: message.status,
+      message_type: message.message_type,
+      package_name: message.package_name,
+      destination_name: message.destination_name,
+      created_at: message.created_at
+    }))
+    
+    if (format === 'excel') {
+      await exportMessagesToExcel(exportData)
+    } else if (format === 'pdf') {
+      await exportMessagesToPDF(exportData)
+    }
+    
+  } catch (error) {
+    console.error('Export error:', error)
+    alert('حدث خطأ أثناء التصدير')
+  } finally {
+    loading.value = false
+  }
+}
+
+const showExportOptions = (): Promise<string | null> => {
+  return new Promise((resolve) => {
+    const modal = document.createElement('div')
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'
+    modal.innerHTML = `
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-semibold mb-4">اختر تنسيق التصدير</h3>
+        <div class="space-y-3">
+          <button 
+            class="w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = 'excel'"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            </svg>
+            تصدير Excel
+          </button>
+          <button 
+            class="w-full p-3 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center gap-2"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = 'pdf'"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+            </svg>
+            تصدير PDF
+          </button>
+          <button 
+            class="w-full p-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = null"
+          >
+            إلغاء
+          </button>
+        </div>
+      </div>
+    `
+    
+    document.body.appendChild(modal)
+    
+    // Wait for user selection
+    const checkFormat = () => {
+      if (window.exportFormat !== undefined) {
+        const format = window.exportFormat
+        delete window.exportFormat
+        document.body.removeChild(modal)
+        resolve(format)
+      } else {
+        setTimeout(checkFormat, 100)
+      }
+    }
+    checkFormat()
+  })
+}
+
+const exportMessagesToExcel = async (data: any[]) => {
+  const XLSX = await import('xlsx')
+  
+  const workbook = XLSX.utils.book_new()
+  
+  // Headers
+  const headers = [
+    'ID', 'اسم المرسل', 'البريد الإلكتروني', 'الهاتف', 'الموضوع', 
+    'الرسالة', 'الحالة', 'نوع الرسالة', 'الباقة', 'الوجهة', 'تاريخ الإرسال'
+  ]
+  
+  // Data rows
+  const rows = data.map(message => [
+    message.id,
+    message.sender_name,
+    message.sender_email,
+    message.sender_phone,
+    message.subject,
+    message.message,
+    message.status,
+    message.message_type,
+    message.package_name || '',
+    message.destination_name || '',
+    message.created_at
+  ])
+  
+  const worksheetData = [headers, ...rows]
+  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData)
+  
+  // Auto-size columns
+  const colWidths = headers.map(() => ({ wch: 20 }))
+  worksheet['!cols'] = colWidths
+  
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'الرسائل')
+  
+  // Download file
+  const fileName = `رسائل_أرض_العجائب_${new Date().toISOString().split('T')[0]}.xlsx`
+  XLSX.writeFile(workbook, fileName)
+}
+
+const exportMessagesToPDF = async (data: any[]) => {
+  const { jsPDF } = await import('jspdf')
+  const doc = new jsPDF('p', 'mm', 'a4')
+  
+  // Add Arabic font support
+  doc.addFont('https://fonts.gstatic.com/s/amiri/v27/J7aRnpd8CGxBHqUpvrIw74NL.woff2', 'Amiri', 'normal')
+  doc.setFont('Amiri')
+  
+  // Title
+  doc.setFontSize(20)
+  doc.text('تقرير الرسائل - أرض العجائب للسفر', 105, 20, { align: 'center' })
+  
+  // Date
+  doc.setFontSize(12)
+  doc.text(`تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}`, 20, 35)
+  doc.text(`إجمالي الرسائل: ${data.length}`, 20, 45)
+  
+  // Messages
+  let y = 60
+  data.forEach((message, index) => {
+    if (y > 250) {
+      doc.addPage()
+      y = 20
+    }
+    
+    // Message header
+    doc.setFontSize(14)
+    doc.text(`الرسالة ${index + 1}`, 20, y)
+    y += 10
+    
+    // Message details
+    doc.setFontSize(10)
+    doc.text(`المرسل: ${message.sender_name}`, 20, y)
+    y += 8
+    doc.text(`البريد الإلكتروني: ${message.sender_email}`, 20, y)
+    y += 8
+    if (message.sender_phone) {
+      doc.text(`الهاتف: ${message.sender_phone}`, 20, y)
+      y += 8
+    }
+    doc.text(`الموضوع: ${message.subject}`, 20, y)
+    y += 8
+    doc.text(`الحالة: ${message.status}`, 20, y)
+    y += 8
+    doc.text(`نوع الرسالة: ${message.message_type}`, 20, y)
+    y += 8
+    if (message.package_name) {
+      doc.text(`الباقة: ${message.package_name}`, 20, y)
+      y += 8
+    }
+    if (message.destination_name) {
+      doc.text(`الوجهة: ${message.destination_name}`, 20, y)
+      y += 8
+    }
+    doc.text(`تاريخ الإرسال: ${message.created_at}`, 20, y)
+    y += 8
+    
+    // Message content
+    doc.text('محتوى الرسالة:', 20, y)
+    y += 8
+    const messageLines = doc.splitTextToSize(message.message, 170)
+    doc.text(messageLines, 20, y)
+    y += messageLines.length * 5 + 15
+    
+    // Separator line
+    doc.line(20, y, 190, y)
+    y += 10
+  })
+  
+  // Download file
+  const fileName = `رسائل_أرض_العجائب_${new Date().toISOString().split('T')[0]}.pdf`
+  doc.save(fileName)
 }
 
 const markAllAsRead = async () => {

@@ -29,9 +29,9 @@ import CoreValuesGrid from '~/components/ui/about/CoreValuesGrid.vue';
 // import HistoryTimeline from '~/components/ui/about/HistoryTimeline.vue';
 
 useHead({
-  title: 'About - Wonder Land',
+  title: 'About - World Trip Agency',
   meta: [
-    { name: 'description', content: 'Learn about Wonder Land Travel & Tourism agency, your gateway to unforgettable travel experiences.' }
+    { name: 'description', content: 'Learn about World Trip Agency Travel & Tourism agency, your gateway to unforgettable travel experiences.' }
   ]
 })
 </script>

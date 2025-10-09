@@ -42,6 +42,23 @@ export default defineEventHandler(async (event) => {
         status: 'unread'
       }
 
+      // Determine message type from subject or other indicators
+      let messageType = 'general'
+      if (body.subject) {
+        if (body.subject.includes('الوجهة') || body.subject.includes('destination')) {
+          messageType = 'destination'
+        } else if (body.subject.includes('الباقة') || body.subject.includes('package')) {
+          messageType = 'package'
+        } else if (body.subject.includes('الرئيسية') || body.subject.includes('home')) {
+          messageType = 'home'
+        }
+      }
+      
+      // Add message type to subject for admin identification
+      if (messageType !== 'general') {
+        insertData.subject = `[${messageType.toUpperCase()}] ${insertData.subject}`
+      }
+
       // Add destination_name if provided (only if column exists)
       if (body.destination_name) {
         insertData.destination_name = body.destination_name

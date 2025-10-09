@@ -1,82 +1,80 @@
 <template>
   <div>
     <DirectionHandler />
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-      <nav class="container mx-auto px-4 py-4 sticky top-0">
+    <header class="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-100">
+      <nav class="container mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
-          <NuxtLink :to="localpath('/')" class="flex items-center">
-            <img 
-              :src="getLocalizedSetting('logo', 'mainLogo') || '/images/home/logo/WonderlandLogo.svg'" 
-              :class="`h-[${getSetting('logo', 'logoHeight') || 48}px]`"
-              :alt="getLocalizedSetting('general', 'siteName') || 'Wonder Land Agency Logo'" 
-              loading="eager"
-            />
-            <span v-if="getSetting('logo', 'showLogoText')" class="font-bold text-lg font-italic text-primary-900">
+          <NuxtLink :to="localpath('/')" class="flex items-center group transition-all duration-300 hover:scale-105">
+            <div class="relative">
+              <img 
+                :src="getLocalizedSetting('logo', 'mainLogo') || '/images/home/logo/WonderlandLogo.svg'" 
+                :style="`height: ${getSetting('logo', 'logoHeight') || 48}px; width: auto;`"
+                :alt="getLocalizedSetting('general', 'siteName') || 'World Trip Agency Agency Logo'" 
+                loading="eager"
+                class="transition-all duration-300 group-hover:brightness-110"
+              />
+            </div>
+            <span v-if="getSetting('logo', 'showLogoText')" class="font-bold text-xl font-italic text-primary-900 ml-3 transition-colors duration-300 group-hover:text-primary-700">
               {{ getLocalizedSetting('logo', 'logoText') || $t('common.app_title') }}
             </span>
           </NuxtLink>
           
-          <div class="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
+          <div class="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
             <NuxtLink 
               v-for="(item, index) in navItems" 
               :key="index"
               :to="localpath(item.to)"
               :class="[
-                'transition-colors',
-                $route.path == localpath(item.to) ? 'text-primary-900 font-medium' : 'text-gray-600 hover:text-primary'
+                'relative px-3 py-2 rounded-lg transition-all duration-300 font-medium',
+                $route.path == localpath(item.to) 
+                  ? 'text-primary-900 bg-primary/10 shadow-sm' 
+                  : 'text-gray-600 hover:text-primary-900 hover:bg-gray-50'
               ]"
             >
               {{ $t(item.label) }}
+              <span 
+                v-if="$route.path == localpath(item.to)"
+                class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full"
+              ></span>
             </NuxtLink>
             <!-- Language Switcher -->
             <button
               @click.prevent.stop="toggleLanguage"
-              class="px-3 py-1 rounded-md bg-primary text-white hover:bg-primary-dark transition-colors"
+              class="px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-primary-dark text-white hover:from-primary-dark hover:to-primary transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
             >
-              {{ currentLocale === 'en-US' ? 'العربية' : 'English' }}
+              <span class="flex items-center space-x-2 rtl:space-x-reverse">
+                <Icon name="lucide:globe" class="w-4 h-4" />
+                <span>{{ currentLocale === 'en-US' ? 'العربية' : 'English' }}</span>
+              </span>
             </button>
           </div>
           <!-- Mobile Menu Button -->
           <button
             @click="isMenuOpen = !isMenuOpen"
-            class="md:hidden text-gray-600 hover:text-primary"
+            class="md:hidden p-2 rounded-lg text-gray-600 hover:text-primary-900 hover:bg-gray-100 transition-all duration-300"
           >
             <span class="sr-only">Menu</span>
-            <svg
-              class="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                v-if="!isMenuOpen"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-              <path
-                v-else
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <Icon 
+              :name="isMenuOpen ? 'lucide:x' : 'lucide:menu'" 
+              class="h-6 w-6 transition-transform duration-300"
+              :class="{ 'rotate-90': isMenuOpen }"
+            />
           </button>
         </div>
         <!-- Mobile Menu -->
         <div
           v-show="isMenuOpen"
-          class="md:hidden mt-4 space-y-4"
+          class="md:hidden mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-3 animate-in slide-in-from-top-2 duration-300"
         >
           <NuxtLink
             v-for="(item, index) in navItems"
             :key="index"
             :to="localpath(item.to)"
             :class="[
-              'block transition-colors',
-              $route.path == localpath(item.to) ? 'text-primary-900 font-medium' : 'text-gray-600 hover:text-primary'
+              'block px-4 py-3 rounded-lg transition-all duration-300 font-medium',
+              $route.path == localpath(item.to) 
+                ? 'text-primary-900 bg-primary/10 border-l-4 border-primary' 
+                : 'text-gray-600 hover:text-primary-900 hover:bg-white'
             ]"
             @click="isMenuOpen = false"
           >
@@ -84,9 +82,10 @@
           </NuxtLink>
           <button
             @click="toggleLanguage"
-            class="w-full text-left px-3 py-1 rounded-md bg-primary text-white hover:bg-primary-dark transition-colors"
+            class="w-full flex items-center justify-center space-x-2 rtl:space-x-reverse px-4 py-3 rounded-lg bg-gradient-to-r from-primary to-primary-dark text-white hover:from-primary-dark hover:to-primary transition-all duration-300 shadow-md"
           >
-            {{ currentLocale === 'en-US' ? 'العربية' : 'English' }}
+            <Icon name="lucide:globe" class="w-4 h-4" />
+            <span>{{ currentLocale === 'en-US' ? 'العربية' : 'English' }}</span>
           </button>
         </div>
       </nav>
@@ -245,5 +244,81 @@ const toggleLanguage = async () => {
 
 html.locale-transitioning main {
   view-transition-name: locale-main;
+}
+
+/* Enhanced header animations */
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+.slide-in-from-top-2 {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+/* Logo hover effects */
+.group:hover img {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+/* Navigation link hover effects */
+nav a {
+  position: relative;
+  overflow: hidden;
+}
+
+nav a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+nav a:hover::before {
+  left: 100%;
+}
+
+/* Mobile menu backdrop blur effect */
+@media (max-width: 768px) {
+  .md\\:hidden {
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar for mobile menu */
+.md\\:hidden::-webkit-scrollbar {
+  width: 4px;
+}
+
+.md\\:hidden::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.md\\:hidden::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.md\\:hidden::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
 </style>

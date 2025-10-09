@@ -47,7 +47,7 @@ const handleSlideChange = (index: number) => {
 
 // SEO Optimization
 useHead({
-  title: computed(() => `${t('home.destinations.saudi.title')} | Wonder Land Agency`),
+  title: computed(() => `${t('home.destinations.saudi.title')} | World Trip Agency Agency`),
   meta: [
     {
       name: 'description',

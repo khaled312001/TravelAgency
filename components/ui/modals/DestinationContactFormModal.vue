@@ -254,7 +254,7 @@ async function handleSubmit() {
         email: form.email,
         phone: form.phone,
         message: form.details,
-        type: 'destination_inquiry',
+        subject: `استفسار عن الوجهة - ${props.destinationName}`,
         destination_name: props.destinationName
       }
     })

@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS settings (
 -- Insert default settings
 INSERT INTO settings (key, value, category, description) VALUES
 -- General Settings
-('site_name', '{"en": "Wonder Land Traveling Agency", "ar": "وكالة أرض العجائب للسفر"}', 'general', 'Website name in multiple languages'),
+('site_name', '{"en": "World Trip Agency Traveling Agency", "ar": "وكالة أرض العجائب للسفر"}', 'general', 'Website name in multiple languages'),
 ('site_description', '{"en": "Specialized travel agency for organizing tourist trips", "ar": "وكالة سفر متخصصة في تنظيم الرحلات السياحية"}', 'general', 'Website description'),
 ('site_url', '"https://www.worldtripagency.com"', 'general', 'Website URL'),
 ('contact_email', '"info@worldtripagency.com"', 'general', 'Contact email'),
@@ -25,7 +25,7 @@ INSERT INTO settings (key, value, category, description) VALUES
 ('favicon', '"/favicon.ico"', 'logo', 'Website favicon'),
 ('logo_height', '48', 'logo', 'Logo height in pixels'),
 ('show_logo_text', 'true', 'logo', 'Show logo text next to image'),
-('logo_text', '{"en": "Wonder Land", "ar": "أرض العجائب"}', 'logo', 'Logo text'),
+('logo_text', '{"en": "World Trip Agency", "ar": "أرض العجائب"}', 'logo', 'Logo text'),
 
 -- Email Settings
 ('smtp_host', '""', 'email', 'SMTP server host'),
@@ -33,7 +33,7 @@ INSERT INTO settings (key, value, category, description) VALUES
 ('smtp_username', '""', 'email', 'SMTP username'),
 ('smtp_password', '""', 'email', 'SMTP password'),
 ('from_email', '"noreply@worldtripagency.com"', 'email', 'From email address'),
-('from_name', '{"en": "Wonder Land Traveling Agency", "ar": "وكالة أرض العجائب للسفر"}', 'email', 'From name'),
+('from_name', '{"en": "World Trip Agency Traveling Agency", "ar": "وكالة أرض العجائب للسفر"}', 'email', 'From name'),
 
 -- Payment Settings
 ('stripe_enabled', 'false', 'payment', 'Enable Stripe payment'),
@@ -44,7 +44,7 @@ INSERT INTO settings (key, value, category, description) VALUES
 ('mastercard_enabled', 'true', 'payment', 'Enable Mastercard payment'),
 
 -- SEO Settings
-('meta_title', '{"en": "Wonder Land - Specialized Travel Agency", "ar": "أرض العجائب - وكالة سفر متخصصة"}', 'seo', 'Meta title'),
+('meta_title', '{"en": "World Trip Agency - Specialized Travel Agency", "ar": "أرض العجائب - وكالة سفر متخصصة"}', 'seo', 'Meta title'),
 ('meta_description', '{"en": "Specialized travel agency for organizing tourist trips, Umrah and Hajj", "ar": "وكالة سفر متخصصة في تنظيم الرحلات السياحية والعمرة والحج"}', 'seo', 'Meta description'),
 ('meta_keywords', '{"en": "travel, trips, umrah, hajj, tourism", "ar": "سفر, رحلات, عمرة, حج, سياحة"}', 'seo', 'Meta keywords'),
 ('google_analytics_id', '""', 'seo', 'Google Analytics ID'),

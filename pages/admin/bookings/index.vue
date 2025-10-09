@@ -438,12 +438,123 @@ const generateInvoice = async (booking: Booking) => {
   try {
     const response = await $fetch(`/api/admin/bookings/${booking.id}/invoice`)
     if (response.success) {
-      // Simple alert for now to avoid build issues
-      alert(`فاتورة ${response.invoice.invoice_number}\nالعميل: ${response.invoice.customer.name}\nالمبلغ: ${response.invoice.totals.balance_due} ريال`)
+      await downloadInvoicePDF(response.invoice)
     }
   } catch (error) {
     console.error('Error generating invoice:', error)
     alert('حدث خطأ أثناء إنشاء الفاتورة')
+  }
+}
+
+const downloadInvoicePDF = async (invoiceData: any) => {
+  try {
+    const { jsPDF } = await import('jspdf')
+    const doc = new jsPDF('p', 'mm', 'a4')
+    
+    // Add Arabic font support
+    doc.addFont('https://fonts.gstatic.com/s/amiri/v27/J7aRnpd8CGxBHqUpvrIw74NL.woff2', 'Amiri', 'normal')
+    doc.setFont('Amiri')
+    
+    // Header
+    doc.setFontSize(24)
+    doc.text('فاتورة', 105, 30, { align: 'center' })
+    
+    // Company info
+    doc.setFontSize(16)
+    doc.text(invoiceData.company.name, 20, 50)
+    doc.setFontSize(12)
+    doc.text(invoiceData.company.address, 20, 60)
+    doc.text(`الهاتف: ${invoiceData.company.phone}`, 20, 70)
+    doc.text(`البريد الإلكتروني: ${invoiceData.company.email}`, 20, 80)
+    doc.text(`الرقم الضريبي: ${invoiceData.company.tax_number}`, 20, 90)
+    doc.text(`رقم الترخيص: ${invoiceData.company.license_number}`, 20, 100)
+    
+    // Invoice details
+    doc.setFontSize(14)
+    doc.text(`رقم الفاتورة: ${invoiceData.invoice_number}`, 120, 50)
+    doc.text(`تاريخ الفاتورة: ${invoiceData.invoice_date}`, 120, 60)
+    doc.text(`تاريخ الاستحقاق: ${invoiceData.due_date}`, 120, 70)
+    doc.text(`حالة الحجز: ${invoiceData.status}`, 120, 80)
+    
+    // Customer info
+    doc.setFontSize(16)
+    doc.text('بيانات العميل', 20, 120)
+    doc.setFontSize(12)
+    doc.text(`الاسم: ${invoiceData.customer.name}`, 20, 135)
+    doc.text(`البريد الإلكتروني: ${invoiceData.customer.email}`, 20, 145)
+    doc.text(`الهاتف: ${invoiceData.customer.phone}`, 20, 155)
+    
+    // Booking details
+    doc.setFontSize(16)
+    doc.text('تفاصيل الحجز', 20, 175)
+    doc.setFontSize(12)
+    doc.text(`الباقة: ${invoiceData.booking.package_title}`, 20, 190)
+    doc.text(`الوجهة: ${invoiceData.booking.destination}`, 20, 200)
+    doc.text(`تاريخ السفر: ${invoiceData.booking.travel_date}`, 20, 210)
+    doc.text(`عدد المشاركين: ${invoiceData.booking.participants_count}`, 20, 220)
+    
+    // Items table
+    doc.setFontSize(16)
+    doc.text('تفاصيل الخدمات', 20, 240)
+    
+    // Table headers
+    doc.setFontSize(12)
+    doc.text('الوصف', 20, 255)
+    doc.text('الكمية', 80, 255)
+    doc.text('سعر الوحدة', 110, 255)
+    doc.text('المجموع', 150, 255)
+    
+    // Table line
+    doc.line(20, 260, 190, 260)
+    
+    // Table data
+    let y = 270
+    invoiceData.items.forEach((item: any) => {
+      doc.text(item.description.substring(0, 30), 20, y)
+      doc.text(item.quantity.toString(), 80, y)
+      doc.text(item.unit_price.toFixed(2) + ' ريال', 110, y)
+      doc.text(item.total_price.toFixed(2) + ' ريال', 150, y)
+      y += 10
+    })
+    
+    // Totals
+    y += 10
+    doc.line(20, y, 190, y)
+    y += 10
+    
+    doc.text(`المجموع الفرعي: ${invoiceData.totals.subtotal.toFixed(2)} ريال`, 120, y)
+    y += 10
+    doc.text(`ضريبة القيمة المضافة (${invoiceData.totals.tax_rate}%): ${invoiceData.totals.tax_amount.toFixed(2)} ريال`, 120, y)
+    y += 10
+    doc.setFontSize(14)
+    doc.text(`المجموع الكلي: ${invoiceData.totals.total.toFixed(2)} ريال`, 120, y)
+    y += 10
+    doc.setFontSize(12)
+    doc.text(`المبلغ المدفوع: ${invoiceData.totals.paid_amount.toFixed(2)} ريال`, 120, y)
+    y += 10
+    doc.setFontSize(14)
+    doc.text(`المبلغ المستحق: ${invoiceData.totals.balance_due.toFixed(2)} ريال`, 120, y)
+    
+    // Notes
+    if (invoiceData.notes) {
+      y += 20
+      doc.setFontSize(12)
+      doc.text('ملاحظات:', 20, y)
+      y += 10
+      doc.text(invoiceData.notes, 20, y)
+    }
+    
+    // Footer
+    doc.setFontSize(10)
+    doc.text('شكراً لاختياركم أرض العجائب للسفر', 105, 280, { align: 'center' })
+    
+    // Download file
+    const fileName = `فاتورة_${invoiceData.invoice_number}.pdf`
+    doc.save(fileName)
+    
+  } catch (error) {
+    console.error('Error creating PDF:', error)
+    alert('حدث خطأ أثناء إنشاء ملف PDF')
   }
 }
 
@@ -464,9 +575,208 @@ const deleteBooking = async (booking: Booking) => {
   }
 }
 
-const exportBookings = () => {
-  // TODO: Implement export functionality
-  console.log('Export bookings')
+const exportBookings = async () => {
+  // Show export options modal
+  const format = await showExportOptions()
+  if (!format) return
+  
+  try {
+    loading.value = true
+    
+    // Prepare bookings data for export
+    const exportData = bookings.value.map(booking => ({
+      id: booking.id,
+      customer_name: booking.customer_name,
+      customer_email: booking.customer_email,
+      customer_phone: booking.customer_phone,
+      package_title: booking.package_title,
+      destination: booking.destination,
+      travel_date: booking.travel_date,
+      num_travelers: booking.num_travelers,
+      price: booking.price,
+      status: booking.status,
+      payment_status: booking.payment_status,
+      created_at: booking.created_at
+    }))
+    
+    if (format === 'excel') {
+      await exportBookingsToExcel(exportData)
+    } else if (format === 'pdf') {
+      await exportBookingsToPDF(exportData)
+    }
+    
+  } catch (error) {
+    console.error('Export error:', error)
+    alert('حدث خطأ أثناء التصدير')
+  } finally {
+    loading.value = false
+  }
+}
+
+const showExportOptions = (): Promise<string | null> => {
+  return new Promise((resolve) => {
+    const modal = document.createElement('div')
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'
+    modal.innerHTML = `
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-semibold mb-4">اختر تنسيق التصدير</h3>
+        <div class="space-y-3">
+          <button 
+            class="w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = 'excel'"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            </svg>
+            تصدير Excel
+          </button>
+          <button 
+            class="w-full p-3 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center gap-2"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = 'pdf'"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+            </svg>
+            تصدير PDF
+          </button>
+          <button 
+            class="w-full p-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = null"
+          >
+            إلغاء
+          </button>
+        </div>
+      </div>
+    `
+    
+    document.body.appendChild(modal)
+    
+    // Wait for user selection
+    const checkFormat = () => {
+      if (window.exportFormat !== undefined) {
+        const format = window.exportFormat
+        delete window.exportFormat
+        document.body.removeChild(modal)
+        resolve(format)
+      } else {
+        setTimeout(checkFormat, 100)
+      }
+    }
+    checkFormat()
+  })
+}
+
+const exportBookingsToExcel = async (data: any[]) => {
+  const XLSX = await import('xlsx')
+  
+  const workbook = XLSX.utils.book_new()
+  
+  // Headers
+  const headers = [
+    'ID', 'اسم العميل', 'البريد الإلكتروني', 'الهاتف', 'الباقة', 
+    'الوجهة', 'تاريخ السفر', 'عدد المسافرين', 'السعر', 'الحالة', 
+    'حالة الدفع', 'تاريخ الإنشاء'
+  ]
+  
+  // Data rows
+  const rows = data.map(booking => [
+    booking.id,
+    booking.customer_name,
+    booking.customer_email,
+    booking.customer_phone,
+    booking.package_title,
+    booking.destination,
+    booking.travel_date,
+    booking.num_travelers,
+    booking.price,
+    booking.status,
+    booking.payment_status,
+    booking.created_at
+  ])
+  
+  const worksheetData = [headers, ...rows]
+  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData)
+  
+  // Auto-size columns
+  const colWidths = headers.map(() => ({ wch: 15 }))
+  worksheet['!cols'] = colWidths
+  
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'الحجوزات')
+  
+  // Download file
+  const fileName = `حجوزات_أرض_العجائب_${new Date().toISOString().split('T')[0]}.xlsx`
+  XLSX.writeFile(workbook, fileName)
+}
+
+const exportBookingsToPDF = async (data: any[]) => {
+  const { jsPDF } = await import('jspdf')
+  const doc = new jsPDF('l', 'mm', 'a4') // Landscape for better table view
+  
+  // Add Arabic font support
+  doc.addFont('https://fonts.gstatic.com/s/amiri/v27/J7aRnpd8CGxBHqUpvrIw74NL.woff2', 'Amiri', 'normal')
+  doc.setFont('Amiri')
+  
+  // Title
+  doc.setFontSize(20)
+  doc.text('تقرير الحجوزات - أرض العجائب للسفر', 148, 20, { align: 'center' })
+  
+  // Date
+  doc.setFontSize(12)
+  doc.text(`تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}`, 20, 35)
+  doc.text(`إجمالي الحجوزات: ${data.length}`, 20, 45)
+  
+  // Table headers
+  doc.setFontSize(10)
+  const headers = ['العميل', 'الباقة', 'الوجهة', 'التاريخ', 'المسافرين', 'السعر', 'الحالة']
+  const colWidths = [30, 35, 30, 25, 20, 25, 25]
+  
+  let x = 20
+  headers.forEach((header, index) => {
+    doc.text(header, x, 60)
+    x += colWidths[index]
+  })
+  
+  // Table line
+  doc.line(20, 65, 290, 65)
+  
+  // Table data
+  let y = 75
+  data.forEach((booking, index) => {
+    if (y > 180) {
+      doc.addPage('l', 'mm', 'a4')
+      y = 20
+      
+      // Repeat headers
+      x = 20
+      headers.forEach((header, headerIndex) => {
+        doc.text(header, x, y)
+        x += colWidths[headerIndex]
+      })
+      doc.line(20, y + 5, 290, y + 5)
+      y = 35
+    }
+    
+    x = 20
+    const rowData = [
+      booking.customer_name.substring(0, 20),
+      booking.package_title.substring(0, 25),
+      booking.destination.substring(0, 20),
+      booking.travel_date,
+      booking.num_travelers,
+      booking.price + ' ريال',
+      booking.status
+    ]
+    
+    rowData.forEach((cell, cellIndex) => {
+      doc.text(cell, x, y)
+      x += colWidths[cellIndex]
+    })
+    y += 8
+  })
+  
+  // Download file
+  const fileName = `حجوزات_أرض_العجائب_${new Date().toISOString().split('T')[0]}.pdf`
+  doc.save(fileName)
 }
 
 const closeModal = () => {

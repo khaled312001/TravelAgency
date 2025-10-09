@@ -8,7 +8,7 @@
           <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
             <Icon name="lucide:shield-check" class="w-8 h-8 text-white" />
           </div>
-          <h1 class="text-2xl font-bold text-gray-900">Wonder Land</h1>
+          <h1 class="text-2xl font-bold text-gray-900">World Trip Agency</h1>
           <p class="text-gray-600 mt-2">لوحة التحكم الإدارية</p>
         </div>
 
@@ -93,7 +93,7 @@
       <!-- Footer -->
       <div class="text-center mt-6">
         <p class="text-white/80 text-sm">
-          © 2024 Wonder Land Traveling Agency. جميع الحقوق محفوظة.
+          © 2024 World Trip Agency Traveling Agency. جميع الحقوق محفوظة.
         </p>
       </div>
     </div>

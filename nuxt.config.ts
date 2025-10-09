@@ -43,8 +43,8 @@ export default defineNuxtConfig({
       'screenshots/**/*'
     ],
     manifest: {
-      name: 'Wonder Land Traveling Agency',
-      short_name: 'Wonder Land',
+      name: 'World Trip Agency Traveling Agency',
+      short_name: 'World Trip Agency',
       description: 'Your trusted travel partner for unforgettable experiences, fulfilled for all travel needs',
       theme_color: '#ffffff',
       background_color: '#ffffff',
@@ -397,7 +397,8 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Wonder Land',
+      title: 'أرض العجائب للسفر - أفضل وكالة سفر في السعودية | رحلات عمرة وحج وسياحة',
+      titleTemplate: '%s | أرض العجائب للسفر',
       htmlAttrs: {
         lang: 'ar-SA',
         dir: 'rtl'
@@ -407,8 +408,47 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
           name: 'description',
-          content: 'Your trusted travel partner for unforgettable experiences'
-        }
+          content: 'أفضل وكالة سفر في المملكة العربية السعودية. رحلات عمرة وحج، سياحة داخلية وخارجية، باقات سفر متميزة إلى دبي، تركيا، ماليزيا، تايلاند وأكثر. خدمة 24/7 وأسعار منافسة.'
+        },
+        {
+          name: 'keywords',
+          content: 'وكالة سفر السعودية, رحلات عمرة, رحلات حج, سياحة السعودية, رحلات دبي, رحلات تركيا, رحلات ماليزيا, رحلات تايلاند, باقات سفر, وكالة سفر الرياض, سفر وسياحة, رحلات خارجية, رحلات داخلية, أرض العجائب للسفر'
+        },
+        { name: 'author', content: 'أرض العجائب للسفر' },
+        { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
+        { name: 'googlebot', content: 'index, follow' },
+        { name: 'bingbot', content: 'index, follow' },
+        
+        // Open Graph / Facebook
+        { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: 'https://www.worldtripagency.com/' },
+        { property: 'og:title', content: 'أرض العجائب للسفر - أفضل وكالة سفر في السعودية' },
+        { property: 'og:description', content: 'أفضل وكالة سفر في المملكة العربية السعودية. رحلات عمرة وحج، سياحة داخلية وخارجية، باقات سفر متميزة.' },
+        { property: 'og:image', content: 'https://www.worldtripagency.com/images/og-image.jpg' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { property: 'og:locale', content: 'ar_SA' },
+        { property: 'og:site_name', content: 'أرض العجائب للسفر' },
+        
+        // Twitter
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:url', content: 'https://www.worldtripagency.com/' },
+        { name: 'twitter:title', content: 'أرض العجائب للسفر - أفضل وكالة سفر في السعودية' },
+        { name: 'twitter:description', content: 'أفضل وكالة سفر في المملكة العربية السعودية. رحلات عمرة وحج، سياحة داخلية وخارجية، باقات سفر متميزة.' },
+        { name: 'twitter:image', content: 'https://www.worldtripagency.com/images/og-image.jpg' },
+        
+        // Additional SEO
+        { name: 'theme-color', content: '#8b5cf6' },
+        { name: 'msapplication-TileColor', content: '#8b5cf6' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+        { name: 'apple-mobile-web-app-title', content: 'أرض العجائب للسفر' },
+        
+        // Geographic targeting
+        { name: 'geo.region', content: 'SA' },
+        { name: 'geo.placename', content: 'Riyadh, Saudi Arabia' },
+        { name: 'geo.position', content: '24.7136;46.6753' },
+        { name: 'ICBM', content: '24.7136, 46.6753' }
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -416,6 +456,58 @@ export default defineNuxtConfig({
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap'
+        },
+        { rel: 'canonical', href: 'https://www.worldtripagency.com/' },
+        { rel: 'alternate', hreflang: 'ar-SA', href: 'https://www.worldtripagency.com/' },
+        { rel: 'alternate', hreflang: 'en-US', href: 'https://www.worldtripagency.com/en' },
+        { rel: 'alternate', hreflang: 'x-default', href: 'https://www.worldtripagency.com/' },
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+        { rel: 'manifest', href: '/site.webmanifest' }
+      ],
+      script: [
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TravelAgency",
+            "name": "أرض العجائب للسفر",
+            "alternateName": "World Trip Agency Traveling Agency",
+            "url": "https://www.worldtripagency.com",
+            "logo": "https://www.worldtripagency.com/images/home/logo/WonderlandLogo.svg",
+            "description": "أفضل وكالة سفر في المملكة العربية السعودية. رحلات عمرة وحج، سياحة داخلية وخارجية، باقات سفر متميزة.",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "الرياض",
+              "addressLocality": "الرياض",
+              "addressRegion": "منطقة الرياض",
+              "addressCountry": "SA"
+            },
+            "telephone": "+966500982394",
+            "email": "info@worldtripagency.com",
+            "openingHours": "Mo-Su 00:00-23:59",
+            "priceRange": "$$",
+            "currenciesAccepted": "SAR",
+            "paymentAccepted": "Cash, Credit Card",
+            "areaServed": {
+              "@type": "Country",
+              "name": "Saudi Arabia"
+            },
+            "serviceType": [
+              "رحلات عمرة",
+              "رحلات حج", 
+              "سياحة داخلية",
+              "سياحة خارجية",
+              "باقات سفر"
+            ],
+            "sameAs": [
+              "https://www.instagram.com/wonderlandtravel",
+              "https://www.facebook.com/wonderlandtravel",
+              "https://wa.me/966500982394"
+            ]
+          })
         }
       ]
     },

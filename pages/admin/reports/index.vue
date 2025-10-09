@@ -309,14 +309,77 @@ const dateFrom = ref('')
 const dateTo = ref('')
 const reportType = ref('overview')
 
-// Mock data
-const totalBookings = ref(156)
-const totalRevenue = ref(702000)
-const totalCustomers = ref(89)
-const totalPackages = ref(12)
-const newCustomers = ref(23)
-const returningCustomers = ref(66)
-const averageRating = ref(4.7)
+// Real data from database
+const totalBookings = ref(0)
+const totalRevenue = ref(0)
+const totalCustomers = ref(0)
+const totalPackages = ref(0)
+const newCustomers = ref(0)
+const returningCustomers = ref(0)
+const averageRating = ref(0)
+const loading = ref(false)
+
+// Load real data from database
+const loadReportsData = async () => {
+  try {
+    loading.value = true
+    
+    // Load bookings data
+    const bookingsResponse = await $fetch('/api/admin/bookings')
+    if (bookingsResponse.success) {
+      const bookings = bookingsResponse.bookings || []
+      totalBookings.value = bookings.length
+      
+      // Calculate total revenue
+      totalRevenue.value = bookings.reduce((sum: number, booking: any) => {
+        return sum + (booking.price * booking.num_travelers || 0)
+      }, 0)
+      
+      // Calculate unique customers
+      const uniqueCustomers = new Set(bookings.map((booking: any) => booking.customer_email))
+      totalCustomers.value = uniqueCustomers.size
+      
+      // Calculate new vs returning customers (simplified logic)
+      const customerBookings = bookings.reduce((acc: any, booking: any) => {
+        if (!acc[booking.customer_email]) {
+          acc[booking.customer_email] = 0
+        }
+        acc[booking.customer_email]++
+        return acc
+      }, {})
+      
+      newCustomers.value = Object.values(customerBookings).filter((count: any) => count === 1).length
+      returningCustomers.value = Object.values(customerBookings).filter((count: any) => count > 1).length
+    }
+    
+    // Load packages data
+    const packagesResponse = await $fetch('/api/admin/packages')
+    if (packagesResponse.success) {
+      totalPackages.value = packagesResponse.data?.length || 0
+    }
+    
+    // Load contact messages for customer insights
+    const messagesResponse = await $fetch('/api/admin/contact-messages')
+    if (messagesResponse.success) {
+      const messages = messagesResponse.data || []
+      const uniqueMessageCustomers = new Set(messages.map((msg: any) => msg.email))
+      totalCustomers.value += uniqueMessageCustomers.size
+    }
+    
+    // Calculate average rating (mock for now, can be enhanced with real reviews)
+    averageRating.value = 4.7
+    
+  } catch (error) {
+    console.error('Error loading reports data:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// Load data on component mount
+onMounted(() => {
+  loadReportsData()
+})
 
 const topPackages = ref([
   {
@@ -374,16 +437,242 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('ar-SA')
 }
 
-const generateReport = () => {
-  console.log('Generating report for:', {
-    dateFrom: dateFrom.value,
-    dateTo: dateTo.value,
-    reportType: reportType.value
+const generateReport = async () => {
+  await loadReportsData()
+}
+
+const exportReport = async () => {
+  // Show export options modal
+  const format = await showExportOptions()
+  if (!format) return
+  
+  try {
+    loading.value = true
+    
+    // Prepare data for export
+    const reportData = {
+      title: 'تقرير شامل - أرض العجائب للسفر',
+      date: new Date().toLocaleDateString('ar-SA'),
+      period: dateFrom.value && dateTo.value ? 
+        `من ${dateFrom.value} إلى ${dateTo.value}` : 
+        'جميع الفترات',
+      metrics: {
+        totalBookings: totalBookings.value,
+        totalRevenue: totalRevenue.value,
+        totalCustomers: totalCustomers.value,
+        totalPackages: totalPackages.value,
+        newCustomers: newCustomers.value,
+        returningCustomers: returningCustomers.value,
+        averageRating: averageRating.value
+      },
+      topPackages: topPackages.value,
+      recentBookings: recentBookings.value
+    }
+    
+    if (format === 'excel') {
+      await exportToExcel(reportData)
+    } else if (format === 'pdf') {
+      await exportToPDF(reportData)
+    }
+    
+  } catch (error) {
+    console.error('Export error:', error)
+    alert('حدث خطأ أثناء التصدير')
+  } finally {
+    loading.value = false
+  }
+}
+
+const showExportOptions = (): Promise<string | null> => {
+  return new Promise((resolve) => {
+    const modal = document.createElement('div')
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'
+    modal.innerHTML = `
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-semibold mb-4">اختر تنسيق التصدير</h3>
+        <div class="space-y-3">
+          <button 
+            class="w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = 'excel'"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            </svg>
+            تصدير Excel
+          </button>
+          <button 
+            class="w-full p-3 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center gap-2"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = 'pdf'"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+            </svg>
+            تصدير PDF
+          </button>
+          <button 
+            class="w-full p-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+            onclick="this.closest('.fixed').remove(); window.exportFormat = null"
+          >
+            إلغاء
+          </button>
+        </div>
+      </div>
+    `
+    
+    document.body.appendChild(modal)
+    
+    // Wait for user selection
+    const checkFormat = () => {
+      if (window.exportFormat !== undefined) {
+        const format = window.exportFormat
+        delete window.exportFormat
+        document.body.removeChild(modal)
+        resolve(format)
+      } else {
+        setTimeout(checkFormat, 100)
+      }
+    }
+    checkFormat()
   })
 }
 
-const exportReport = () => {
-  console.log('Exporting report...')
+const exportToExcel = async (data: any) => {
+  // Create Excel file using SheetJS
+  const XLSX = await import('xlsx')
+  
+  const workbook = XLSX.utils.book_new()
+  
+  // Summary sheet
+  const summaryData = [
+    ['تقرير شامل - أرض العجائب للسفر'],
+    ['تاريخ التقرير:', data.date],
+    ['فترة التقرير:', data.period],
+    [''],
+    ['المؤشرات الرئيسية'],
+    ['إجمالي الحجوزات:', data.metrics.totalBookings],
+    ['إجمالي الإيرادات:', data.metrics.totalRevenue + ' ريال'],
+    ['إجمالي العملاء:', data.metrics.totalCustomers],
+    ['إجمالي الباقات:', data.metrics.totalPackages],
+    ['عملاء جدد:', data.metrics.newCustomers],
+    ['عملاء عائدون:', data.metrics.returningCustomers],
+    ['متوسط التقييم:', data.metrics.averageRating]
+  ]
+  
+  const summarySheet = XLSX.utils.aoa_to_sheet(summaryData)
+  XLSX.utils.book_append_sheet(workbook, summarySheet, 'ملخص')
+  
+  // Bookings sheet
+  const bookingsData = [
+    ['ID', 'اسم العميل', 'البريد الإلكتروني', 'الهاتف', 'الباقة', 'الوجهة', 'تاريخ السفر', 'عدد المسافرين', 'السعر', 'الحالة']
+  ]
+  
+  data.recentBookings.forEach((booking: any) => {
+    bookingsData.push([
+      booking.id,
+      booking.customer_name,
+      booking.customer_email,
+      booking.customer_phone,
+      booking.package_title,
+      booking.destination,
+      booking.travel_date,
+      booking.num_travelers,
+      booking.price,
+      booking.status
+    ])
+  })
+  
+  const bookingsSheet = XLSX.utils.aoa_to_sheet(bookingsData)
+  XLSX.utils.book_append_sheet(workbook, bookingsSheet, 'الحجوزات')
+  
+  // Download file
+  const fileName = `تقرير_أرض_العجائب_${new Date().toISOString().split('T')[0]}.xlsx`
+  XLSX.writeFile(workbook, fileName)
+}
+
+const exportToPDF = async (data: any) => {
+  // Create PDF using jsPDF
+  const { jsPDF } = await import('jspdf')
+  const doc = new jsPDF('p', 'mm', 'a4')
+  
+  // Add Arabic font support
+  doc.addFont('https://fonts.gstatic.com/s/amiri/v27/J7aRnpd8CGxBHqUpvrIw74NL.woff2', 'Amiri', 'normal')
+  doc.setFont('Amiri')
+  
+  // Title
+  doc.setFontSize(20)
+  doc.text(data.title, 105, 20, { align: 'center' })
+  
+  // Date and period
+  doc.setFontSize(12)
+  doc.text(`تاريخ التقرير: ${data.date}`, 20, 35)
+  doc.text(`فترة التقرير: ${data.period}`, 20, 45)
+  
+  // Metrics
+  doc.setFontSize(16)
+  doc.text('المؤشرات الرئيسية', 20, 65)
+  
+  doc.setFontSize(12)
+  let y = 80
+  const metrics = [
+    `إجمالي الحجوزات: ${data.metrics.totalBookings}`,
+    `إجمالي الإيرادات: ${data.metrics.totalRevenue} ريال`,
+    `إجمالي العملاء: ${data.metrics.totalCustomers}`,
+    `إجمالي الباقات: ${data.metrics.totalPackages}`,
+    `عملاء جدد: ${data.metrics.newCustomers}`,
+    `عملاء عائدون: ${data.metrics.returningCustomers}`,
+    `متوسط التقييم: ${data.metrics.averageRating}`
+  ]
+  
+  metrics.forEach(metric => {
+    doc.text(metric, 20, y)
+    y += 10
+  })
+  
+  // Recent bookings table
+  doc.setFontSize(16)
+  doc.text('الحجوزات الأخيرة', 20, y + 20)
+  
+  doc.setFontSize(10)
+  y += 35
+  
+  // Table headers
+  const headers = ['العميل', 'الباقة', 'الوجهة', 'التاريخ', 'السعر']
+  let x = 20
+  headers.forEach(header => {
+    doc.text(header, x, y)
+    x += 35
+  })
+  
+  y += 10
+  doc.line(20, y, 190, y)
+  y += 5
+  
+  // Table data
+  data.recentBookings.slice(0, 10).forEach((booking: any) => {
+    if (y > 250) {
+      doc.addPage()
+      y = 20
+    }
+    
+    x = 20
+    const rowData = [
+      booking.customer_name.substring(0, 15),
+      booking.package_title.substring(0, 15),
+      booking.destination.substring(0, 15),
+      booking.travel_date,
+      booking.price + ' ريال'
+    ]
+    
+    rowData.forEach(cell => {
+      doc.text(cell, x, y)
+      x += 35
+    })
+    y += 8
+  })
+  
+  // Download file
+  const fileName = `تقرير_أرض_العجائب_${new Date().toISOString().split('T')[0]}.pdf`
+  doc.save(fileName)
 }
 
 // Set default date range (last 30 days)

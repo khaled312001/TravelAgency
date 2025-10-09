@@ -6,7 +6,7 @@
     "contact": "Contact"
   },
   "common": {
-    "app_title": "Wonder Land",
+    "app_title": "World Trip Agency",
     "buttons": {
       "contactUs": "Contact Us",
       "whatsapp": "Get Instant Travel Support",
@@ -406,7 +406,7 @@
   },
   "pwa": {
     "installPrompt": {
-      "title": "Install Wonder Land App",
+      "title": "Install World Trip Agency App",
       "description": "Install our app for a better experience with offline access and faster loading times.",
       "features": {
         "offline": "Access even when offline",
@@ -430,7 +430,7 @@
       "title": "You're Offline",
       "description": "But don't worry, you can still use the app."
     },
-    "install_title": "Install Wonder Land App",
+    "install_title": "Install World Trip Agency App",
     "install_description": "Install our app for a better experience and offline access to the travel packages.",
     "install_button": "Install",
     "dismiss_button": "Later",

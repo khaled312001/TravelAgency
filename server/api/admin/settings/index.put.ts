@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
       title_ar: 'إعدادات الموقع',
       title_en: 'Website Settings',
       description_ar: JSON.stringify({
-        site_name: body.general?.siteName || { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' },
+        site_name: body.general?.siteName || { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' },
         site_description: body.general?.siteDescription || { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
         site_url: body.general?.siteUrl || 'https://www.worldtripagency.com',
         contact_email: body.general?.contactEmail || 'info@worldtripagency.com',
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
         favicon: body.logo?.favicon || '/favicon.ico',
         logo_height: body.logo?.logoHeight || 48,
         show_logo_text: body.logo?.showLogoText || true,
-        logo_text: body.logo?.logoText || { ar: 'أرض العجائب', en: 'Wonder Land' }
+        logo_text: body.logo?.logoText || { ar: 'أرض العجائب', en: 'World Trip Agency' }
       }),
       keywords_ar: JSON.stringify({
         smtp_host: body.email?.smtpHost || '',
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
         smtp_username: body.email?.smtpUsername || '',
         smtp_password: body.email?.smtpPassword || '',
         from_email: body.email?.fromEmail || 'noreply@worldtripagency.com',
-        from_name: body.email?.fromName || { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' }
+        from_name: body.email?.fromName || { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' }
       }),
       keywords_en: JSON.stringify({
         stripe_enabled: body.payment?.stripeEnabled || false,

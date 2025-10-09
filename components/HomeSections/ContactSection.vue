@@ -248,9 +248,8 @@ const handleSubmit = async () => {
         name: form.name,
         email: form.email,
         phone: `${form.countryCode}${form.phone}`,
-        subject: form.subject || 'رسالة تواصل من الموقع',
-        message: form.message,
-        type: 'inquiry'
+        subject: form.subject || 'رسالة تواصل من الصفحة الرئيسية',
+        message: form.message
       }
     })
 

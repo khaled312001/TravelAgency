@@ -38,7 +38,7 @@ async function createSettingsTable() {
         title_ar: 'إعدادات الموقع',
         title_en: 'Website Settings',
         description_ar: JSON.stringify({
-          site_name: { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' },
+          site_name: { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' },
           site_description: { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
           site_url: 'https://www.worldtripagency.com',
           contact_email: 'info@worldtripagency.com',
@@ -51,7 +51,7 @@ async function createSettingsTable() {
           favicon: '/favicon.ico',
           logo_height: 48,
           show_logo_text: true,
-          logo_text: { ar: 'أرض العجائب', en: 'Wonder Land' }
+          logo_text: { ar: 'أرض العجائب', en: 'World Trip Agency' }
         }),
         keywords_ar: JSON.stringify({
           smtp_host: '',
@@ -59,7 +59,7 @@ async function createSettingsTable() {
           smtp_username: '',
           smtp_password: '',
           from_email: 'noreply@worldtripagency.com',
-          from_name: { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' }
+          from_name: { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' }
         }),
         keywords_en: JSON.stringify({
           stripe_enabled: false,

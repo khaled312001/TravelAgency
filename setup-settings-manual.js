@@ -13,7 +13,7 @@ async function setupSettings() {
     // First, try to create the table using a simple insert (this will create the table if it doesn't exist)
     const defaultSettings = [
       // General Settings
-      { key: 'site_name', value: JSON.stringify({en: "Wonder Land Traveling Agency", ar: "وكالة أرض العجائب للسفر"}), category: 'general', description: 'Website name in multiple languages' },
+      { key: 'site_name', value: JSON.stringify({en: "World Trip Agency Traveling Agency", ar: "وكالة أرض العجائب للسفر"}), category: 'general', description: 'Website name in multiple languages' },
       { key: 'site_description', value: JSON.stringify({en: "Specialized travel agency for organizing tourist trips", ar: "وكالة سفر متخصصة في تنظيم الرحلات السياحية"}), category: 'general', description: 'Website description' },
       { key: 'site_url', value: JSON.stringify("https://www.worldtripagency.com"), category: 'general', description: 'Website URL' },
       { key: 'contact_email', value: JSON.stringify("info@worldtripagency.com"), category: 'general', description: 'Contact email' },
@@ -26,7 +26,7 @@ async function setupSettings() {
       { key: 'favicon', value: JSON.stringify("/favicon.ico"), category: 'logo', description: 'Website favicon' },
       { key: 'logo_height', value: JSON.stringify("48"), category: 'logo', description: 'Logo height in pixels' },
       { key: 'show_logo_text', value: JSON.stringify("true"), category: 'logo', description: 'Show logo text next to image' },
-      { key: 'logo_text', value: JSON.stringify({en: "Wonder Land", ar: "أرض العجائب"}), category: 'logo', description: 'Logo text' },
+      { key: 'logo_text', value: JSON.stringify({en: "World Trip Agency", ar: "أرض العجائب"}), category: 'logo', description: 'Logo text' },
       
       // Email Settings
       { key: 'smtp_host', value: JSON.stringify(""), category: 'email', description: 'SMTP server host' },
@@ -34,7 +34,7 @@ async function setupSettings() {
       { key: 'smtp_username', value: JSON.stringify(""), category: 'email', description: 'SMTP username' },
       { key: 'smtp_password', value: JSON.stringify(""), category: 'email', description: 'SMTP password' },
       { key: 'from_email', value: JSON.stringify("noreply@worldtripagency.com"), category: 'email', description: 'From email address' },
-      { key: 'from_name', value: JSON.stringify({en: "Wonder Land Traveling Agency", ar: "وكالة أرض العجائب للسفر"}), category: 'email', description: 'From name' },
+      { key: 'from_name', value: JSON.stringify({en: "World Trip Agency Traveling Agency", ar: "وكالة أرض العجائب للسفر"}), category: 'email', description: 'From name' },
       
       // Payment Settings
       { key: 'stripe_enabled', value: JSON.stringify("false"), category: 'payment', description: 'Enable Stripe payment' },
@@ -45,7 +45,7 @@ async function setupSettings() {
       { key: 'mastercard_enabled', value: JSON.stringify("true"), category: 'payment', description: 'Enable Mastercard payment' },
       
       // SEO Settings
-      { key: 'meta_title', value: JSON.stringify({en: "Wonder Land - Specialized Travel Agency", ar: "أرض العجائب - وكالة سفر متخصصة"}), category: 'seo', description: 'Meta title' },
+      { key: 'meta_title', value: JSON.stringify({en: "World Trip Agency - Specialized Travel Agency", ar: "أرض العجائب - وكالة سفر متخصصة"}), category: 'seo', description: 'Meta title' },
       { key: 'meta_description', value: JSON.stringify({en: "Specialized travel agency for organizing tourist trips, Umrah and Hajj", ar: "وكالة سفر متخصصة في تنظيم الرحلات السياحية والعمرة والحج"}), category: 'seo', description: 'Meta description' },
       { key: 'meta_keywords', value: JSON.stringify({en: "travel, trips, umrah, hajj, tourism", ar: "سفر, رحلات, عمرة, حج, سياحة"}), category: 'seo', description: 'Meta keywords' },
       { key: 'google_analytics_id', value: JSON.stringify(""), category: 'seo', description: 'Google Analytics ID' },

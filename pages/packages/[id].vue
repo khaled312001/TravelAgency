@@ -87,6 +87,80 @@ const {
   }
 )
 
+// SEO Meta Tags - Dynamic based on package data
+watch(package_, (newPackage) => {
+  if (newPackage) {
+    const packageTitle = newPackage.title_ar || newPackage.title_en
+    const packageDescription = newPackage.description_ar || newPackage.description_en
+    const packagePrice = newPackage.price || 0
+    const packageDuration = newPackage.duration || 'متغير'
+    const packageDestination = newPackage.destination || 'وجهة متعددة'
+    
+    useHead({
+      title: `${packageTitle} - أرض العجائب للسفر | باقات سفر متميزة`,
+      meta: [
+        {
+          name: 'description',
+          content: `${packageDescription.substring(0, 160)}... باقة سفر متميزة من أرض العجائب للسفر. سعر منافس وخدمة 24/7. احجز الآن!`
+        },
+        {
+          name: 'keywords',
+          content: `${packageTitle}, باقة سفر, رحلات, سياحة, ${packageDestination}, أرض العجائب للسفر, وكالة سفر السعودية, رحلات عمرة, رحلات حج`
+        },
+        { property: 'og:title', content: `${packageTitle} - أرض العجائب للسفر` },
+        { property: 'og:description', content: packageDescription.substring(0, 160) + '...' },
+        { property: 'og:url', content: `https://www.worldtripagency.com/packages/${route.params.id}` },
+        { property: 'og:image', content: newPackage.hero_image_url || newPackage.image_url },
+        { name: 'twitter:title', content: `${packageTitle} - أرض العجائب للسفر` },
+        { name: 'twitter:description', content: packageDescription.substring(0, 160) + '...' },
+        { name: 'twitter:image', content: newPackage.hero_image_url || newPackage.image_url }
+      ],
+      link: [
+        { rel: 'canonical', href: `https://www.worldtripagency.com/packages/${route.params.id}` }
+      ],
+      script: [
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TravelPackage",
+            "name": packageTitle,
+            "description": packageDescription,
+            "url": `https://www.worldtripagency.com/packages/${route.params.id}`,
+            "image": newPackage.hero_image_url || newPackage.image_url,
+            "offers": {
+              "@type": "Offer",
+              "price": packagePrice,
+              "priceCurrency": "SAR",
+              "availability": "https://schema.org/InStock",
+              "validFrom": new Date().toISOString().split('T')[0]
+            },
+            "provider": {
+              "@type": "TravelAgency",
+              "name": "أرض العجائب للسفر",
+              "url": "https://www.worldtripagency.com",
+              "telephone": "+966500982394",
+              "email": "info@worldtripagency.com"
+            },
+            "duration": packageDuration,
+            "destination": {
+              "@type": "Place",
+              "name": packageDestination
+            },
+            "includes": [
+              "النقل",
+              "الإقامة",
+              "الوجبات",
+              "الجولات السياحية",
+              "المرشد السياحي"
+            ]
+          })
+        }
+      ]
+    })
+  }
+}, { immediate: true })
+
 // Define page meta for proper routing
 definePageMeta({
   layout: 'default'
@@ -101,7 +175,7 @@ watch(package_, (newPackage) => {
 
 // SEO
 useHead({
-  title: computed(() => package_.value ? `${package_.value[`title_${locale.value.slice(0, 2)}`]} | Wonder Land Agency` : 'Loading...'),
+  title: computed(() => package_.value ? `${package_.value[`title_${locale.value.slice(0, 2)}`]} | World Trip Agency Agency` : 'Loading...'),
   meta: [
     {
       name: 'description',

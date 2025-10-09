@@ -181,13 +181,114 @@ function formatDate(date: string) {
   })
 }
 
-// SEO
+// SEO - Enhanced for better search rankings
 useHead({
-  title: computed(() => destination.value ? `${destination.value.name[locale.value.slice(0,2)]} | Wonder Land Agency` : 'Loading...'),
+  title: computed(() => {
+    if (!destination.value) return 'Loading...'
+    const destName = destination.value.name[locale.value.slice(0,2)]
+    return `${destName} - أرض العجائب للسفر | وجهة سياحية متميزة`
+  }),
   meta: [
     {
       name: 'description',
-      content: computed(() => destination.value?.description[locale.value.slice(0, 2)] || '')
+      content: computed(() => {
+        if (!destination.value) return ''
+        const desc = destination.value.description[locale.value.slice(0, 2)]
+        return `${desc.substring(0, 160)}... اكتشف ${destination.value.name[locale.value.slice(0,2)]} مع أرض العجائب للسفر. باقات سفر متميزة وخدمة 24/7.`
+      })
+    },
+    {
+      name: 'keywords',
+      content: computed(() => {
+        if (!destination.value) return ''
+        const destName = destination.value.name[locale.value.slice(0,2)]
+        return `${destName}, سياحة السعودية, وجهات سفر, رحلات داخلية, ${destName} سياحة, باقات سفر ${destName}, أرض العجائب للسفر, وكالة سفر السعودية`
+      })
+    },
+    { 
+      property: 'og:title', 
+      content: computed(() => destination.value ? `${destination.value.name[locale.value.slice(0,2)]} - أرض العجائب للسفر` : '') 
+    },
+    { 
+      property: 'og:description', 
+      content: computed(() => destination.value?.description[locale.value.slice(0, 2)] || '') 
+    },
+    { 
+      property: 'og:url', 
+      content: computed(() => `https://www.worldtripagency.com/destinations/${route.params.id}`) 
+    },
+    { 
+      property: 'og:image', 
+      content: computed(() => destination.value?.mainImage || '') 
+    },
+    { 
+      name: 'twitter:title', 
+      content: computed(() => destination.value ? `${destination.value.name[locale.value.slice(0,2)]} - أرض العجائب للسفر` : '') 
+    },
+    { 
+      name: 'twitter:description', 
+      content: computed(() => destination.value?.description[locale.value.slice(0, 2)] || '') 
+    },
+    { 
+      name: 'twitter:image', 
+      content: computed(() => destination.value?.mainImage || '') 
+    }
+  ],
+  link: [
+    { 
+      rel: 'canonical', 
+      href: computed(() => `https://www.worldtripagency.com/destinations/${route.params.id}`) 
+    }
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: computed(() => {
+        if (!destination.value) return '{}'
+        
+        const destName = destination.value.name[locale.value.slice(0,2)]
+        const destDesc = destination.value.description[locale.value.slice(0,2)]
+        
+        return JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "TouristDestination",
+          "name": destName,
+          "description": destDesc,
+          "url": `https://www.worldtripagency.com/destinations/${route.params.id}`,
+          "image": destination.value.mainImage,
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": destName,
+            "addressRegion": "المملكة العربية السعودية",
+            "addressCountry": "SA"
+          },
+          "geo": destination.value.coordinates ? {
+            "@type": "GeoCoordinates",
+            "latitude": destination.value.coordinates.lat,
+            "longitude": destination.value.coordinates.lng
+          } : undefined,
+          "touristType": [
+            "رحلات عائلية",
+            "رحلات رومانسية", 
+            "رحلات مغامرة",
+            "رحلات ثقافية"
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": `باقات سفر إلى ${destName}`,
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "TravelPackage",
+                  "name": `باقة سفر إلى ${destName}`,
+                  "description": `باقة سفر شاملة إلى ${destName} تشمل النقل والإقامة والجولات السياحية`
+                }
+              }
+            ]
+          }
+        })
+      })
     }
   ]
 })

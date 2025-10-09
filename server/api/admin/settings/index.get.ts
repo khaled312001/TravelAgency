@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
       console.log('No settings record found, returning default settings')
       const defaultSettings = {
         general: {
-          siteName: { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' },
+          siteName: { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' },
           siteDescription: { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
           siteUrl: 'https://www.worldtripagency.com',
           contactEmail: 'info@worldtripagency.com',
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
           favicon: '/favicon.ico',
           logoHeight: 48,
           showLogoText: true,
-          logoText: { ar: 'أرض العجائب', en: 'Wonder Land' }
+          logoText: { ar: 'أرض العجائب', en: 'World Trip Agency' }
         },
         email: {
           smtpHost: '',
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
           smtpUsername: '',
           smtpPassword: '',
           fromEmail: 'noreply@worldtripagency.com',
-          fromName: { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' }
+          fromName: { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' }
         },
         payment: {
           stripeEnabled: false,
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
           mastercardEnabled: true
         },
         seo: {
-          metaTitle: { ar: 'أرض العجائب - وكالة سفر متخصصة', en: 'Wonder Land - Specialized Travel Agency' },
+          metaTitle: { ar: 'أرض العجائب - وكالة سفر متخصصة', en: 'World Trip Agency - Specialized Travel Agency' },
           metaDescription: { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية والعمرة والحج', en: 'Specialized travel agency for organizing tourist trips, Umrah and Hajj' },
           metaKeywords: { ar: 'سفر, رحلات, عمرة, حج, سياحة', en: 'travel, trips, umrah, hajj, tourism' },
           googleAnalyticsId: '',
@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
     // Transform settings into organized structure
     const organizedSettings = {
       general: {
-        siteName: generalSettings.site_name || { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' },
+        siteName: generalSettings.site_name || { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' },
         siteDescription: generalSettings.site_description || { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
         siteUrl: generalSettings.site_url || 'https://www.worldtripagency.com',
         contactEmail: generalSettings.contact_email || 'info@worldtripagency.com',
@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
         favicon: logoSettings.favicon || '/favicon.ico',
         logoHeight: logoSettings.logo_height || 48,
         showLogoText: logoSettings.show_logo_text || true,
-        logoText: logoSettings.logo_text || { ar: 'أرض العجائب', en: 'Wonder Land' }
+        logoText: logoSettings.logo_text || { ar: 'أرض العجائب', en: 'World Trip Agency' }
       },
       email: {
         smtpHost: emailSettings.smtp_host || '',
@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
         smtpUsername: emailSettings.smtp_username || '',
         smtpPassword: emailSettings.smtp_password || '',
         fromEmail: emailSettings.from_email || 'noreply@worldtripagency.com',
-        fromName: emailSettings.from_name || { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' }
+        fromName: emailSettings.from_name || { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' }
       },
       payment: {
         stripeEnabled: paymentSettings.stripe_enabled || false,
@@ -112,7 +112,7 @@ export default defineEventHandler(async (event) => {
         mastercardEnabled: paymentSettings.mastercard_enabled || true
       },
       seo: {
-        metaTitle: { ar: 'أرض العجائب - وكالة سفر متخصصة', en: 'Wonder Land - Specialized Travel Agency' },
+        metaTitle: { ar: 'أرض العجائب - وكالة سفر متخصصة', en: 'World Trip Agency - Specialized Travel Agency' },
         metaDescription: { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية والعمرة والحج', en: 'Specialized travel agency for organizing tourist trips, Umrah and Hajj' },
         metaKeywords: { ar: 'سفر, رحلات, عمرة, حج, سياحة', en: 'travel, trips, umrah, hajj, tourism' },
         googleAnalyticsId: '',

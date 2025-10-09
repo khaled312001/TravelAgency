@@ -5,7 +5,7 @@
       <div class="logo-container">
         <Icon name="lucide:compass" class="logo-icon" />
         <div class="logo-text">
-          <h2 class="logo-title">Wonder Land</h2>
+          <h2 class="logo-title">World Trip Agency</h2>
           <p class="logo-subtitle">لوحة التحكم</p>
         </div>
       </div>

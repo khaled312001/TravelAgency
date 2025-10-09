@@ -1,0 +1,97 @@
+{
+  "name": "أرض العجائب للسفر - أفضل وكالة سفر في السعودية",
+  "short_name": "أرض العجائب للسفر",
+  "description": "أفضل وكالة سفر في المملكة العربية السعودية. رحلات عمرة وحج، سياحة داخلية وخارجية، باقات سفر متميزة.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ar-SA",
+  "dir": "rtl",
+  "categories": ["travel", "tourism", "business"],
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "الصفحة الرئيسية - سطح المكتب"
+    },
+    {
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "الصفحة الرئيسية - الهاتف المحمول"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "الباقات",
+      "short_name": "الباقات",
+      "description": "تصفح جميع باقات السفر المتاحة",
+      "url": "/packages",
+      "icons": [
+        {
+          "src": "/icons/packages-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "الوجهات",
+      "short_name": "الوجهات",
+      "description": "اكتشف وجهات السفر المتنوعة",
+      "url": "/destinations",
+      "icons": [
+        {
+          "src": "/icons/destinations-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "تواصل معنا",
+      "short_name": "تواصل",
+      "description": "تواصل معنا للحصول على المساعدة",
+      "url": "/#contact",
+      "icons": [
+        {
+          "src": "/icons/contact-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

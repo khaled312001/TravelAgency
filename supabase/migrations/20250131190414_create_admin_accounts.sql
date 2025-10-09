@@ -1,4 +1,4 @@
--- Create admin accounts for Wonder Land Traveling Agency
+-- Create admin accounts for World Trip Agency Traveling Agency
 -- This migration creates additional admin accounts and ensures the default admin exists
 
 -- Insert default admin user (password: admin123)
@@ -139,9 +139,9 @@ LIMIT 1;
 -- Create some sample SEO settings
 INSERT INTO seo_settings (page_path, title, title_en, description, description_en, keywords, keywords_en, is_indexed)
 VALUES 
-  ('/', 'Wonder Land - وكالة السفر المفضلة', 'Wonder Land - Your Preferred Travel Agency', 'اكتشف أفضل عروض السفر والحجوزات مع Wonder Land. رحلات داخلية وخارجية، عمرة، وحج بأسعار منافسة.', 'Discover the best travel offers and bookings with Wonder Land. Domestic and international trips, Umrah, and Hajj at competitive prices.', 'سفر, رحلات, عمرة, حج, دبي, تركيا, مصر', 'travel, trips, umrah, hajj, dubai, turkey, egypt', true),
-  ('/packages', 'باقات السفر - Wonder Land', 'Travel Packages - Wonder Land', 'تصفح جميع باقات السفر المتاحة لدينا. رحلات منظمة بأسعار مميزة لجميع الوجهات.', 'Browse all our available travel packages. Organized trips at special prices to all destinations.', 'باقات سفر, رحلات منظمة, عروض سفر', 'travel packages, organized trips, travel offers', true),
-  ('/destinations', 'الوجهات السياحية - Wonder Land', 'Tourist Destinations - Wonder Land', 'اكتشف أجمل الوجهات السياحية حول العالم. وجهات داخلية وخارجية لجميع الأذواق.', 'Discover the most beautiful tourist destinations around the world. Domestic and international destinations for all tastes.', 'وجهات سياحية, أماكن سياحية, سفر', 'tourist destinations, tourist places, travel', true);
+  ('/', 'World Trip Agency - وكالة السفر المفضلة', 'World Trip Agency - Your Preferred Travel Agency', 'اكتشف أفضل عروض السفر والحجوزات مع World Trip Agency. رحلات داخلية وخارجية، عمرة، وحج بأسعار منافسة.', 'Discover the best travel offers and bookings with World Trip Agency. Domestic and international trips, Umrah, and Hajj at competitive prices.', 'سفر, رحلات, عمرة, حج, دبي, تركيا, مصر', 'travel, trips, umrah, hajj, dubai, turkey, egypt', true),
+  ('/packages', 'باقات السفر - World Trip Agency', 'Travel Packages - World Trip Agency', 'تصفح جميع باقات السفر المتاحة لدينا. رحلات منظمة بأسعار مميزة لجميع الوجهات.', 'Browse all our available travel packages. Organized trips at special prices to all destinations.', 'باقات سفر, رحلات منظمة, عروض سفر', 'travel packages, organized trips, travel offers', true),
+  ('/destinations', 'الوجهات السياحية - World Trip Agency', 'Tourist Destinations - World Trip Agency', 'اكتشف أجمل الوجهات السياحية حول العالم. وجهات داخلية وخارجية لجميع الأذواق.', 'Discover the most beautiful tourist destinations around the world. Domestic and international destinations for all tastes.', 'وجهات سياحية, أماكن سياحية, سفر', 'tourist destinations, tourist places, travel', true);
 
 -- Update admin user last login to show they are active
 UPDATE admin_users 

@@ -259,7 +259,7 @@ const handleSubmit = async () => {
         email: form.value.email,
         phone: form.value.phone,
         message: form.value.message,
-        type: 'booking',
+        subject: `استفسار عن الباقة - ${packageName.value}`,
         package_id: props.package_.id,
         package_name: packageName.value
       }
