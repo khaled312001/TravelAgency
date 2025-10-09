@@ -22,57 +22,63 @@ interface PwaInjection {
 export default defineNuxtPlugin((nuxtApp) => {
   // Only run on client side
   if (process.client) {
-    const pwaUpdate = usePwaUpdate()
-    const pwaInstall = usePwaInstall()
-    
-    // Access the PWA plugin provided by @vite-pwa/nuxt
-    const { $pwa } = nuxtApp
-    
-    if ($pwa && typeof $pwa === 'object') {
-      // Cast to our defined type
-      const pwa = $pwa as unknown as PwaInjection
+    try {
+      const pwaUpdate = usePwaUpdate()
+      const pwaInstall = usePwaInstall()
       
-      // Watch for service worker updates
-      watch(pwa.needRefresh, (needRefresh) => {
-        if (needRefresh) {
-          // Notify user about update using our custom composable
-          pwaUpdate.onNeedRefresh(() => pwa.updateServiceWorker())
-        }
-      })
+      // Access the PWA plugin provided by @vite-pwa/nuxt
+      const { $pwa } = nuxtApp
       
-      // Watch for PWA installation status
-      watch(pwa.showInstallPrompt, (showInstallPrompt) => {
-        if (showInstallPrompt) {
-          // Sync with our custom install prompt state
-          pwaInstall.onBeforeInstallPrompt({
-            preventDefault: () => {},
-            // Create a custom event that matches what our composable expects
-            prompt: async () => {
-              await pwa.install()
-            },
-            userChoice: Promise.resolve({ outcome: 'accepted' })
-          } as unknown as Event)
-        }
-      })
-      
-      // Watch for service worker activation
-      watch(pwa.swActivated, (activated) => {
-        if (activated) {
-          console.info('Service worker activated successfully')
-        }
-      })
-      
-      // Watch for registration errors
-      watch(pwa.registrationError, (error) => {
-        if (error) {
-          console.error('Service worker registration error')
-        }
-      })
-      
-      // Log PWA status on initialization
-      console.info('PWA plugin initialized successfully')
-    } else {
-      console.warn('PWA plugin not available')
+      if ($pwa && typeof $pwa === 'object') {
+        // Cast to our defined type
+        const pwa = $pwa as unknown as PwaInjection
+        
+        // Watch for service worker updates
+        watch(pwa.needRefresh, (needRefresh) => {
+          if (needRefresh) {
+            // Notify user about update using our custom composable
+            pwaUpdate.onNeedRefresh(() => pwa.updateServiceWorker())
+          }
+        })
+        
+        // Watch for PWA installation status
+        watch(pwa.showInstallPrompt, (showInstallPrompt) => {
+          if (showInstallPrompt) {
+            // Sync with our custom install prompt state
+            pwaInstall.onBeforeInstallPrompt({
+              preventDefault: () => {},
+              // Create a custom event that matches what our composable expects
+              prompt: async () => {
+                await pwa.install()
+              },
+              userChoice: Promise.resolve({ outcome: 'accepted' })
+            } as unknown as Event)
+          }
+        })
+        
+        // Watch for service worker activation
+        watch(pwa.swActivated, (activated) => {
+          if (activated) {
+            console.info('Service worker activated successfully')
+          }
+        })
+        
+        // Watch for registration errors
+        watch(pwa.registrationError, (error) => {
+          if (error) {
+            console.error('Service worker registration error')
+          }
+        })
+        
+        // Log PWA status on initialization
+        console.info('PWA plugin initialized successfully')
+      } else {
+        // PWA plugin not available - this is normal in some deployment scenarios
+        console.info('PWA plugin not available - running in standard web mode')
+      }
+    } catch (error) {
+      // Handle any errors gracefully
+      console.info('PWA plugin initialization skipped - running in standard web mode')
     }
   }
 })

@@ -303,11 +303,12 @@ export default defineNuxtConfig({
     // AOS plugin removed as it's now handled by the nuxt-aos module
     '~/plugins/i18n.client.ts',
     '~/plugins/language-direction.ts',
-    '~/plugins/initial-direction.server.ts'
+    '~/plugins/initial-direction.server.ts',
+    '~/plugins/pwa.client.ts'
   ],
 
   nitro: {
-    preset: 'static',
+    preset: 'vercel',
     compressPublicAssets: {
       gzip: true,
       brotli: true
@@ -330,7 +331,7 @@ export default defineNuxtConfig({
       '/packages/**': { prerender: true },
       '/destinations/**': { prerender: true },
       '/about': { prerender: true },
-      '/admin/**': { ssr: false }
+      '/admin/**': { ssr: true }
     },
     // Ensure proper static deployment
     experimental: {
