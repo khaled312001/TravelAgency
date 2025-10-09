@@ -376,7 +376,14 @@ const formatPrice = (price: number) => {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ar-SA')
+  if (!dateString) return 'غير محدد'
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'تاريخ غير صحيح'
+    return date.toLocaleDateString('ar-SA')
+  } catch (error) {
+    return 'تاريخ غير صحيح'
+  }
 }
 
 const loadBookings = async () => {

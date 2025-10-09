@@ -339,13 +339,20 @@ const formatCurrency = (amount: number) => {
 }
 
 const formatDate = (dateString: string) => {
-  return new Intl.DateTimeFormat('ar-SA', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(new Date(dateString))
+  if (!dateString) return 'غير محدد'
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'تاريخ غير صحيح'
+    return new Intl.DateTimeFormat('ar-SA', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date)
+  } catch (error) {
+    return 'تاريخ غير صحيح'
+  }
 }
 
 // Set page title

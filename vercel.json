@@ -1,5 +1,25 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": ".output",
-  "framework": "nuxtjs"
+  "framework": "nuxtjs",
+  "routes": [
+    {
+      "src": "/images/(.*)",
+      "dest": "/images/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/icons/(.*)",
+      "dest": "/icons/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
 }

@@ -454,11 +454,25 @@ const getRoleText = (role: string) => {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ar-SA')
+  if (!dateString) return 'غير محدد'
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'تاريخ غير صحيح'
+    return date.toLocaleDateString('ar-SA')
+  } catch (error) {
+    return 'تاريخ غير صحيح'
+  }
 }
 
 const formatDateTime = (dateString: string) => {
-  return new Date(dateString).toLocaleString('ar-SA')
+  if (!dateString) return 'غير محدد'
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'تاريخ غير صحيح'
+    return date.toLocaleString('ar-SA')
+  } catch (error) {
+    return 'تاريخ غير صحيح'
+  }
 }
 
 const loadUsers = async () => {

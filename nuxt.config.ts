@@ -323,8 +323,8 @@ export default defineNuxtConfig({
       }
     ],
     routeRules: {
-      '/images/**': { static: true },
-      '/icons/**': { static: true },
+      '/images/**': { headers: { 'cache-control': 's-maxage=31536000' } },
+      '/icons/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/': { prerender: true },
       '/en-US': { prerender: true },
       '/en-US/': { prerender: true },
@@ -339,7 +339,7 @@ export default defineNuxtConfig({
     }
   },
 
-  ssr: false,
+  ssr: true,
 
   experimental: {
     viewTransition: true
