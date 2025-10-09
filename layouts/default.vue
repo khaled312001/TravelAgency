@@ -6,12 +6,14 @@
         <div class="flex items-center justify-between">
           <NuxtLink :to="localpath('/')" class="flex items-center">
             <img 
-              src="/images/home/logo/WonderlandLogo.svg" 
-              class="h-[48px]"
-              alt="Wonder Land Agency Logo" 
+              :src="getLocalizedSetting('logo', 'mainLogo') || '/images/home/logo/WonderlandLogo.svg'" 
+              :class="`h-[${getSetting('logo', 'logoHeight') || 48}px]`"
+              :alt="getLocalizedSetting('general', 'siteName') || 'Wonder Land Agency Logo'" 
               loading="eager"
             />
-            <span class="font-bold text-lg font-italic text-primary-900">{{$t('common.app_title')}}</span>
+            <span v-if="getSetting('logo', 'showLogoText')" class="font-bold text-lg font-italic text-primary-900">
+              {{ getLocalizedSetting('logo', 'logoText') || $t('common.app_title') }}
+            </span>
           </NuxtLink>
           
           <div class="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
@@ -109,6 +111,12 @@ const currentLocale = computed(() => locale.value)
 const isMenuOpen = ref(false)
 const isTransitioning = ref(false)
 const { startLocaleTransition } = useViewTransition()
+
+// Load settings
+const { settings, loadSettings, getSetting, getLocalizedSetting } = useSettings()
+onMounted(() => {
+  loadSettings()
+})
 
 const navItems = [
   { to: '/', label: 'nav.home' },

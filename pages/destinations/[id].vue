@@ -24,15 +24,11 @@
       <div 
         class="relative h-[40vh] md:h-[60vh] w-full"
       >
-        <NuxtImg
+        <img
           :src="destination.mainImage"
           class="h-full w-full object-cover"
           :alt="getLocalizedName"
           loading="eager"
-          width="1920"
-          height="1080"
-          format="webp"
-          quality="90"
         />
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
       </div>
@@ -60,14 +56,11 @@
                 class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
               >
                 <div class="relative h-48">
-                  <NuxtImg
+                  <img
                     :src="spot.image || destination.gallery?.[0] || destination.mainImage"
                     :alt="spot.name[locale.slice(0, 2)]"
                     class="w-full h-full object-cover"
-                    width="600"
-                    height="400"
-                    format="webp"
-                    quality="85"
+                    loading="lazy"
                   />
                 </div>
                 <div class="p-6">
@@ -91,14 +84,11 @@
                 class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6"
               >
                 <div v-if="event.image" class="relative h-40 -mx-6 -mt-6 mb-6">
-                  <NuxtImg
+                  <img
                     :src="event.image"
                     :alt="event.title[locale.slice(0, 2)]"
                     class="w-full h-full object-cover"
-                    width="400"
-                    height="300"
-                    format="webp"
-                    quality="85"
+                    loading="lazy"
                   />
                 </div>
                 <h3 class="text-xl font-semibold mb-3 text-gray-900">{{ event.title[locale.slice(0, 2)] }}</h3>

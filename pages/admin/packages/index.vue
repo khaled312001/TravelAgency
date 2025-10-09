@@ -223,13 +223,57 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">صورة الباقة</label>
-              <ImageUpload 
-                v-model="packageForm.image_url"
-                alt="صورة الباقة"
-                @upload="onImageUpload"
-                @error="onImageError"
-              />
+              <label class="form-label">صورة الباقة الرئيسية *</label>
+              <div class="image-upload-container">
+                <div v-if="packageForm.image_url" class="current-image">
+                  <img :src="packageForm.image_url" alt="صورة الباقة الحالية" class="image-preview" />
+                  <button type="button" @click="removeImage" class="remove-image-btn">
+                    <Icon name="lucide:x" class="remove-icon" />
+                  </button>
+                </div>
+                <div v-else class="upload-area">
+                  <input 
+                    ref="imageInput"
+                    type="file" 
+                    accept="image/*" 
+                    @change="handleImageUpload"
+                    class="file-input"
+                    id="package-image-upload"
+                  />
+                  <label for="package-image-upload" class="upload-button">
+                    <Icon name="lucide:upload" class="upload-icon" />
+                    <span>اختر صورة</span>
+                  </label>
+                  <p class="upload-hint">PNG, JPG, JPEG - الحد الأقصى 5MB</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">صورة الباقة الهيرو</label>
+              <div class="image-upload-container">
+                <div v-if="packageForm.hero_image_url" class="current-image">
+                  <img :src="packageForm.hero_image_url" alt="صورة الهيرو الحالية" class="image-preview" />
+                  <button type="button" @click="removeHeroImage" class="remove-image-btn">
+                    <Icon name="lucide:x" class="remove-icon" />
+                  </button>
+                </div>
+                <div v-else class="upload-area">
+                  <input 
+                    ref="heroImageInput"
+                    type="file" 
+                    accept="image/*" 
+                    @change="handleHeroImageUpload"
+                    class="file-input"
+                    id="package-hero-image-upload"
+                  />
+                  <label for="package-hero-image-upload" class="upload-button">
+                    <Icon name="lucide:upload" class="upload-icon" />
+                    <span>اختر صورة هيرو</span>
+                  </label>
+                  <p class="upload-hint">PNG, JPG, JPEG - الحد الأقصى 5MB</p>
+                </div>
+              </div>
             </div>
 
             <div class="form-group">
@@ -436,6 +480,72 @@ const savePackage = async () => {
     console.error('Error saving package:', error)
   } finally {
     saving.value = false
+  }
+}
+
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('حجم الملف كبير جداً. الحد الأقصى 5MB')
+      return
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('يرجى اختيار ملف صورة صالح')
+      return
+    }
+    
+    // Create preview URL
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      packageForm.value.image_url = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const handleHeroImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('حجم الملف كبير جداً. الحد الأقصى 5MB')
+      return
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('يرجى اختيار ملف صورة صالح')
+      return
+    }
+    
+    // Create preview URL
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      packageForm.value.hero_image_url = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const removeImage = () => {
+  packageForm.value.image_url = ''
+  // Reset file input
+  const fileInput = document.getElementById('package-image-upload') as HTMLInputElement
+  if (fileInput) {
+    fileInput.value = ''
+  }
+}
+
+const removeHeroImage = () => {
+  packageForm.value.hero_image_url = ''
+  // Reset file input
+  const fileInput = document.getElementById('package-hero-image-upload') as HTMLInputElement
+  if (fileInput) {
+    fileInput.value = ''
   }
 }
 
@@ -737,5 +847,46 @@ definePageMeta({
 
 .form-checkbox {
   @apply w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500;
+}
+
+/* Image Upload Styles */
+.image-upload-container {
+  @apply space-y-4;
+}
+
+.current-image {
+  @apply relative inline-block;
+}
+
+.image-preview {
+  @apply w-full h-48 object-cover rounded-lg border border-gray-300;
+}
+
+.remove-image-btn {
+  @apply absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors;
+}
+
+.remove-icon {
+  @apply w-4 h-4;
+}
+
+.upload-area {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors;
+}
+
+.file-input {
+  @apply hidden;
+}
+
+.upload-button {
+  @apply inline-flex items-center space-x-2 space-x-reverse px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors cursor-pointer;
+}
+
+.upload-icon {
+  @apply w-4 h-4;
+}
+
+.upload-hint {
+  @apply text-sm text-gray-500 mt-2;
 }
 </style>

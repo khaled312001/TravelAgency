@@ -99,7 +99,7 @@ const { user, logout } = useAdminAuth()
 
 const searchQuery = ref('')
 const showUserMenu = ref(false)
-const notificationCount = ref(3)
+const notificationCount = ref(0)
 
 const breadcrumb = computed(() => {
   const route = useRoute()
@@ -126,7 +126,19 @@ const toggleSidebar = () => {
 
 const toggleNotifications = () => {
   // Navigate to notifications page
-  navigateTo('/admin/messages')
+  navigateTo('/admin/notifications')
+}
+
+// Load notification count
+const loadNotificationCount = async () => {
+  try {
+    const response = await $fetch('/api/admin/notifications?status=unread')
+    if (response.success) {
+      notificationCount.value = response.data.length
+    }
+  } catch (error) {
+    console.error('Error loading notification count:', error)
+  }
 }
 
 const toggleUserMenu = () => {
@@ -144,12 +156,21 @@ const handleLogout = async () => {
 
 // Close dropdown when clicking outside
 onMounted(() => {
+  // Load notification count on mount
+  loadNotificationCount()
+  
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement
     if (!target?.closest('.user-menu-container')) {
       showUserMenu.value = false
     }
   })
+})
+
+// Refresh notification count every 30 seconds
+onMounted(() => {
+  const interval = setInterval(loadNotificationCount, 30000)
+  onUnmounted(() => clearInterval(interval))
 })
 
 const emit = defineEmits(['toggle-sidebar'])

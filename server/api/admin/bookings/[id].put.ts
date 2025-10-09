@@ -1,57 +1,92 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
+const supabaseUrl = process.env.SUPABASE_URL!
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default defineEventHandler(async (event) => {
   try {
-    const id = getRouterParam(event, 'id')
+    const bookingId = getRouterParam(event, 'id')
     const body = await readBody(event)
-
-    if (!id) {
+    
+    if (!bookingId) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Booking ID is required'
       })
     }
 
-    // Update booking
-    const { data: bookingData, error: bookingError } = await supabase
-      .from('bookings')
-      .update({
-        status: body.status,
-        travel_date: body.travel_date || null,
-        return_date: body.return_date || null,
-        number_of_travelers: Number(body.number_of_travelers) || null,
-        total_price: Number(body.total_price) || null,
-        payment_status: body.payment_status || 'pending',
-        notes: body.notes || null,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
-      .select(`
-        *,
-        packages:package_id (title_ar, title_en, price),
-        users:user_id (name, email, phone)
-      `)
-      .single()
-
-    if (bookingError) {
+    if (!body || typeof body !== 'object') {
       throw createError({
         statusCode: 400,
-        statusMessage: bookingError.message
+        statusMessage: 'Invalid request body'
+      })
+    }
+
+    // Get current bookings
+    const { data: bookingsData, error: fetchError } = await supabase
+      .from('seo_settings')
+      .select('*')
+      .eq('page', 'bookings')
+      .single()
+
+    if (fetchError) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Failed to fetch current bookings'
+      })
+    }
+
+    // Parse existing bookings
+    const existingBookings = JSON.parse(bookingsData.description_ar || '[]')
+    
+    // Find booking index
+    const bookingIndex = existingBookings.findIndex((booking: any) => booking.id === bookingId)
+    
+    if (bookingIndex === -1) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Booking not found'
+      })
+    }
+
+    // Update booking
+    const updatedBooking = {
+      ...existingBookings[bookingIndex],
+      ...body,
+      updated_at: new Date().toISOString()
+    }
+
+    // Replace booking in array
+    existingBookings[bookingIndex] = updatedBooking
+
+    // Update bookings in database
+    const { error: updateError } = await supabase
+      .from('seo_settings')
+      .update({
+        description_ar: JSON.stringify(existingBookings),
+        updated_at: new Date().toISOString()
+      })
+      .eq('page', 'bookings')
+
+    if (updateError) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Failed to update booking'
       })
     }
 
     return {
       success: true,
-      booking: bookingData
+      message: 'Booking updated successfully',
+      booking: updatedBooking
     }
   } catch (error) {
+    console.error('Error updating booking:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to update booking'
+      statusMessage: 'Internal server error'
     })
   }
 })

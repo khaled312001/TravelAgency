@@ -8,6 +8,10 @@
           <p class="page-subtitle">إدارة جميع حجوزات العملاء</p>
         </div>
         <div class="header-right">
+          <button @click="showAddBookingModal = true" class="add-btn">
+            <Icon name="lucide:plus" class="btn-icon" />
+            إضافة حجز جديد
+          </button>
           <button @click="exportBookings" class="export-btn">
             <Icon name="lucide:download" class="btn-icon" />
             تصدير البيانات
@@ -164,8 +168,11 @@
                   <button @click="editBooking(booking)" class="action-btn edit">
                     <Icon name="lucide:edit" class="action-icon" />
                   </button>
-                  <button @click="updateBookingStatus(booking)" class="action-btn status">
-                    <Icon name="lucide:settings" class="action-icon" />
+                  <button @click="generateInvoice(booking)" class="action-btn invoice">
+                    <Icon name="lucide:file-text" class="action-icon" />
+                  </button>
+                  <button @click="deleteBooking(booking)" class="action-btn delete">
+                    <Icon name="lucide:trash" class="action-icon" />
                   </button>
                 </div>
               </td>
@@ -317,6 +324,8 @@ const statusFilter = ref('')
 const packageFilter = ref('')
 const dateFilter = ref('')
 const showBookingModal = ref(false)
+const showEditBookingModal = ref(false)
+const showAddBookingModal = ref(false)
 const selectedBooking = ref<Booking | null>(null)
 
 const filteredBookings = computed(() => {
@@ -402,24 +411,8 @@ const loadBookings = async () => {
     
     const response = await $fetch(url)
     
-    if (response.bookings) {
-      // Transform the data to match the expected format
-      bookings.value = response.bookings.map((booking: any) => ({
-        id: booking.id,
-        customer_name: booking.users?.name || 'غير محدد',
-        customer_email: booking.users?.email || 'غير محدد',
-        customer_phone: booking.users?.phone || 'غير محدد',
-        package_title: booking.packages?.title_ar || booking.packages?.title_en || 'غير محدد',
-        destination: booking.destination || 'غير محدد',
-        travel_date: booking.travel_date || booking.created_at,
-        participants_count: booking.participants_count || 1,
-        total_amount: booking.total_price || 0,
-        paid_amount: booking.paid_amount || 0,
-        status: booking.status || 'pending',
-        notes: booking.notes || '',
-        created_at: booking.created_at,
-        updated_at: booking.updated_at
-      }))
+    if (response.success && response.bookings) {
+      bookings.value = response.bookings
     } else {
       bookings.value = []
     }
@@ -437,13 +430,42 @@ const viewBooking = (booking: Booking) => {
 }
 
 const editBooking = (booking: Booking) => {
-  // TODO: Implement edit booking
-  console.log('Edit booking:', booking.id)
+  selectedBooking.value = booking
+  showEditBookingModal.value = true
 }
 
-const updateBookingStatus = (booking: Booking) => {
-  // TODO: Implement status update
-  console.log('Update status for booking:', booking.id)
+const generateInvoice = async (booking: Booking) => {
+  try {
+    const response = await $fetch(`/api/admin/bookings/${booking.id}/invoice`)
+    if (response.success) {
+      // Open invoice in new window
+      const invoiceWindow = window.open('', '_blank')
+      if (invoiceWindow) {
+        invoiceWindow.document.write(generateInvoiceHTML(response.invoice))
+        invoiceWindow.document.close()
+      }
+    }
+  } catch (error) {
+    console.error('Error generating invoice:', error)
+    alert('حدث خطأ أثناء إنشاء الفاتورة')
+  }
+}
+
+const deleteBooking = async (booking: Booking) => {
+  if (confirm(`هل أنت متأكد من حذف حجز ${booking.customer_name}؟`)) {
+    try {
+      const response = await $fetch(`/api/admin/bookings/${booking.id}`, {
+        method: 'DELETE'
+      })
+      if (response.success) {
+        alert('تم حذف الحجز بنجاح')
+        loadBookings() // Reload bookings
+      }
+    } catch (error) {
+      console.error('Error deleting booking:', error)
+      alert('حدث خطأ أثناء حذف الحجز')
+    }
+  }
 }
 
 const exportBookings = () => {
@@ -453,7 +475,156 @@ const exportBookings = () => {
 
 const closeModal = () => {
   showBookingModal.value = false
+  showEditBookingModal.value = false
+  showAddBookingModal.value = false
   selectedBooking.value = null
+}
+
+const generateInvoiceHTML = (invoice: any) => {
+  return `
+    <!DOCTYPE html>
+    <html dir="rtl" lang="ar">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>فاتورة ${invoice.invoice_number}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .invoice { background: white; max-width: 800px; margin: 0 auto; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e0e0e0; padding-bottom: 20px; }
+        .company-info { margin-bottom: 20px; }
+        .invoice-details { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .customer-info, .invoice-meta { flex: 1; }
+        .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .table th, .table td { padding: 12px; text-align: right; border: 1px solid #ddd; }
+        .table th { background: #f8f9fa; font-weight: bold; }
+        .totals { text-align: left; margin-top: 20px; }
+        .total-row { display: flex; justify-content: space-between; padding: 8px 0; }
+        .total-row.final { font-weight: bold; font-size: 1.2em; border-top: 2px solid #333; margin-top: 10px; padding-top: 15px; }
+        .status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .status.confirmed { background: #d4edda; color: #155724; }
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.completed { background: #cce5ff; color: #004085; }
+        .status.cancelled { background: #f8d7da; color: #721c24; }
+        @media print { body { background: white; } .invoice { box-shadow: none; } }
+      </style>
+    </head>
+    <body>
+      <div class="invoice">
+        <div class="header">
+          <h1>فاتورة</h1>
+          <h2>${invoice.company.name}</h2>
+          <p>${invoice.company.address}</p>
+          <p>هاتف: ${invoice.company.phone} | بريد إلكتروني: ${invoice.company.email}</p>
+          <p>الرقم الضريبي: ${invoice.company.tax_number} | رقم الترخيص: ${invoice.company.license_number}</p>
+        </div>
+        
+        <div class="invoice-details">
+          <div class="customer-info">
+            <h3>بيانات العميل:</h3>
+            <p><strong>الاسم:</strong> ${invoice.customer.name}</p>
+            <p><strong>البريد الإلكتروني:</strong> ${invoice.customer.email}</p>
+            <p><strong>رقم الهاتف:</strong> ${invoice.customer.phone}</p>
+          </div>
+          <div class="invoice-meta">
+            <h3>بيانات الفاتورة:</h3>
+            <p><strong>رقم الفاتورة:</strong> ${invoice.invoice_number}</p>
+            <p><strong>تاريخ الفاتورة:</strong> ${invoice.invoice_date}</p>
+            <p><strong>تاريخ الاستحقاق:</strong> ${invoice.due_date}</p>
+            <p><strong>رقم الحجز:</strong> ${invoice.booking.id}</p>
+          </div>
+        </div>
+        
+        <div class="booking-details">
+          <h3>تفاصيل الحجز:</h3>
+          <p><strong>الباقة:</strong> ${invoice.booking.package_title}</p>
+          <p><strong>الوجهة:</strong> ${invoice.booking.destination}</p>
+          <p><strong>تاريخ السفر:</strong> ${invoice.booking.travel_date}</p>
+          <p><strong>عدد الأشخاص:</strong> ${invoice.booking.participants_count}</p>
+          <p><strong>حالة الحجز:</strong> <span class="status ${invoice.status}">${getStatusText(invoice.status)}</span></p>
+        </div>
+        
+        <table class="table">
+          <thead>
+            <tr>
+              <th>الوصف</th>
+              <th>الكمية</th>
+              <th>سعر الوحدة</th>
+              <th>المجموع</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${invoice.items.map((item: any) => `
+              <tr>
+                <td>${item.description}</td>
+                <td>${item.quantity}</td>
+                <td>${formatPrice(item.unit_price)}</td>
+                <td>${formatPrice(item.total_price)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        
+        <div class="totals">
+          <div class="total-row">
+            <span>المجموع الفرعي:</span>
+            <span>${formatPrice(invoice.totals.subtotal)}</span>
+          </div>
+          <div class="total-row">
+            <span>ضريبة القيمة المضافة (${invoice.totals.tax_rate}%):</span>
+            <span>${formatPrice(invoice.totals.tax_amount)}</span>
+          </div>
+          <div class="total-row">
+            <span>المبلغ المدفوع:</span>
+            <span>${formatPrice(invoice.totals.paid_amount)}</span>
+          </div>
+          <div class="total-row final">
+            <span>المبلغ المستحق:</span>
+            <span>${formatPrice(invoice.totals.balance_due)}</span>
+          </div>
+        </div>
+        
+        ${invoice.notes ? `
+          <div class="notes">
+            <h3>ملاحظات:</h3>
+            <p>${invoice.notes}</p>
+          </div>
+        ` : ''}
+        
+        <div style="margin-top: 40px; text-align: center; color: #666; font-size: 0.9em;">
+          <p>شكراً لاختياركم وكالة أرض العجائب للسفر</p>
+          <p>للاستفسارات: ${invoice.company.phone} | ${invoice.company.email}</p>
+        </div>
+      </div>
+      
+      <script>
+        function formatPrice(price) {
+          return new Intl.NumberFormat('ar-SA', {
+            style: 'currency',
+            currency: 'SAR'
+          }).format(price);
+        }
+        
+        function getStatusText(status) {
+          const statusMap = {
+            pending: 'في الانتظار',
+            confirmed: 'مؤكد',
+            cancelled: 'ملغي',
+            completed: 'مكتمل'
+          };
+          return statusMap[status] || status;
+        }
+        
+        // Auto print when loaded
+        window.onload = function() {
+          setTimeout(() => {
+            window.print();
+          }, 1000);
+        };
+      </script>
+    </body>
+    </html>
+  `
 }
 
 // Load bookings on mount
@@ -492,6 +663,10 @@ definePageMeta({
 
 .page-subtitle {
   @apply text-gray-600 mt-1;
+}
+
+.add-btn {
+  @apply flex items-center space-x-2 space-x-reverse px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors;
 }
 
 .export-btn {
@@ -678,8 +853,12 @@ definePageMeta({
   @apply text-green-600;
 }
 
-.action-btn.status:hover {
-  @apply text-purple-600;
+.action-btn.invoice:hover {
+  @apply text-blue-600;
+}
+
+.action-btn.delete:hover {
+  @apply text-red-600;
 }
 
 .action-icon {

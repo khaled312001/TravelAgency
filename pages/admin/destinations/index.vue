@@ -328,6 +328,33 @@
                 <span>وجهة مميزة</span>
               </label>
             </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">صورة الوجهة الرئيسية *</label>
+              <div class="image-upload-container">
+                <div v-if="destinationForm.main_image" class="current-image">
+                  <img :src="destinationForm.main_image" alt="صورة الوجهة الحالية" class="image-preview" />
+                  <button type="button" @click="removeImage" class="remove-image-btn">
+                    <Icon name="lucide:x" class="remove-icon" />
+                  </button>
+                </div>
+                <div v-else class="upload-area">
+                  <input 
+                    ref="imageInput"
+                    type="file" 
+                    accept="image/*" 
+                    @change="handleImageUpload"
+                    class="file-input"
+                    id="destination-image-upload"
+                  />
+                  <label for="destination-image-upload" class="upload-button">
+                    <Icon name="lucide:upload" class="upload-icon" />
+                    <span>اختر صورة</span>
+                  </label>
+                  <p class="upload-hint">PNG, JPG, JPEG - الحد الأقصى 5MB</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="modal-actions">
@@ -490,6 +517,39 @@ const deleteDestination = async (destination: Destination) => {
     } finally {
       saving.value = false
     }
+  }
+}
+
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('حجم الملف كبير جداً. الحد الأقصى 5MB')
+      return
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('يرجى اختيار ملف صورة صالح')
+      return
+    }
+    
+    // Create preview URL
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      destinationForm.value.main_image = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const removeImage = () => {
+  destinationForm.value.main_image = ''
+  // Reset file input
+  const fileInput = document.getElementById('destination-image-upload') as HTMLInputElement
+  if (fileInput) {
+    fileInput.value = ''
   }
 }
 
@@ -827,6 +887,47 @@ definePageMeta({
 
 .form-checkbox {
   @apply w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500;
+}
+
+/* Image Upload Styles */
+.image-upload-container {
+  @apply space-y-4;
+}
+
+.current-image {
+  @apply relative inline-block;
+}
+
+.image-preview {
+  @apply w-full h-48 object-cover rounded-lg border border-gray-300;
+}
+
+.remove-image-btn {
+  @apply absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors;
+}
+
+.remove-icon {
+  @apply w-4 h-4;
+}
+
+.upload-area {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors;
+}
+
+.file-input {
+  @apply hidden;
+}
+
+.upload-button {
+  @apply inline-flex items-center space-x-2 space-x-reverse px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors cursor-pointer;
+}
+
+.upload-icon {
+  @apply w-4 h-4;
+}
+
+.upload-hint {
+  @apply text-sm text-gray-500 mt-2;
 }
 
 .modal-actions {

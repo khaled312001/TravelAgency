@@ -722,13 +722,13 @@ const handleFaviconUpload = (event: Event) => {
 
 const loadSettings = async () => {
   try {
-    // TODO: Implement API call
-    // const { data } = await $fetch('/api/admin/settings')
-    // settings.value = data || defaultSettings
-    
-    console.log('Loading settings...')
+    const response = await $fetch('/api/admin/settings')
+    if (response.success) {
+      settings.value = response.data
+    }
   } catch (error) {
     console.error('Error loading settings:', error)
+    // Keep default settings if API fails
   }
 }
 
@@ -736,16 +736,17 @@ const saveAllSettings = async () => {
   try {
     saving.value = true
     
-    // TODO: Implement API call
-    // await $fetch('/api/admin/settings', {
-    //   method: 'PUT',
-    //   body: settings.value
-    // })
+    const response = await $fetch('/api/admin/settings', {
+      method: 'PUT',
+      body: settings.value
+    })
     
-    console.log('Saving settings:', settings.value)
-    
-    // Show success message
-    alert('تم حفظ الإعدادات بنجاح!')
+    if (response.success) {
+      // Show success message
+      alert('تم حفظ الإعدادات بنجاح!')
+    } else {
+      throw new Error('Failed to save settings')
+    }
   } catch (error) {
     console.error('Error saving settings:', error)
     alert('حدث خطأ أثناء حفظ الإعدادات')

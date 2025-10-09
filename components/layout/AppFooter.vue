@@ -9,6 +9,9 @@ const localePath = useLocalePath();
 
 const { getWhatsAppUrl, whatsappNumber } = useWhatsApp();
 
+// Load settings
+const { getLocalizedSetting } = useSettings()
+
 // Get current year for copyright
 const currentYear = computed(() => new Date().getFullYear());
 
@@ -20,11 +23,11 @@ const socialLinks = [
   { name: 'ic:outline-tiktok', href: 'https://www.tiktok.com/@wonder.land.sa?_t=ZS-8uH9ccxyZlN&_r=1', label: 'TikTok' },
 ];
 
-const contactInfo = [
-  { icon: 'mdi:phone', textKey: 'footer.phone', detail: whatsappNumber }, // Placeholder
-  { icon: 'mdi:email', textKey: 'footer.email', detail: 'ahmed@wonderland1.com' }, // Placeholder
-  { icon: 'mdi:whatsapp', textKey: 'footer.whatsapp', detail: whatsappNumber } // Placeholder
-]
+const contactInfo = computed(() => [
+  { icon: 'mdi:phone', textKey: 'footer.phone', detail: getLocalizedSetting('general', 'contactPhone') || whatsappNumber },
+  { icon: 'mdi:email', textKey: 'footer.email', detail: getLocalizedSetting('general', 'contactEmail') || 'ahmed@wonderland1.com' },
+  { icon: 'mdi:whatsapp', textKey: 'footer.whatsapp', detail: whatsappNumber }
+])
 
 const certifications = [
   // { key: 'footer.iata', value: 'XXX12345' },
@@ -50,9 +53,15 @@ const featuredDestinations = ref([
         <!-- 1. Branding & Contact -->
         <div class="space-y-6">
           <NuxtLink :to="localePath('/')" class="inline-flex items-center space-x-3 rtl:space-x-reverse">
-            <img src="/images/home/logo/WonderlandLogoWhite.svg" alt="Wonderland Logo" class="h-10"
-              loading="eager" />
-            <span class="text-white font-semibold text-xl">{{ $t('common.app_title') }}</span>
+            <img 
+              :src="getLocalizedSetting('logo', 'footerLogo') || '/images/home/logo/WonderlandLogoWhite.svg'" 
+              alt="Wonderland Logo" 
+              class="h-10"
+              loading="eager" 
+            />
+            <span class="text-white font-semibold text-xl">
+              {{ getLocalizedSetting('logo', 'logoText') || $t('common.app_title') }}
+            </span>
           </NuxtLink>
           <p class="text-gray-400 text-sm">{{ $t('footer.tagline') }}</p>
           <div class="space-y-3">

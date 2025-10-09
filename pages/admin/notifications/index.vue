@@ -347,51 +347,27 @@ const formatDateTime = (dateString: string) => {
 const loadNotifications = async () => {
   try {
     loading.value = true
-    // TODO: Implement API call
-    // const { data } = await $fetch('/api/admin/notifications')
-    // notifications.value = data || []
     
-    // Mock data for now
-    notifications.value = [
-      {
-        id: 'notif-001',
-        title: 'حجز جديد',
-        message: 'تم إنشاء حجز جديد من العميل أحمد محمد',
-        type: 'booking',
-        status: 'unread',
-        data: {
-          booking_id: 'BK-001',
-          customer_name: 'أحمد محمد',
-          amount: '5000 ريال'
-        },
-        created_at: '2024-01-21T10:00:00Z',
-        updated_at: '2024-01-21T10:00:00Z'
-      },
-      {
-        id: 'notif-002',
-        title: 'رسالة جديدة',
-        message: 'رسالة جديدة من العميل فاطمة علي',
-        type: 'message',
-        status: 'unread',
-        data: {
-          customer_name: 'فاطمة علي',
-          subject: 'استفسار عن رحلة دبي'
-        },
-        created_at: '2024-01-21T09:30:00Z',
-        updated_at: '2024-01-21T09:30:00Z'
-      },
-      {
-        id: 'notif-003',
-        title: 'تحديث النظام',
-        message: 'تم تحديث النظام بنجاح',
-        type: 'system',
-        status: 'read',
-        created_at: '2024-01-20T15:00:00Z',
-        updated_at: '2024-01-20T15:00:00Z'
-      }
-    ]
+    // Build query parameters
+    const params = new URLSearchParams()
+    if (statusFilter.value) params.append('status', statusFilter.value)
+    if (typeFilter.value) params.append('type', typeFilter.value)
+    if (searchQuery.value) params.append('search', searchQuery.value)
+    
+    const queryString = params.toString()
+    const url = `/api/admin/notifications${queryString ? `?${queryString}` : ''}`
+    
+    const response = await $fetch(url)
+    
+    if (response.success) {
+      notifications.value = response.data
+    } else {
+      throw new Error('Failed to load notifications')
+    }
   } catch (error) {
     console.error('Error loading notifications:', error)
+    // Fallback to empty array
+    notifications.value = []
   } finally {
     loading.value = false
   }
@@ -411,14 +387,16 @@ const toggleNotificationStatus = async (notification: Notification) => {
   try {
     const newStatus = notification.status === 'read' ? 'unread' : 'read'
     
-    // TODO: Implement API call
-    // await $fetch(`/api/admin/notifications/${notification.id}`, {
-    //   method: 'PUT',
-    //   body: { status: newStatus }
-    // })
+    const response = await $fetch(`/api/admin/notifications/${notification.id}`, {
+      method: 'PUT',
+      body: { status: newStatus }
+    })
     
-    notification.status = newStatus
-    console.log('Toggle notification status:', notification.id, newStatus)
+    if (response.success) {
+      notification.status = newStatus
+    } else {
+      throw new Error('Failed to update notification status')
+    }
   } catch (error) {
     console.error('Error toggling notification status:', error)
   }
@@ -427,31 +405,34 @@ const toggleNotificationStatus = async (notification: Notification) => {
 const deleteNotification = async (notification: Notification) => {
   if (confirm(`هل أنت متأكد من حذف الإشعار "${notification.title}"؟`)) {
     try {
-      // TODO: Implement API call
-      // await $fetch(`/api/admin/notifications/${notification.id}`, {
-      //   method: 'DELETE'
-      // })
+      const response = await $fetch(`/api/admin/notifications/${notification.id}`, {
+        method: 'DELETE'
+      })
       
-      console.log('Delete notification:', notification.id)
-      await loadNotifications()
+      if (response.success) {
+        await loadNotifications()
+      } else {
+        throw new Error('Failed to delete notification')
+      }
     } catch (error) {
       console.error('Error deleting notification:', error)
+      alert('حدث خطأ أثناء حذف الإشعار')
     }
   }
 }
 
 const markAllAsRead = async () => {
   try {
-    // TODO: Implement API call
-    // await $fetch('/api/admin/notifications/mark-all-read', {
-    //   method: 'POST'
-    // })
-    
-    notifications.value.forEach(notification => {
-      if (notification.status === 'unread') {
-        notification.status = 'read'
-      }
+    const response = await $fetch('/api/admin/notifications/mark-all-read', {
+      method: 'POST'
     })
+    
+    if (response.success) {
+      // Reload notifications to reflect changes
+      await loadNotifications()
+    } else {
+      throw new Error('Failed to mark all notifications as read')
+    }
   } catch (error) {
     console.error('Error marking all as read:', error)
   }
@@ -466,6 +447,11 @@ const closeModal = () => {
 onMounted(() => {
   loadNotifications()
 })
+
+// Watch for filter changes and reload notifications
+watch([statusFilter, typeFilter, searchQuery], () => {
+  loadNotifications()
+}, { debounce: 300 })
 
 // Set page title
 useHead({

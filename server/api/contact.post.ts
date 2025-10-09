@@ -52,6 +52,31 @@ export default defineEventHandler(async (event) => {
 
       console.log('Contact message saved to database:', data)
 
+      // Create notification for admin
+      try {
+        const notificationTitle = body.package_name 
+          ? `رسالة جديدة - ${body.package_name}`
+          : 'رسالة تواصل جديدة'
+        
+        const notificationMessage = body.package_name
+          ? `رسالة جديدة من ${body.name} بخصوص ${body.package_name}`
+          : `رسالة تواصل جديدة من ${body.name}`
+
+        await supabase
+          .from('notifications')
+          .insert({
+            title: notificationTitle,
+            message: notificationMessage,
+            type: 'message',
+            is_read: false
+          })
+
+        console.log('Notification created for new contact message')
+      } catch (notificationError) {
+        console.error('Failed to create notification:', notificationError)
+        // Don't fail the main request if notification creation fails
+      }
+
       return {
         success: true,
         message: 'تم إرسال رسالتك بنجاح',
