@@ -38,7 +38,9 @@ export default defineEventHandler(async (event) => {
           subject: body.subject || 'رسالة تواصل',
           message: body.message,
           type: body.type || 'inquiry',
-          status: 'unread'
+          status: 'unread',
+          package_id: body.package_id || null,
+          package_name: body.package_name || null
         })
         .select()
         .single()

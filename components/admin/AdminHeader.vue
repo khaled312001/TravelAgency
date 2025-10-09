@@ -27,16 +27,7 @@
     </div>
 
     <div class="header-right">
-      <!-- Search -->
-      <div class="search-container">
-        <Icon name="lucide:search" class="search-icon" />
-        <input 
-          type="text" 
-          placeholder="البحث..." 
-          class="search-input"
-          v-model="searchQuery"
-        />
-      </div>
+     
 
       <!-- Notifications -->
       <div class="notification-container">

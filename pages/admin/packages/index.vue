@@ -223,20 +223,22 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">رابط الصورة</label>
-              <input 
-                v-model="packageForm.image_url" 
-                type="url" 
-                class="form-input"
+              <label class="form-label">صورة الباقة</label>
+              <ImageUpload 
+                v-model="packageForm.image_url"
+                alt="صورة الباقة"
+                @upload="onImageUpload"
+                @error="onImageError"
               />
             </div>
 
             <div class="form-group">
-              <label class="form-label">رابط صورة البطل</label>
-              <input 
-                v-model="packageForm.hero_image_url" 
-                type="url" 
-                class="form-input"
+              <label class="form-label">صورة البطل</label>
+              <ImageUpload 
+                v-model="packageForm.hero_image_url"
+                alt="صورة البطل"
+                @upload="onHeroImageUpload"
+                @error="onImageError"
               />
             </div>
 
@@ -435,6 +437,19 @@ const savePackage = async () => {
   } finally {
     saving.value = false
   }
+}
+
+const onImageUpload = (file: File) => {
+  console.log('Package image uploaded:', file.name)
+}
+
+const onHeroImageUpload = (file: File) => {
+  console.log('Hero image uploaded:', file.name)
+}
+
+const onImageError = (error: string) => {
+  console.error('Image upload error:', error)
+  // يمكن إضافة تنبيه للمستخدم هنا
 }
 
 const closeModal = () => {

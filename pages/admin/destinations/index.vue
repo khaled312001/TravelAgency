@@ -283,11 +283,12 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">رابط الصورة الرئيسية</label>
-              <input 
-                v-model="destinationForm.main_image" 
-                type="url" 
-                class="form-input"
+              <label class="form-label">الصورة الرئيسية</label>
+              <ImageUpload 
+                v-model="destinationForm.main_image"
+                alt="الصورة الرئيسية للوجهة"
+                @upload="onImageUpload"
+                @error="onImageError"
               />
             </div>
 
@@ -490,6 +491,15 @@ const deleteDestination = async (destination: Destination) => {
       saving.value = false
     }
   }
+}
+
+const onImageUpload = (file: File) => {
+  console.log('Destination image uploaded:', file.name)
+}
+
+const onImageError = (error: string) => {
+  console.error('Image upload error:', error)
+  // يمكن إضافة تنبيه للمستخدم هنا
 }
 
 const saveDestination = async () => {

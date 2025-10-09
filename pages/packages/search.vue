@@ -4,15 +4,11 @@
     <!-- Hero Section with Active Filters -->
     <section class="relative bg-cover bg-center py-20">
       <div class="absolute inset-0">
-        <NuxtImg
+        <img
           src="/images/packages/home/packages-hero-bg.jpeg"
           alt="Stunning beachfront villa with private pool and ocean views"
-          width="1920"
-          height="1080"
-          loading="eager"
-          preset="hero"
           class="w-full h-full object-cover"
-          placeholder
+          loading="eager"
         />
         <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50"></div>
       </div>

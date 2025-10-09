@@ -1,60 +1,53 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
 export default defineEventHandler(async (event) => {
   try {
-    console.log('Fetching contact messages...')
+    console.log('Fetching contact messages from database...')
     
-    // Return mock data for now
-    const mockMessages = [
-      {
-        id: '1',
-        name: 'أحمد محمد',
-        email: 'ahmed@example.com',
-        phone: '+966501234567',
-        subject: 'استفسار عن رحلة باريس',
-        message: 'أرغب في معرفة تفاصيل رحلة باريس الرومانسية',
-        status: 'unread',
-        type: 'inquiry',
-        created_at: '2025-01-09T10:00:00Z'
-      },
-      {
-        id: '2',
-        name: 'فاطمة علي',
-        email: 'fatima@example.com',
-        phone: '+966502345678',
-        subject: 'شكوى في الخدمة',
-        message: 'واجهت مشكلة في حجز الفندق',
-        status: 'unread',
-        type: 'complaint',
-        created_at: '2025-01-09T09:30:00Z'
-      },
-      {
-        id: '3',
-        name: 'محمد السعد',
-        email: 'mohammed@example.com',
-        phone: '+966503456789',
-        subject: 'اقتراح تحسين',
-        message: 'أقترح إضافة المزيد من الوجهات الآسيوية',
-        status: 'read',
-        type: 'suggestion',
-        created_at: '2025-01-09T08:15:00Z'
-      },
-      {
-        id: '4',
-        name: 'نورا أحمد',
-        email: 'nora@example.com',
-        phone: '+966504567890',
-        subject: 'حجز رحلة تايلاند',
-        message: 'أريد حجز رحلة تايلاند لشخصين',
-        status: 'unread',
-        type: 'booking',
-        created_at: '2025-01-09T07:45:00Z'
-      }
-    ]
+    // Get query parameters
+    const query = getQuery(event)
+    const { status, type, search } = query
 
-    console.log('Contact messages fetched successfully:', mockMessages.length)
+    // Build the query
+    let supabaseQuery = supabase
+      .from('contact_messages')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    // Apply filters
+    if (status && typeof status === 'string') {
+      supabaseQuery = supabaseQuery.eq('status', status)
+    }
+
+    if (type && typeof type === 'string') {
+      supabaseQuery = supabaseQuery.eq('type', type)
+    }
+
+    if (search && typeof search === 'string') {
+      const searchLower = search.toLowerCase()
+      supabaseQuery = supabaseQuery.or(`name.ilike.%${searchLower}%,email.ilike.%${searchLower}%,subject.ilike.%${searchLower}%,message.ilike.%${searchLower}%`)
+    }
+
+    // Execute the query
+    const { data: messages, error } = await supabaseQuery
+
+    if (error) {
+      console.error('Database error:', error)
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Database error: ${error.message}`
+      })
+    }
+
+    console.log('Contact messages fetched successfully:', messages?.length || 0)
 
     return {
       success: true,
-      data: mockMessages
+      data: messages || []
     }
 
   } catch (error: any) {

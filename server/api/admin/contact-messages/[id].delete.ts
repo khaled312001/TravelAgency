@@ -12,17 +12,9 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get Supabase client
-    const supabaseUrl = process.env.SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Database configuration error'
-      })
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
     // Delete contact message
     const { error } = await supabase

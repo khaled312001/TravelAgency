@@ -28,7 +28,7 @@
         }"
       >
         <NuxtImg
-          :src="package_.image_url"
+          :src="package_.hero_image_url || package_.image_url"
           class="h-full w-full object-cover"
           :alt="$i18n.locale === 'ar-SA' ? package_.title_ar : package_.title_en"
         />
@@ -116,7 +116,7 @@ useHead({
     },
     {
       property: 'og:image',
-      content: computed(() => package_.value?.image_url || '')
+      content: computed(() => package_.value?.hero_image_url || package_.value?.image_url || '')
     },
     {
       name: 'twitter:card',

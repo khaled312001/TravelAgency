@@ -36,7 +36,7 @@ export function usePackages() {
     const { data, error: fetchError } = await client
       .from('packages')
       .select(`
-        id, image_url, title_ar, title_en, description_ar, description_en, travel_period, duration_days, price, max_persons, featured,
+        id, image_url, hero_image_url, title_ar, title_en, description_ar, description_en, travel_period, duration_days, price, max_persons, featured,
         package_options:package_options (flight, hotel, transportation, hotel_grade)
       `)
       .order('created_at', { ascending: false })
@@ -47,6 +47,7 @@ export function usePackages() {
     return (data || []).map((pkg: any) => ({
       id: pkg.id,
       image_url: pkg.image_url,
+      hero_image_url: pkg.hero_image_url,
       title_ar: pkg.title_ar,
       title_en: pkg.title_en,
       description_ar: pkg.description_ar,

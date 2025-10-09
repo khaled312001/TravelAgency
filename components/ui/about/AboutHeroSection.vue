@@ -3,15 +3,11 @@
     class="relative h-[80vh] md:h-[90vh] flex items-center justify-center overflow-hidden"
   >
     <div class="absolute inset-0 w-full h-full">
-      <NuxtImg 
+      <img 
         src="/images/about/hero-bg.jpeg" 
         alt="Business class airplane cabin with premium seating"
         class="w-full h-full object-cover"
-        sizes="100vw sm:50vw md:400px"
         loading="eager"
-        preload
-        format="webp"
-        quality="80"
       />
       <div class="absolute inset-0 bg-black bg-opacity-60"></div>
     </div>
