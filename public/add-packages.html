@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة البكجات الجديدة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            color: #004085;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .package-list {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .package-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .package-item:last-child {
+            border-bottom: none;
+        }
+        .package-image {
+            width: 60px;
+            height: 40px;
+            border-radius: 4px;
+            margin-left: 15px;
+            object-fit: cover;
+        }
+        .package-info {
+            flex: 1;
+        }
+        .package-title {
+            font-weight: bold;
+            color: #333;
+        }
+        .package-price {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 إضافة البكجات الجديدة مع الصور</h1>
+        
+        <div class="info">
+            <strong>📋 معلومات العملية:</strong><br>
+            • سيتم إضافة 12 باقة جديدة مع صور عالية الجودة<br>
+            • تشمل وجهات دولية وسعودية متنوعة<br>
+            • كل باقة تحتوي على تفاصيل كاملة وخيارات الإقامة<br>
+            • الصور تم نسخها من مجلد الوجهات
+        </div>
+
+        <div class="package-list">
+            <h3>📦 البكجات التي سيتم إضافتها:</h3>
+            <div class="package-item">
+                <img src="/images/packages/destinations/paris-romantic.jpeg" alt="باريس" class="package-image">
+                <div class="package-info">
+                    <div class="package-title">رحلة باريس الرومانسية</div>
+                    <div class="package-price">3,500 ريال - 5 أيام</div>
+                </div>
+            </div>
+            <div class="package-item">
+                <img src="/images/packages/destinations/london-classic.jpeg" alt="لندن" class="package-image">
+                <div class="package-info">
+                    <div class="package-title">جولة لندن الكلاسيكية</div>
+                    <div class="package-price">4,200 ريال - 7 أيام</div>
+                </div>
+            </div>
+            <div class="package-item">
+                <img src="/images/packages/destinations/istanbul-historical.jpeg" alt="اسطنبول" class="package-image">
+                <div class="package-info">
+                    <div class="package-title">رحلة اسطنبول التاريخية</div>
+                    <div class="package-price">2,800 ريال - 6 أيام</div>
+                </div>
+            </div>
+            <div class="package-item">
+                <img src="/images/packages/destinations/thailand-adventure.jpeg" alt="تايلاند" class="package-image">
+                <div class="package-info">
+                    <div class="package-title">مغامرة تايلاند الاستوائية</div>
+                    <div class="package-price">3,200 ريال - 8 أيام</div>
+                </div>
+            </div>
+            <div class="package-item">
+                <img src="/images/packages/destinations/riyadh-heritage.jpeg" alt="الرياض" class="package-image">
+                <div class="package-info">
+                    <div class="package-title">جولة الرياض التراثية</div>
+                    <div class="package-price">1,500 ريال - 3 أيام</div>
+                </div>
+            </div>
+            <div class="package-item">
+                <img src="/images/packages/destinations/alula-archaeological.jpeg" alt="العلا" class="package-image">
+                <div class="package-info">
+                    <div class="package-title">رحلة العلا الأثرية</div>
+                    <div class="package-price">1,800 ريال - 4 أيام</div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 15px; color: #666;">
+                + 6 باقات أخرى متنوعة
+            </div>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <button onclick="addPackages()" id="addBtn">
+            🚀 إضافة البكجات الجديدة
+        </button>
+
+        <button onclick="checkPackages()" id="checkBtn">
+            📊 فحص البكجات الحالية
+        </button>
+
+        <button onclick="window.location.href='/packages'" id="viewBtn" style="background: #28a745;">
+            👀 عرض البكجات
+        </button>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://ueofktshvaqtxjsxvisv.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA';
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        async function addPackages() {
+            const btn = document.getElementById('addBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ جاري الإضافة...';
+            
+            showStatus('جاري إضافة البكجات الجديدة...', 'loading');
+
+            try {
+                // إضافة البكجات
+                const packages = [
+                    {
+                        title_ar: 'رحلة باريس الرومانسية',
+                        title_en: 'Romantic Paris Trip',
+                        description_ar: 'رحلة رومانسية لمدينة النور تشمل زيارة برج إيفل وقصر فرساي واللوفر مع إقامة في فندق فاخر',
+                        description_en: 'Romantic trip to the City of Light including Eiffel Tower, Versailles Palace, and Louvre with luxury hotel accommodation',
+                        price: 3500.00,
+                        duration_days: 5,
+                        max_persons: 2,
+                        featured: true,
+                        travel_period: 'Spring',
+                        image_url: '/images/packages/destinations/paris-romantic.jpeg'
+                    },
+                    {
+                        title_ar: 'جولة لندن الكلاسيكية',
+                        title_en: 'Classic London Tour',
+                        description_ar: 'جولة شاملة في عاصمة بريطانيا تشمل زيارة قصر باكنغهام وبرج لندن وجسر لندن مع جولات نهرية',
+                        description_en: 'Comprehensive tour of Britain\'s capital including Buckingham Palace, Tower of London, and London Bridge with river cruises',
+                        price: 4200.00,
+                        duration_days: 7,
+                        max_persons: 4,
+                        featured: true,
+                        travel_period: 'Summer',
+                        image_url: '/images/packages/destinations/london-classic.jpeg'
+                    },
+                    {
+                        title_ar: 'رحلة اسطنبول التاريخية',
+                        title_en: 'Historical Istanbul Trip',
+                        description_ar: 'اكتشف تاريخ وحضارة اسطنبول مع زيارة آيا صوفيا والمسجد الأزرق وقصر توبكابي',
+                        description_en: 'Discover Istanbul\'s history and culture with visits to Hagia Sophia, Blue Mosque, and Topkapi Palace',
+                        price: 2800.00,
+                        duration_days: 6,
+                        max_persons: 4,
+                        featured: true,
+                        travel_period: 'Autumn',
+                        image_url: '/images/packages/destinations/istanbul-historical.jpeg'
+                    },
+                    {
+                        title_ar: 'مغامرة تايلاند الاستوائية',
+                        title_en: 'Tropical Thailand Adventure',
+                        description_ar: 'استكشف جمال تايلاند مع زيارة بانكوك وشيانغ ماي وجزر في في مع أنشطة الغوص والاسترخاء',
+                        description_en: 'Explore Thailand\'s beauty with visits to Bangkok, Chiang Mai, and Phi Phi Islands with diving and relaxation activities',
+                        price: 3200.00,
+                        duration_days: 8,
+                        max_persons: 6,
+                        featured: true,
+                        travel_period: 'Winter',
+                        image_url: '/images/packages/destinations/thailand-adventure.jpeg'
+                    },
+                    {
+                        title_ar: 'رحلة المغرب الثقافية',
+                        title_en: 'Cultural Morocco Trip',
+                        description_ar: 'اكتشف سحر المغرب مع زيارة مراكش وفاس والرباط مع التجول في الأسواق التقليدية',
+                        description_en: 'Discover Morocco\'s charm with visits to Marrakech, Fez, and Rabat with traditional market tours',
+                        price: 2500.00,
+                        duration_days: 7,
+                        max_persons: 4,
+                        featured: false,
+                        travel_period: 'All Year',
+                        image_url: '/images/packages/destinations/morocco-cultural.jpeg'
+                    },
+                    {
+                        title_ar: 'جولة برشلونة الفنية',
+                        title_en: 'Artistic Barcelona Tour',
+                        description_ar: 'استكشف الفن والعمارة في برشلونة مع زيارة أعمال غاودي ومتحف بيكاسو',
+                        description_en: 'Explore art and architecture in Barcelona with visits to Gaudi\'s works and Picasso Museum',
+                        price: 3000.00,
+                        duration_days: 5,
+                        max_persons: 4,
+                        featured: false,
+                        travel_period: 'Spring',
+                        image_url: '/images/packages/destinations/barcelona-artistic.jpeg'
+                    },
+                    {
+                        title_ar: 'رحلة مدريد الملكية',
+                        title_en: 'Royal Madrid Trip',
+                        description_ar: 'اكتشف العاصمة الإسبانية مع زيارة القصر الملكي ومتحف برادو وبلازا مايور',
+                        description_en: 'Discover the Spanish capital with visits to Royal Palace, Prado Museum, and Plaza Mayor',
+                        price: 2800.00,
+                        duration_days: 5,
+                        max_persons: 4,
+                        featured: false,
+                        travel_period: 'Autumn',
+                        image_url: '/images/packages/destinations/madrid-royal.jpeg'
+                    },
+                    {
+                        title_ar: 'مغامرة جورجيا الجبلية',
+                        title_en: 'Mountain Georgia Adventure',
+                        description_ar: 'استكشف جمال جورجيا الجبلي مع زيارة تبليسي وباتومي مع أنشطة التسلق والمشي',
+                        description_en: 'Explore Georgia\'s mountain beauty with visits to Tbilisi and Batumi with climbing and hiking activities',
+                        price: 2200.00,
+                        duration_days: 6,
+                        max_persons: 4,
+                        featured: false,
+                        travel_period: 'Summer',
+                        image_url: '/images/packages/destinations/georgia-mountain.jpeg'
+                    },
+                    {
+                        title_ar: 'رحلة شرم الشيخ للغوص',
+                        title_en: 'Sharm El Sheikh Diving Trip',
+                        description_ar: 'مغامرة غوص في البحر الأحمر مع زيارة الشعاب المرجانية والأنشطة المائية',
+                        description_en: 'Red Sea diving adventure with coral reef visits and water activities',
+                        price: 2000.00,
+                        duration_days: 4,
+                        max_persons: 6,
+                        featured: false,
+                        travel_period: 'All Year',
+                        image_url: '/images/packages/destinations/sharm-diving.jpeg'
+                    },
+                    {
+                        title_ar: 'جولة الرياض التراثية',
+                        title_en: 'Heritage Riyadh Tour',
+                        description_ar: 'استكشف تراث وثقافة الرياض مع زيارة الدرعية وحي الطريف وبرج المملكة',
+                        description_en: 'Explore Riyadh\'s heritage and culture with visits to Diriyah, At-Turaif District, and Kingdom Tower',
+                        price: 1500.00,
+                        duration_days: 3,
+                        max_persons: 8,
+                        featured: true,
+                        travel_period: 'All Year',
+                        image_url: '/images/packages/destinations/riyadh-heritage.jpeg'
+                    },
+                    {
+                        title_ar: 'رحلة العلا الأثرية',
+                        title_en: 'Archaeological AlUla Trip',
+                        description_ar: 'اكتشف آثار العلا القديمة مع زيارة مدائن صالح والمناظر الطبيعية الخلابة',
+                        description_en: 'Discover ancient AlUla with visits to Mada\'in Saleh and stunning natural landscapes',
+                        price: 1800.00,
+                        duration_days: 4,
+                        max_persons: 6,
+                        featured: true,
+                        travel_period: 'Winter',
+                        image_url: '/images/packages/destinations/alula-archaeological.jpeg'
+                    },
+                    {
+                        title_ar: 'رحلة جدة الساحلية',
+                        title_en: 'Coastal Jeddah Trip',
+                        description_ar: 'استمتع بساحل جدة مع زيارة الكورنيش والبلدة القديمة والأنشطة البحرية',
+                        description_en: 'Enjoy Jeddah\'s coast with visits to the Corniche, Old Town, and marine activities',
+                        price: 1200.00,
+                        duration_days: 3,
+                        max_persons: 6,
+                        featured: false,
+                        travel_period: 'All Year',
+                        image_url: '/images/packages/destinations/jeddah-coastal.jpeg'
+                    }
+                ];
+
+                let addedCount = 0;
+                for (const pkg of packages) {
+                    const response = await fetch(`${SUPABASE_URL}/rest/v1/packages`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify(pkg)
+                    });
+
+                    if (response.ok) {
+                        addedCount++;
+                        showStatus(`تم إضافة ${addedCount} من ${packages.length} باقة...`, 'loading');
+                    } else {
+                        console.error('Error adding package:', await response.text());
+                    }
+                }
+
+                showStatus(`✅ تم إضافة ${addedCount} باقة جديدة بنجاح!`, 'success');
+                btn.textContent = '✅ تم الإضافة بنجاح';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`❌ حدث خطأ: ${error.message}`, 'error');
+                btn.disabled = false;
+                btn.textContent = '🚀 إضافة البكجات الجديدة';
+            }
+        }
+
+        async function checkPackages() {
+            const btn = document.getElementById('checkBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ جاري الفحص...';
+            
+            showStatus('جاري فحص البكجات الحالية...', 'loading');
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/packages?select=id,title_ar,price,image_url`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (response.ok) {
+                    const packages = await response.json();
+                    const withImages = packages.filter(p => p.image_url).length;
+                    const withoutImages = packages.length - withImages;
+                    
+                    showStatus(`📊 إجمالي البكجات: ${packages.length} | مع صور: ${withImages} | بدون صور: ${withoutImages}`, 'success');
+                } else {
+                    showStatus('❌ فشل في جلب البيانات', 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ حدث خطأ: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📊 فحص البكجات الحالية';
+            }
+        }
+    </script>
+</body>
+</html>
