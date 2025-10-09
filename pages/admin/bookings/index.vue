@@ -596,7 +596,7 @@ const downloadInvoicePDF = async (invoiceData: any) => {
     doc.setTextColor(255, 255, 255)
     doc.setFontSize(24)
     doc.setFont('helvetica', 'bold')
-    doc.text('WONDERLAND TRAVEL', 20, 20)
+    doc.text('World Trip Agency', 20, 20)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'normal')
     doc.text('Professional Travel Services', 20, 30)
