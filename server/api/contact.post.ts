@@ -39,10 +39,7 @@ export default defineEventHandler(async (event) => {
         phone: body.phone || null,
         subject: body.subject || 'رسالة تواصل',
         message: body.message,
-        type: body.type || 'inquiry',
-        status: 'unread',
-        package_id: body.package_id || null,
-        package_name: body.package_name || null
+        status: 'unread'
       }
 
       // Add destination_name if provided (only if column exists)

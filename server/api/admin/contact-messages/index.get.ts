@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     
     // Get query parameters
     const query = getQuery(event)
-    const { status, type, search } = query
+    const { status, search } = query
 
     // Build the query
     let supabaseQuery = supabase
@@ -21,10 +21,6 @@ export default defineEventHandler(async (event) => {
     // Apply filters
     if (status && typeof status === 'string') {
       supabaseQuery = supabaseQuery.eq('status', status)
-    }
-
-    if (type && typeof type === 'string') {
-      supabaseQuery = supabaseQuery.eq('type', type)
     }
 
     if (search && typeof search === 'string') {

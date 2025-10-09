@@ -396,7 +396,6 @@ const loadMessages = async () => {
     // Build query parameters
     const params = new URLSearchParams()
     if (statusFilter.value) params.append('status', statusFilter.value)
-    if (typeFilter.value) params.append('type', typeFilter.value)
     if (searchQuery.value) params.append('search', searchQuery.value)
     
     const queryString = params.toString()
@@ -531,7 +530,7 @@ onMounted(() => {
 })
 
 // Watch for filter changes and reload messages
-watch([statusFilter, typeFilter, searchQuery], () => {
+watch([statusFilter, searchQuery], () => {
   loadMessages()
 }, { debounce: 300 })
 
