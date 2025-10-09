@@ -90,7 +90,7 @@ export default defineEventHandler(async (event) => {
           notificationMessage = `استفسار جديد من ${body.name} عن ${body.destination_name}`
         }
 
-        await supabase
+        const { data: notification, error: notificationError } = await supabase
           .from('notifications')
           .insert({
             title: notificationTitle,
@@ -98,8 +98,23 @@ export default defineEventHandler(async (event) => {
             type: 'message',
             is_read: false
           })
+          .select()
+          .single()
 
-        console.log('Notification created for new contact message')
+        if (notificationError) {
+          console.error('Failed to create notification:', notificationError)
+        } else {
+          console.log('Notification created for new contact message:', notification)
+          
+          // Send push notification
+          try {
+            // This would trigger a push notification to all connected admin clients
+            // For now, we'll log it - in a real implementation, you'd use a push service
+            console.log('Push notification triggered for new contact message')
+          } catch (pushError) {
+            console.error('Push notification error:', pushError)
+          }
+        }
       } catch (notificationError) {
         console.error('Failed to create notification:', notificationError)
         // Don't fail the main request if notification creation fails

@@ -37,6 +37,20 @@
             {{ notificationCount }}
           </span>
         </button>
+        
+        <!-- Notification Permission Button -->
+        <button 
+          v-if="isSupported && permission !== 'granted'" 
+          @click="requestPermission"
+          class="notification-permission-btn"
+          :title="permission === 'denied' ? 'الإشعارات محظورة' : 'تفعيل الإشعارات'"
+        >
+          <Icon 
+            :name="permission === 'denied' ? 'lucide:bell-off' : 'lucide:bell-ring'" 
+            class="permission-icon"
+            :class="{ 'denied': permission === 'denied' }"
+          />
+        </button>
       </div>
 
       <!-- User Menu -->
@@ -96,10 +110,20 @@
 import type { AdminUser } from '~/types/admin'
 
 const { user, logout } = useAdminAuth()
+const { 
+  isSupported, 
+  permission, 
+  initialize, 
+  requestPermission, 
+  playNotificationSound,
+  showNotification,
+  setupNotificationListener 
+} = useNotifications()
 
 const searchQuery = ref('')
 const showUserMenu = ref(false)
 const notificationCount = ref(0)
+const previousNotificationCount = ref(0)
 
 const breadcrumb = computed(() => {
   const route = useRoute()
@@ -134,7 +158,24 @@ const loadNotificationCount = async () => {
   try {
     const response = await $fetch('/api/admin/notifications?status=unread')
     if (response.success) {
-      notificationCount.value = response.data.length
+      const newCount = response.data.length
+      
+      // Check if there are new notifications
+      if (newCount > previousNotificationCount.value && previousNotificationCount.value > 0) {
+        // Play notification sound
+        playNotificationSound()
+        
+        // Show browser notification if permission granted
+        if (permission.value === 'granted') {
+          showNotification('إشعار جديد', {
+            body: `لديك ${newCount - previousNotificationCount.value} إشعار جديد`,
+            icon: '/favicon.ico'
+          })
+        }
+      }
+      
+      notificationCount.value = newCount
+      previousNotificationCount.value = newCount
     }
   } catch (error) {
     console.error('Error loading notification count:', error)
@@ -155,7 +196,16 @@ const handleLogout = async () => {
 }
 
 // Close dropdown when clicking outside
-onMounted(() => {
+onMounted(async () => {
+  // Initialize notifications system
+  await initialize()
+  setupNotificationListener()
+  
+  // Request notification permission if not already granted
+  if (isSupported.value && permission.value === 'default') {
+    await requestPermission()
+  }
+  
   // Load notification count on mount
   loadNotificationCount()
   
@@ -248,6 +298,18 @@ const emit = defineEmits(['toggle-sidebar'])
 
 .notification-badge {
   @apply absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center;
+}
+
+.notification-permission-btn {
+  @apply ml-2 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors;
+}
+
+.permission-icon {
+  @apply w-4 h-4;
+}
+
+.permission-icon.denied {
+  @apply text-red-500;
 }
 
 .user-menu-container {

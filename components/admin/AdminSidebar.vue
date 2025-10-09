@@ -100,6 +100,12 @@ const menuItems = [
     badge: true
   },
   {
+    name: 'إعدادات الإشعارات',
+    path: '/admin/notifications/settings',
+    icon: 'lucide:bell-ring',
+    badge: false
+  },
+  {
     name: 'إدارة المستخدمين',
     path: '/admin/users',
     icon: 'lucide:users',
@@ -242,6 +248,15 @@ const closeSidebar = () => {
 
 .logout-icon {
   @apply w-4 h-4;
+}
+
+/* Close Sidebar Button */
+.close-sidebar-btn {
+  @apply absolute top-4 left-4 lg:hidden p-2 bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors duration-200 z-10;
+}
+
+.close-icon {
+  @apply w-5 h-5 text-white;
 }
 
 /* Responsive */

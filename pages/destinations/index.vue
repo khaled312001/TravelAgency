@@ -4,7 +4,7 @@
     <section class="relative bg-cover bg-center py-20">
       <div class="absolute inset-0">
         <img
-          src="/images/destinations/home/destinations-hero-bg.jpeg"
+          src="/images/home/heroSection/hero-image.webp"
           alt="وجهات سفر متميزة في المملكة العربية السعودية"
           class="w-full h-full object-cover"
           loading="eager"
