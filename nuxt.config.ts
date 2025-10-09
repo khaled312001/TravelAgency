@@ -317,7 +317,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: 'node-server',
+    preset: 'vercel',
     compressPublicAssets: {
       gzip: true,
       brotli: true
@@ -331,11 +331,6 @@ export default defineNuxtConfig({
         baseURL: '/'
       }
     ],
-    // Disable prerendering to fix build issues
-    prerender: {
-      crawlLinks: false,
-      routes: []
-    },
     // Handle domain redirects
     experimental: {
       wasm: true
