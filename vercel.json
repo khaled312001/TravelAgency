@@ -4,8 +4,14 @@
   "framework": "nuxtjs",
   "redirects": [
     {
-      "source": "/www/(.*)",
-      "destination": "/$1",
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "worldtripagency.com"
+        }
+      ],
+      "destination": "https://www.worldtripagency.com/$1",
       "permanent": true
     }
   ],
@@ -64,6 +70,14 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, HEAD, OPTIONS"
         }
       ]
     }

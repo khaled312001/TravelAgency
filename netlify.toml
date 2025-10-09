@@ -3,8 +3,8 @@
   publish = ".output/public"
 
 [[redirects]]
-  from = "https://www.worldtripagency.com/*"
-  to = "https://worldtripagency.com/:splat"
+  from = "https://worldtripagency.com/*"
+  to = "https://www.worldtripagency.com/:splat"
   status = 301
   force = true
 
@@ -52,6 +52,8 @@
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, HEAD, OPTIONS"
 
 [[headers]]
   for = "/icons/*"

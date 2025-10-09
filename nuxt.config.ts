@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const productionURL = 'https://worldtripagency.com'
+const productionURL = 'https://www.worldtripagency.com'
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
@@ -17,8 +17,7 @@ export default defineNuxtConfig({
   ],
 
   icon: {
-    serverBundle: 'iconify',
-    clientBundle: 'iconify',
+    serverBundle: 'auto',
     collections: ['material-symbols', 'lucide', 'heroicons']
   },
 
@@ -221,14 +220,14 @@ export default defineNuxtConfig({
         : 'http://localhost:3000'),
       
       // Public site URL for links in notifications
-      publicSiteUrl: process.env.PUBLIC_SITE_URL || 'https://worldtripagency.com'
+      publicSiteUrl: process.env.PUBLIC_SITE_URL || 'https://www.worldtripagency.com'
     }
   },
 
   image: {
     provider: 'ipx',
     dir: 'public',
-    domains: ['images.unsplash.com', 'images.pexels.com'],
+    domains: ['images.unsplash.com', 'images.pexels.com', 'worldtripagency.com', 'www.worldtripagency.com'],
     format: ['webp'],
     screens: {
       xs: 320,
@@ -252,7 +251,7 @@ export default defineNuxtConfig({
 
   i18n: {
     baseUrl: process.env.NODE_ENV === 'production'
-      ? 'https://worldtripagency.com'
+      ? 'https://www.worldtripagency.com'
       : 'http://localhost:3000',
     vueI18n: './i18n.config.ts',
     defaultLocale: 'ar-SA',
@@ -365,23 +364,24 @@ export default defineNuxtConfig({
         }
       },
       '/_ipx/**': { 
-        headers: { 'cache-control': 's-maxage=31536000' }
+        headers: { 
+          'cache-control': 's-maxage=31536000',
+          'access-control-allow-origin': '*',
+          'access-control-allow-methods': 'GET, HEAD, OPTIONS'
+        }
       },
       '/api/**': { 
         cors: true
       },
       '/admin/**': { ssr: false }
-    },
-    // Ensure proper static deployment
-    experimental: {
-      wasm: true
     }
   },
 
   ssr: true,
 
   experimental: {
-    viewTransition: true
+    viewTransition: true,
+    wasm: true
   },
 
   app: {

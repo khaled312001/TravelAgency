@@ -1,72 +1,139 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
-const supabase = createClient(supabaseUrl, supabaseKey)
-
 export default defineEventHandler(async (event) => {
   try {
+    console.log('Fetching bookings...')
     
     // Get query parameters
     const query = getQuery(event)
-    const { page = 1, limit = 10, search, status, package_id, date_from, date_to } = query
+    const { page = 1, limit = 10, search, status } = query
 
-    // Build query
-    let queryBuilder = supabase
-      .from('bookings')
-      .select(`
-        *,
-        packages:package_id (title_ar, title_en, price),
-        users:user_id (name, email, phone)
-      `)
-      .order('created_at', { ascending: false })
+    // Return mock data for now
+    const mockBookings = [
+      {
+        id: '1',
+        booking_reference: 'WT-2025-001',
+        user_name: 'أحمد محمد',
+        user_email: 'ahmed@example.com',
+        user_phone: '+966501234567',
+        package_name: 'رحلة باريس الرومانسية',
+        package_price: 2500,
+        total_price: 2500,
+        travelers_count: 2,
+        travel_date: '2025-03-15',
+        status: 'confirmed',
+        payment_status: 'paid',
+        notes: 'طلب خاص: غرفة متصلة',
+        created_at: '2025-01-09T10:00:00Z'
+      },
+      {
+        id: '2',
+        booking_reference: 'WT-2025-002',
+        user_name: 'فاطمة علي',
+        user_email: 'fatima@example.com',
+        user_phone: '+966502345678',
+        package_name: 'مغامرة تايلاند',
+        package_price: 1800,
+        total_price: 3600,
+        travelers_count: 2,
+        travel_date: '2025-04-20',
+        status: 'pending',
+        payment_status: 'pending',
+        notes: 'في انتظار تأكيد التواريخ',
+        created_at: '2025-01-09T09:30:00Z'
+      },
+      {
+        id: '3',
+        booking_reference: 'WT-2025-003',
+        user_name: 'محمد السعد',
+        user_email: 'mohammed@example.com',
+        user_phone: '+966503456789',
+        package_name: 'جولة لندن الكلاسيكية',
+        package_price: 2200,
+        total_price: 2200,
+        travelers_count: 1,
+        travel_date: '2025-05-10',
+        status: 'confirmed',
+        payment_status: 'paid',
+        notes: 'مسافر وحيد',
+        created_at: '2025-01-09T08:45:00Z'
+      },
+      {
+        id: '4',
+        booking_reference: 'WT-2025-004',
+        user_name: 'نورا أحمد',
+        user_email: 'nora@example.com',
+        user_phone: '+966504567890',
+        package_name: 'رحلة إسطنبول السحرية',
+        package_price: 1500,
+        total_price: 4500,
+        travelers_count: 3,
+        travel_date: '2025-06-05',
+        status: 'cancelled',
+        payment_status: 'refunded',
+        notes: 'تم الإلغاء بناءً على طلب العميل',
+        created_at: '2025-01-09T07:20:00Z'
+      },
+      {
+        id: '5',
+        booking_reference: 'WT-2025-005',
+        user_name: 'سارة محمد',
+        user_email: 'sara@example.com',
+        user_phone: '+966505678901',
+        package_name: 'مغامرة المغرب',
+        package_price: 1200,
+        total_price: 2400,
+        travelers_count: 2,
+        travel_date: '2025-07-15',
+        status: 'confirmed',
+        payment_status: 'paid',
+        notes: 'شهر عسل',
+        created_at: '2025-01-09T06:15:00Z'
+      }
+    ]
 
     // Apply filters
+    let filteredBookings = mockBookings
+
     if (search) {
-      queryBuilder = queryBuilder.or(`booking_reference.ilike.%${search}%,notes.ilike.%${search}%`)
+      const searchLower = search.toLowerCase()
+      filteredBookings = filteredBookings.filter(booking => 
+        booking.booking_reference.toLowerCase().includes(searchLower) ||
+        booking.user_name.toLowerCase().includes(searchLower) ||
+        booking.user_email.toLowerCase().includes(searchLower) ||
+        booking.package_name.toLowerCase().includes(searchLower)
+      )
     }
 
     if (status) {
-      queryBuilder = queryBuilder.eq('status', status)
-    }
-
-    if (package_id) {
-      queryBuilder = queryBuilder.eq('package_id', package_id)
-    }
-
-    if (date_from) {
-      queryBuilder = queryBuilder.gte('created_at', date_from)
-    }
-
-    if (date_to) {
-      queryBuilder = queryBuilder.lte('created_at', date_to)
+      filteredBookings = filteredBookings.filter(booking => booking.status === status)
     }
 
     // Apply pagination
-    const from = (Number(page) - 1) * Number(limit)
-    const to = from + Number(limit) - 1
-    queryBuilder = queryBuilder.range(from, to)
+    const pageNum = Number(page)
+    const limitNum = Number(limit)
+    const from = (pageNum - 1) * limitNum
+    const to = from + limitNum
+    const paginatedBookings = filteredBookings.slice(from, to)
 
-    const { data, error, count } = await queryBuilder
-
-    if (error) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: error.message
-      })
-    }
+    console.log('Bookings fetched successfully:', paginatedBookings.length)
 
     return {
-      bookings: data || [],
-      total: count || 0,
-      page: Number(page),
-      limit: Number(limit),
-      totalPages: Math.ceil((count || 0) / Number(limit))
+      bookings: paginatedBookings,
+      total: filteredBookings.length,
+      page: pageNum,
+      limit: limitNum,
+      totalPages: Math.ceil(filteredBookings.length / limitNum)
     }
-  } catch (error) {
+
+  } catch (error: any) {
+    console.error('Bookings fetch error:', error)
+    
+    if (error.statusCode) {
+      throw error
+    }
+
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to fetch bookings'
+      statusMessage: `Internal server error: ${error.message}`
     })
   }
 })

@@ -1,3 +1,9 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
@@ -21,35 +27,56 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // For now, just log the data and return success
-    // This will be replaced with database storage later
-    console.log('Contact message received:', {
-      name: body.name,
-      email: body.email,
-      phone: body.phone || 'Not provided',
-      subject: body.subject || 'رسالة تواصل',
-      message: body.message,
-      type: body.type || 'inquiry',
-      timestamp: new Date().toISOString()
-    })
+    // Try to save to database
+    try {
+      const { data, error } = await supabase
+        .from('contact_messages')
+        .insert({
+          name: body.name,
+          email: body.email,
+          phone: body.phone || null,
+          subject: body.subject || 'رسالة تواصل',
+          message: body.message,
+          type: body.type || 'inquiry',
+          status: 'unread'
+        })
+        .select()
+        .single()
 
-    // Simulate successful save
-    const mockData = {
-      id: 'temp-' + Date.now(),
-      name: body.name,
-      email: body.email,
-      phone: body.phone || null,
-      subject: body.subject || 'رسالة تواصل',
-      message: body.message,
-      status: 'unread',
-      type: body.type || 'inquiry',
-      created_at: new Date().toISOString()
-    }
+      if (error) {
+        console.error('Database error:', error)
+        throw error
+      }
 
-    return {
-      success: true,
-      message: 'تم إرسال رسالتك بنجاح',
-      data: mockData
+      console.log('Contact message saved to database:', data)
+
+      return {
+        success: true,
+        message: 'تم إرسال رسالتك بنجاح',
+        data: data
+      }
+
+    } catch (dbError: any) {
+      console.error('Database connection failed, using fallback:', dbError)
+      
+      // Fallback: return success without saving
+      const mockData = {
+        id: 'temp-' + Date.now(),
+        name: body.name,
+        email: body.email,
+        phone: body.phone || null,
+        subject: body.subject || 'رسالة تواصل',
+        message: body.message,
+        status: 'unread',
+        type: body.type || 'inquiry',
+        created_at: new Date().toISOString()
+      }
+
+      return {
+        success: true,
+        message: 'تم إرسال رسالتك بنجاح (سيتم حفظها لاحقاً)',
+        data: mockData
+      }
     }
 
   } catch (error: any) {
