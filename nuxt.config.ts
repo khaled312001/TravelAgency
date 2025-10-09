@@ -325,13 +325,14 @@ export default defineNuxtConfig({
     routeRules: {
       '/images/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/icons/**': { headers: { 'cache-control': 's-maxage=31536000' } },
+      '/_nuxt/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/': { prerender: true },
       '/en-US': { prerender: true },
       '/en-US/': { prerender: true },
       '/packages/**': { prerender: true },
       '/destinations/**': { prerender: true },
       '/about': { prerender: true },
-      '/admin/**': { ssr: true }
+      '/admin/**': { ssr: false, index: false }
     },
     // Ensure proper static deployment
     experimental: {
@@ -376,16 +377,28 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: []
+    transpile: [],
+    analyze: false
   },
 
   vite: {
     build: {
       cssMinify: true,
-      minify: true
+      minify: 'terser',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['vue', 'vue-router'],
+            admin: ['@nuxt/icon', 'lucide-vue-next']
+          }
+        }
+      }
     },
     css: {
       devSourcemap: false
+    },
+    optimizeDeps: {
+      include: ['vue', 'vue-router', '@nuxt/icon']
     }
   }
 })

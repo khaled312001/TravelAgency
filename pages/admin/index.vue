@@ -174,7 +174,7 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">الباقات الأكثر شعبية</h3>
         
         <div class="space-y-4">
-          <div v-for="pkg in popularPackages" :key="pkg.id" class="flex items-center space-x-4 space-x-reverse">
+          <div v-for="pkg in localPopularPackages" :key="pkg.id" class="flex items-center space-x-4 space-x-reverse">
             <div class="w-12 h-12 bg-gray-200 rounded-lg flex-shrink-0">
               <img 
                 :src="pkg.image_url" 
@@ -196,7 +196,7 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">الأنشطة الحديثة</h3>
         
         <div class="space-y-4">
-          <div v-for="activity in recentActivities" :key="activity.id" class="flex items-start space-x-3 space-x-reverse">
+          <div v-for="activity in localRecentActivities" :key="activity.id" class="flex items-start space-x-3 space-x-reverse">
             <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
             <div class="flex-1">
               <p class="text-sm text-gray-900">{{ activity.description }}</p>
@@ -263,6 +263,8 @@
 </template>
 
 <script setup lang="ts">
+import type { PopularPackage, RecentActivity } from '~/types/admin'
+
 // Use admin layout
 definePageMeta({
   layout: 'admin',
@@ -274,11 +276,13 @@ const {
   stats, 
   bookingDistribution, 
   monthlySales, 
-  popularPackages, 
-  recentActivities, 
   isLoading,
   fetchDashboardData 
 } = useAdminDashboard()
+
+// Local state for better performance
+const localPopularPackages = ref<PopularPackage[]>([])
+const localRecentActivities = ref<RecentActivity[]>([])
 
 // Mock data for popular packages
 const mockPopularPackages = [
@@ -316,18 +320,25 @@ const mockRecentActivities = [
   }
 ]
 
-// Initialize dashboard data
+// Initialize dashboard data with lazy loading
 onMounted(async () => {
   try {
-    await fetchDashboardData()
+    // Set mock data immediately for better UX
+    localPopularPackages.value = [...mockPopularPackages]
+    localRecentActivities.value = [...mockRecentActivities]
+    
+    // Load real data in background
+    setTimeout(async () => {
+      try {
+        await fetchDashboardData()
+      } catch (error) {
+        console.error('Error loading dashboard data:', error)
+      }
+    }, 100)
   } catch (error) {
-    console.error('Error loading dashboard:', error)
+    console.error('Error initializing dashboard:', error)
   }
 })
-
-// Set popular packages and recent activities to mock data for now
-popularPackages.value = mockPopularPackages
-recentActivities.value = mockRecentActivities
 
 // Utility functions
 const formatCurrency = (amount: number) => {
