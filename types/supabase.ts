@@ -284,6 +284,7 @@ export interface Database {
           duration_days: number
           destination: string
           image_url: string
+          hero_image_url: string
           created_at: string
           updated_at: string
         }
@@ -295,6 +296,7 @@ export interface Database {
           duration_days: number
           destination: string
           image_url: string
+          hero_image_url: string
           created_at?: string
           updated_at?: string
         }
@@ -306,6 +308,72 @@ export interface Database {
           duration_days?: number
           destination?: string
           image_url?: string
+          hero_image_url?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      destinations: {
+        Row: {
+          id: string
+          name_ar: string
+          name_en: string
+          description_ar: string
+          description_en: string
+          region_ar: string
+          region_en: string
+          location_type_ar: string
+          location_type_en: string
+          destination_type_ar: string
+          destination_type_en: string
+          main_image: string
+          gallery: any
+          tourist_spots: any
+          upcoming_events: any
+          coordinates: any
+          featured: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name_ar: string
+          name_en: string
+          description_ar: string
+          description_en: string
+          region_ar: string
+          region_en: string
+          location_type_ar: string
+          location_type_en: string
+          destination_type_ar: string
+          destination_type_en: string
+          main_image: string
+          gallery?: any
+          tourist_spots?: any
+          upcoming_events?: any
+          coordinates?: any
+          featured?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name_ar?: string
+          name_en?: string
+          description_ar?: string
+          description_en?: string
+          region_ar?: string
+          region_en?: string
+          location_type_ar?: string
+          location_type_en?: string
+          destination_type_ar?: string
+          destination_type_en?: string
+          main_image?: string
+          gallery?: any
+          tourist_spots?: any
+          upcoming_events?: any
+          coordinates?: any
+          featured?: boolean
           created_at?: string
           updated_at?: string
         }

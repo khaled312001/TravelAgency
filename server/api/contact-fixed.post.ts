@@ -1,8 +1,8 @@
+import { createClient } from '@supabase/supabase-js'
+
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    
-    console.log('Contact form data received:', body)
     
     // Validate required fields
     if (!body.name || !body.email || !body.message) {
@@ -21,25 +21,11 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Try to get Supabase client using Nuxt module first
-    let supabase
-    try {
-      supabase = serverSupabaseServiceRole(event)
-    } catch (supabaseError) {
-      console.log('Nuxt Supabase not available, using direct client')
-      // Fallback to direct Supabase client
-      const { createClient } = await import('@supabase/supabase-js')
-      const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
-      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
-      supabase = createClient(supabaseUrl, supabaseKey)
-    }
+    // Create Supabase client with service role key
+    const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
+    const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTkyMzE3NiwiZXhwIjoyMDc1NDk5MTc2fQ.YourServiceRoleKeyHere'
     
-    if (!supabase) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Supabase client not available'
-      })
-    }
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     // Insert contact message
     const { data, error } = await supabase
@@ -66,8 +52,6 @@ export default defineEventHandler(async (event) => {
         statusMessage: `Database error: ${error.message}`
       })
     }
-
-    console.log('Contact message saved successfully:', data)
 
     return {
       success: true,

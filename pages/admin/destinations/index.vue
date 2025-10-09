@@ -285,26 +285,15 @@
 </template>
 
 <script setup lang="ts">
-interface Destination {
-  id: string
-  name: string
-  description: string
-  country: string
-  type: string
-  best_time_to_visit: string
-  status: string
-  is_featured: boolean
-  image_url?: string
-  packages_count?: number
-  created_at: string
-  updated_at: string
-}
+import type { Destination } from '~/composables/useAdminDestinations'
+
+const { getDestinations, createDestination, updateDestination, deleteDestination: deleteDestinationFromDB, toggleFeatured } = useAdminDestinations()
 
 const destinations = ref<Destination[]>([])
 const loading = ref(true)
 const saving = ref(false)
 const searchQuery = ref('')
-const statusFilter = ref('')
+const regionFilter = ref('')
 const typeFilter = ref('')
 const featuredFilter = ref('')
 const showCreateModal = ref(false)
@@ -312,14 +301,22 @@ const showEditModal = ref(false)
 const editingDestination = ref<Destination | null>(null)
 
 const destinationForm = ref({
-  name: '',
-  description: '',
-  country: '',
-  type: 'domestic',
-  best_time_to_visit: '',
-  status: 'active',
-  is_featured: false,
-  image_url: ''
+  name_ar: '',
+  name_en: '',
+  description_ar: '',
+  description_en: '',
+  region_ar: '',
+  region_en: '',
+  location_type_ar: '',
+  location_type_en: '',
+  destination_type_ar: '',
+  destination_type_en: '',
+  main_image: '',
+  featured: false,
+  gallery: [] as string[],
+  tourist_spots: [] as any[],
+  upcoming_events: [] as any[],
+  coordinates: { latitude: 0, longitude: 0 }
 })
 
 const filteredDestinations = computed(() => {
@@ -327,24 +324,26 @@ const filteredDestinations = computed(() => {
 
   if (searchQuery.value) {
     filtered = filtered.filter(dest => 
-      dest.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      dest.country.toLowerCase().includes(searchQuery.value.toLowerCase())
+      dest.name_ar.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      dest.name_en.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      dest.region_ar.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      dest.region_en.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
   }
 
-  if (statusFilter.value) {
-    filtered = filtered.filter(dest => dest.status === statusFilter.value)
+  if (regionFilter.value) {
+    filtered = filtered.filter(dest => dest.region_ar === regionFilter.value)
   }
 
   if (typeFilter.value) {
-    filtered = filtered.filter(dest => dest.type === typeFilter.value)
+    filtered = filtered.filter(dest => dest.destination_type_ar === typeFilter.value)
   }
 
   if (featuredFilter.value) {
     if (featuredFilter.value === 'featured') {
-      filtered = filtered.filter(dest => dest.is_featured)
+      filtered = filtered.filter(dest => dest.featured)
     } else if (featuredFilter.value === 'regular') {
-      filtered = filtered.filter(dest => !dest.is_featured)
+      filtered = filtered.filter(dest => !dest.featured)
     }
   }
 
@@ -352,11 +351,11 @@ const filteredDestinations = computed(() => {
 })
 
 const activeDestinations = computed(() => 
-  destinations.value.filter(dest => dest.status === 'active').length
+  destinations.value.length
 )
 
 const featuredDestinations = computed(() => 
-  destinations.value.filter(dest => dest.is_featured).length
+  destinations.value.filter(dest => dest.featured).length
 )
 
 const popularDestinations = computed(() => 
@@ -387,37 +386,8 @@ const loadDestinations = async () => {
   try {
     loading.value = true
     
-    // Build query parameters
-    const params = new URLSearchParams()
-    if (statusFilter.value) params.append('status', statusFilter.value)
-    if (typeFilter.value) params.append('type', typeFilter.value)
-    if (featuredFilter.value) params.append('featured', featuredFilter.value === 'featured' ? 'true' : 'false')
-    if (searchQuery.value) params.append('search', searchQuery.value)
-    
-    const queryString = params.toString()
-    const url = `/api/admin/destinations${queryString ? `?${queryString}` : ''}`
-    
-    const response = await $fetch(url)
-    
-    if (response.destinations) {
-      // Transform the data to match the expected format
-      destinations.value = response.destinations.map((dest: any) => ({
-        id: dest.id,
-        name: dest.name_ar || dest.name_en || 'غير محدد',
-        description: dest.description_ar || dest.description_en || '',
-        country: dest.country_ar || dest.country_en || 'غير محدد',
-        type: dest.type || 'domestic',
-        best_time_to_visit: dest.best_time_to_visit || '',
-        status: dest.status || 'active',
-        is_featured: dest.featured || false,
-        image_url: dest.image_url || '/images/placeholder-destination.jpg',
-        packages_count: dest.packages_count || 0,
-        created_at: dest.created_at,
-        updated_at: dest.updated_at
-      }))
-    } else {
-      destinations.value = []
-    }
+    const data = await getDestinations()
+    destinations.value = data
   } catch (error) {
     console.error('Error loading destinations:', error)
     destinations.value = []
@@ -433,13 +403,21 @@ const editDestination = (destination: Destination) => {
 }
 
 const deleteDestination = async (destination: Destination) => {
-  if (confirm(`هل أنت متأكد من حذف الوجهة "${destination.name}"؟`)) {
+  if (confirm(`هل أنت متأكد من حذف الوجهة "${destination.name_ar}"؟`)) {
     try {
-      // TODO: Implement delete API
-      console.log('Delete destination:', destination.id)
-      await loadDestinations()
+      saving.value = true
+      
+      const success = await deleteDestinationFromDB(destination.id)
+      
+      if (success) {
+        await loadDestinations()
+        // Show success message
+      }
     } catch (error) {
       console.error('Error deleting destination:', error)
+      // Show error message
+    } finally {
+      saving.value = false
     }
   }
 }

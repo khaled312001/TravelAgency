@@ -17,7 +17,8 @@ export default defineNuxtConfig({
   ],
 
   icon: {
-    serverBundle: 'iconify',
+    serverBundle: 'local',
+    clientBundle: 'local',
     collections: ['material-symbols', 'lucide', 'heroicons']
   },
 

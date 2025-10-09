@@ -12,6 +12,7 @@ export interface PackageOptions {
 export interface Package {
   id: string
   image_url: string
+  hero_image_url?: string
   title_ar: string
   title_en: string
   description_ar: string

@@ -1,124 +1,240 @@
-import { ref } from 'vue'
 import type { Database } from '~/types/supabase'
 
-type Destination = Database['public']['Tables']['destinations']['Row']
-type DestinationInsert = Database['public']['Tables']['destinations']['Insert']
-type DestinationUpdate = Database['public']['Tables']['destinations']['Update']
+export interface Destination {
+  id: string
+  name_ar: string
+  name_en: string
+  description_ar: string
+  description_en: string
+  region_ar: string
+  region_en: string
+  location_type_ar: string
+  location_type_en: string
+  destination_type_ar: string
+  destination_type_en: string
+  main_image: string
+  gallery: any[]
+  tourist_spots: any[]
+  upcoming_events: any[]
+  coordinates: {
+    latitude: number
+    longitude: number
+  }
+  featured: boolean
+  created_at: string
+  updated_at: string
+}
 
-export const useAdminDestinations = () => {
-  const destinations = ref<Destination[]>([])
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+export function useAdminDestinations() {
+  const client = useSupabaseClient<Database>()
 
-  const { getAuthHeaders } = useAdminAuth()
-
-  // Fetch destinations
-  const fetchDestinations = async (params: {
-    page?: number
-    limit?: number
-    search?: string
-    status?: string
-    type?: string
-    featured?: boolean
-  } = {}) => {
-    loading.value = true
-    error.value = null
-
+  // جلب جميع الوجهات
+  const getDestinations = async () => {
     try {
-      const queryParams = new URLSearchParams()
-      if (params.page) queryParams.append('page', params.page.toString())
-      if (params.limit) queryParams.append('limit', params.limit.toString())
-      if (params.search) queryParams.append('search', params.search)
-      if (params.status) queryParams.append('status', params.status)
-      if (params.type) queryParams.append('type', params.type)
-      if (params.featured !== undefined) queryParams.append('featured', params.featured.toString())
+      const { data, error } = await client
+        .from('destinations')
+        .select('*')
+        .order('featured', { ascending: false })
+        .order('created_at', { ascending: true })
 
-      const response = await $fetch(`/api/admin/destinations?${queryParams}`, {
-        headers: getAuthHeaders()
-      })
+      if (error) {
+        console.error('Error fetching destinations:', error)
+        return []
+      }
 
-      destinations.value = response.destinations
-      return response
-    } catch (err: any) {
-      error.value = err.message || 'Failed to fetch destinations'
-      throw err
-    } finally {
-      loading.value = false
+      return data as Destination[]
+    } catch (error) {
+      console.error('Error in getDestinations:', error)
+      return []
     }
   }
 
-  // Create destination
-  const createDestination = async (destinationData: DestinationInsert) => {
-    loading.value = true
-    error.value = null
-
+  // جلب الوجهات المميزة
+  const getFeaturedDestinations = async () => {
     try {
-      const response = await $fetch('/api/admin/destinations', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: destinationData
-      })
+      const { data, error } = await client
+        .from('destinations')
+        .select('*')
+        .eq('featured', true)
+        .order('created_at', { ascending: true })
 
-      await fetchDestinations() // Refresh list
-      return response
-    } catch (err: any) {
-      error.value = err.message || 'Failed to create destination'
-      throw err
-    } finally {
-      loading.value = false
+      if (error) {
+        console.error('Error fetching featured destinations:', error)
+        return []
+      }
+
+      return data as Destination[]
+    } catch (error) {
+      console.error('Error in getFeaturedDestinations:', error)
+      return []
     }
   }
 
-  // Update destination
-  const updateDestination = async (id: string, destinationData: DestinationUpdate) => {
-    loading.value = true
-    error.value = null
-
+  // جلب الوجهات السعودية
+  const getSaudiDestinations = async () => {
     try {
-      const response = await $fetch(`/api/admin/destinations/${id}`, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: destinationData
-      })
+      const { data, error } = await client
+        .from('destinations')
+        .select('*')
+        .in('region_ar', ['منطقة الرياض', 'منطقة البحر الأحمر', 'منطقة مكة المكرمة', 'منطقة المدينة المنورة'])
+        .order('featured', { ascending: false })
+        .order('created_at', { ascending: true })
 
-      await fetchDestinations() // Refresh list
-      return response
-    } catch (err: any) {
-      error.value = err.message || 'Failed to update destination'
-      throw err
-    } finally {
-      loading.value = false
+      if (error) {
+        console.error('Error fetching Saudi destinations:', error)
+        return []
+      }
+
+      return data as Destination[]
+    } catch (error) {
+      console.error('Error in getSaudiDestinations:', error)
+      return []
     }
   }
 
-  // Delete destination
+  // جلب الوجهات العالمية
+  const getGlobalDestinations = async () => {
+    try {
+      const { data, error } = await client
+        .from('destinations')
+        .select('*')
+        .not('region_ar', 'in', '(منطقة الرياض,منطقة البحر الأحمر,منطقة مكة المكرمة,منطقة المدينة المنورة)')
+        .order('featured', { ascending: false })
+        .order('created_at', { ascending: true })
+
+      if (error) {
+        console.error('Error fetching global destinations:', error)
+        return []
+      }
+
+      return data as Destination[]
+    } catch (error) {
+      console.error('Error in getGlobalDestinations:', error)
+      return []
+    }
+  }
+
+  // جلب وجهة واحدة بالمعرف
+  const getDestinationById = async (id: string) => {
+    try {
+      const { data, error } = await client
+        .from('destinations')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (error) {
+        console.error('Error fetching destination:', error)
+        return null
+      }
+
+      return data as Destination
+    } catch (error) {
+      console.error('Error in getDestinationById:', error)
+      return null
+    }
+  }
+
+  // إضافة وجهة جديدة
+  const createDestination = async (destination: Omit<Destination, 'id' | 'created_at' | 'updated_at'>) => {
+    try {
+      const { data, error } = await client
+        .from('destinations')
+        .insert([destination])
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error creating destination:', error)
+        return null
+      }
+
+      return data as Destination
+    } catch (error) {
+      console.error('Error in createDestination:', error)
+      return null
+    }
+  }
+
+  // تحديث وجهة
+  const updateDestination = async (id: string, updates: Partial<Destination>) => {
+    try {
+      const { data, error } = await client
+        .from('destinations')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error updating destination:', error)
+        return null
+      }
+
+      return data as Destination
+    } catch (error) {
+      console.error('Error in updateDestination:', error)
+      return null
+    }
+  }
+
+  // حذف وجهة
   const deleteDestination = async (id: string) => {
-    loading.value = true
-    error.value = null
-
     try {
-      const response = await $fetch(`/api/admin/destinations/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      })
+      const { error } = await client
+        .from('destinations')
+        .delete()
+        .eq('id', id)
 
-      await fetchDestinations() // Refresh list
-      return response
-    } catch (err: any) {
-      error.value = err.message || 'Failed to delete destination'
-      throw err
-    } finally {
-      loading.value = false
+      if (error) {
+        console.error('Error deleting destination:', error)
+        return false
+      }
+
+      return true
+    } catch (error) {
+      console.error('Error in deleteDestination:', error)
+      return false
+    }
+  }
+
+  // تبديل حالة المميز
+  const toggleFeatured = async (id: string, featured: boolean) => {
+    try {
+      const { data, error } = await client
+        .from('destinations')
+        .update({ 
+          featured,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error toggling featured status:', error)
+        return null
+      }
+
+      return data as Destination
+    } catch (error) {
+      console.error('Error in toggleFeatured:', error)
+      return null
     }
   }
 
   return {
-    destinations: readonly(destinations),
-    loading: readonly(loading),
-    error: readonly(error),
-    fetchDestinations,
+    getDestinations,
+    getFeaturedDestinations,
+    getSaudiDestinations,
+    getGlobalDestinations,
+    getDestinationById,
     createDestination,
     updateDestination,
-    deleteDestination
+    deleteDestination,
+    toggleFeatured
   }
 }
