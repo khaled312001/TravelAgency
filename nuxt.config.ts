@@ -19,7 +19,8 @@ export default defineNuxtConfig({
   // Icon module configuration
   icon: {
     serverBundle: 'local',
-    clientBundle: 'local'
+    clientBundle: 'local',
+    collections: ['material-symbols']
   },
 
   // Supabase module configuration
@@ -246,6 +247,14 @@ export default defineNuxtConfig({
           quality: 90
         }
       }
+    },
+    // Fix IPX configuration for better compatibility
+    ipx: {
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      // Ensure consistent behavior across domains
+      baseURL: process.env.NODE_ENV === 'production' 
+        ? 'https://worldtripagency.com' 
+        : undefined
     }
   },
 

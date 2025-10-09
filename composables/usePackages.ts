@@ -20,6 +20,8 @@ export interface Package {
   duration_days: number
   price: number
   max_persons?: number
+  featured?: boolean
+  created_by_admin?: boolean
   included_options?: PackageOptions
 }
 
@@ -33,15 +35,16 @@ export function usePackages() {
     const { data, error: fetchError } = await client
       .from('packages')
       .select(`
-        id, image_url, title_ar, title_en, description_ar, description_en, travel_period, duration_days, price, max_persons, featured,
+        id, image_url, title_ar, title_en, description_ar, description_en, travel_period, duration_days, price, max_persons, featured, created_by_admin,
         package_options:package_options (flight, hotel, transportation, hotel_grade)
       `)
+      .eq('created_by_admin', true) // Only show admin-created packages
       .order('created_at', { ascending: false })
 
     if (fetchError) throw fetchError
 
     // Format to match expected structure
-    return (data || []).map(pkg => ({
+    return (data || []).map((pkg: any) => ({
       id: pkg.id,
       image_url: pkg.image_url,
       title_ar: pkg.title_ar,
@@ -53,6 +56,7 @@ export function usePackages() {
       price: pkg.price,
       max_persons: pkg.max_persons,
       featured: pkg.featured,
+      created_by_admin: pkg.created_by_admin,
       included_options: pkg.package_options ? {
         flight: pkg.package_options.flight,
         hotel: pkg.package_options.hotel,

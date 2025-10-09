@@ -7,17 +7,17 @@
     <NuxtLink :to="localpath(`/destinations/${destination.id}`)">
       <!-- Image Container -->
       <div class="absolute inset-0 bg-gray-100">
-        <NuxtImg
+        <SafeImage
           :src="destination.mainImage"
           :alt="getLocalizedName"
-          class="w-full h-full object-cover transition-transform duration-300"
-          :class="{ 'scale-110': isHovered }"
-          @error="handleImageError"
+          width="600"
+          height="400"
           loading="lazy"
-          format="webp"
           quality="80"
-          sizes="sm:400px md:500px lg:600px"
-          placeholder
+          sizes="(max-width: 640px) 400px, (max-width: 768px) 500px, 600px"
+          image-class="w-full h-full object-cover transition-transform duration-300"
+          :class="{ 'scale-110': isHovered }"
+          fallback-src="/images/destinations/placeholder.jpg"
         />
       </div>
 
@@ -108,11 +108,6 @@ const { locale, t } = useI18n()
 const localpath = useLocalePath()
 const isHovered = ref(false)
 
-const handleImageError = (event: Event) => {
-  console.error('Image failed to load:', props.destination.mainImage)
-  const img = event.target as HTMLImageElement
-  img.src = '/images/hero-bg.jpg'
-}
 
 const getLocalizedName = computed(() => 
   props.destination.name[locale.value.slice(0, 2) as keyof typeof props.destination.name] || props.destination.name.en
