@@ -87,14 +87,7 @@
           </button>
         </form>
 
-        <!-- Demo Credentials -->
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 class="text-sm font-medium text-gray-700 mb-2">بيانات الدخول التجريبية:</h3>
-          <div class="text-xs text-gray-600 space-y-1">
-            <p><strong>البريد الإلكتروني:</strong> admin@wonderland.com</p>
-            <p><strong>كلمة المرور:</strong> admin123</p>
-          </div>
-        </div>
+      
       </div>
 
       <!-- Footer -->

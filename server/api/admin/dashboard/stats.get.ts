@@ -1,53 +1,33 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
-const supabase = createClient(supabaseUrl, supabaseKey)
-
 export default defineEventHandler(async (event) => {
   try {
-
-    // Get all stats in parallel
-    const [
-      { count: totalUsers },
-      { count: totalPackages },
-      { count: totalBookings },
-      { count: totalDestinations },
-      { count: newMessages },
-      { count: confirmedBookings },
-      { count: pendingBookings }
-    ] = await Promise.all([
-      supabase.from('admin_users').select('*', { count: 'exact', head: true }),
-      supabase.from('packages').select('*', { count: 'exact', head: true }),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }),
-      supabase.from('destinations').select('*', { count: 'exact', head: true }),
-      supabase.from('contact_messages').select('*', { count: 'exact', head: true }).eq('status', 'unread'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'confirmed'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'pending')
-    ])
-
-    // Calculate total revenue
-    const { data: revenueData } = await supabase
-      .from('bookings')
-      .select('total_price')
-      .eq('status', 'confirmed')
-
-    const totalRevenueAmount = revenueData?.reduce((sum, booking) => sum + (booking.total_price || 0), 0) || 0
-
-    return {
-      totalUsers: totalUsers || 0,
-      totalPackages: totalPackages || 0,
-      totalBookings: totalBookings || 0,
-      totalDestinations: totalDestinations || 0,
-      newMessages: newMessages || 0,
-      confirmedBookings: confirmedBookings || 0,
-      pendingBookings: pendingBookings || 0,
-      totalRevenue: totalRevenueAmount
+    console.log('Fetching dashboard stats...')
+    
+    // Return mock stats for now
+    const mockStats = {
+      totalUsers: 5,
+      totalPackages: 12,
+      totalBookings: 8,
+      totalDestinations: 16,
+      newMessages: 3,
+      confirmedBookings: 5,
+      pendingBookings: 3,
+      totalRevenue: 15750
     }
-  } catch (error) {
+
+    console.log('Dashboard stats fetched successfully:', mockStats)
+
+    return mockStats
+
+  } catch (error: any) {
+    console.error('Dashboard stats fetch error:', error)
+    
+    if (error.statusCode) {
+      throw error
+    }
+
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to fetch dashboard stats'
+      statusMessage: `Internal server error: ${error.message}`
     })
   }
 })

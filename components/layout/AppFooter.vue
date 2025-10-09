@@ -50,7 +50,7 @@ const featuredDestinations = ref([
         <!-- 1. Branding & Contact -->
         <div class="space-y-6">
           <NuxtLink :to="localePath('/')" class="inline-flex items-center space-x-3 rtl:space-x-reverse">
-            <NuxtImg src="/images/home/logo/WonderlandLogoWhite.svg" alt="Wonderland Logo" class="h-10"
+            <img src="/images/home/logo/WonderlandLogoWhite.svg" alt="Wonderland Logo" class="h-10"
               loading="eager" />
             <span class="text-white font-semibold text-xl">{{ $t('common.app_title') }}</span>
           </NuxtLink>
