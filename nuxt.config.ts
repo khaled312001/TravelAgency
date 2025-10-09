@@ -36,9 +36,7 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     injectRegister: 'script',
-    strategies:'injectManifest',
-    srcDir: 'public',
-    filename: 'sw.js',
+    strategies: 'generateSW',
     includeAssets: [
       'favicon.ico',
       'icons/**/*',
