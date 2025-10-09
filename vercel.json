@@ -7,6 +7,11 @@
       "source": "/www/(.*)",
       "destination": "/$1",
       "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1",
+      "permanent": false
     }
   ],
   "headers": [

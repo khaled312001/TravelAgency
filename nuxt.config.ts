@@ -266,7 +266,7 @@ export default defineNuxtConfig({
     ],
     strategy: 'prefix_except_default',
     detectBrowserLanguage: false,
-    trailingSlash: true,
+    trailingSlash: false,
     differentDomains: false,
     lazy: true,
     customRoutes: 'config',
@@ -330,6 +330,13 @@ export default defineNuxtConfig({
     experimental: {
       wasm: true
     },
+    // Fix domain issues
+    storage: {
+      redis: {
+        driver: 'redis',
+        /* redis connector options */
+      }
+    },
     routeRules: {
       '/images/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/icons/**': { headers: { 'cache-control': 's-maxage=31536000' } },
@@ -354,6 +361,8 @@ export default defineNuxtConfig({
       '/': { prerender: true },
       '/en-US': { prerender: true },
       '/en-US/': { prerender: true },
+      '/packages': { prerender: true, index: true },
+      '/packages/': { prerender: true, index: true },
       '/packages/**': { prerender: true },
       '/destinations/**': { prerender: true },
       '/about': { prerender: true },
