@@ -451,9 +451,8 @@ const downloadInvoicePDF = async (invoiceData: any) => {
     const { jsPDF } = await import('jspdf')
     const doc = new jsPDF('p', 'mm', 'a4')
     
-    // Add Arabic font support
-    doc.addFont('https://fonts.gstatic.com/s/amiri/v27/J7aRnpd8CGxBHqUpvrIw74NL.woff2', 'Amiri', 'normal')
-    doc.setFont('Amiri')
+    // Use default font for better compatibility
+    doc.setFont('helvetica')
     
     // Header
     doc.setFontSize(24)
@@ -712,9 +711,8 @@ const exportBookingsToPDF = async (data: any[]) => {
   const { jsPDF } = await import('jspdf')
   const doc = new jsPDF('l', 'mm', 'a4') // Landscape for better table view
   
-  // Add Arabic font support
-  doc.addFont('https://fonts.gstatic.com/s/amiri/v27/J7aRnpd8CGxBHqUpvrIw74NL.woff2', 'Amiri', 'normal')
-  doc.setFont('Amiri')
+  // Use default font for better compatibility
+  doc.setFont('helvetica')
   
   // Title
   doc.setFontSize(20)

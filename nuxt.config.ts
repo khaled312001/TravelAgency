@@ -440,7 +440,7 @@ export default defineNuxtConfig({
         // Additional SEO
         { name: 'theme-color', content: '#8b5cf6' },
         { name: 'msapplication-TileColor', content: '#8b5cf6' },
-        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
         { name: 'apple-mobile-web-app-title', content: 'أرض العجائب للسفر' },
         
