@@ -7,18 +7,12 @@
     <NuxtLink :to="localpath(`/destinations/${destination.id}`)">
       <!-- Image Container -->
       <div class="absolute inset-0 bg-gray-100">
-        <NuxtImg
+        <img
           :src="destination.mainImage"
           :alt="getLocalizedName"
-          width="600"
-          height="400"
           loading="lazy"
-          format="webp"
-          quality="80"
-          sizes="(max-width: 640px) 400px, (max-width: 768px) 500px, 600px"
           class="w-full h-full object-cover transition-transform duration-300"
           :class="{ 'scale-110': isHovered }"
-          placeholder
         />
       </div>
 

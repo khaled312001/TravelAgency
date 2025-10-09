@@ -24,13 +24,11 @@
           :data-aos-delay="100 * index"
         >
           <!-- Background Image -->
-          <NuxtImg
+          <img
             :src="service.image"
             :alt="$t('home.services.' + service.title_en)"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
-            format="webp"
-            quality="80"
           />
 
           <!-- Gradient Overlay -->

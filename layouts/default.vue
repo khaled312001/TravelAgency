@@ -5,7 +5,7 @@
       <nav class="container mx-auto px-4 py-4 sticky top-0">
         <div class="flex items-center justify-between">
           <NuxtLink :to="localpath('/')" class="flex items-center">
-            <NuxtImg 
+            <img 
               src="/images/home/logo/WonderlandLogo.svg" 
               class="h-[48px]"
               alt="Wonder Land Agency Logo" 
