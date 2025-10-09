@@ -140,6 +140,14 @@
             </div>
           </div>
 
+          <!-- Error Message -->
+          <div v-if="notificationFailed && notificationError" class="p-4 bg-red-50 border border-red-200 rounded-xl">
+            <div class="flex items-start gap-2">
+              <Icon name="material-symbols:error-outline" class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <p class="text-sm text-red-700">{{ notificationError }}</p>
+            </div>
+          </div>
+
           <!-- Submit Button -->
           <button
             type="submit"
@@ -245,6 +253,8 @@ async function handleSubmit() {
 
   try {
     isSubmitting.value = true
+    notificationError.value = ''
+    notificationFailed.value = false
     
     // Send to contact API first
     const response = await $fetch('/api/contact', {
@@ -278,6 +288,7 @@ async function handleSubmit() {
         console.error('WhatsApp notification failed:', whatsappError)
         notificationSent.value = false
         notificationError.value = 'تم حفظ الرسالة ولكن فشل إرسال إشعار WhatsApp'
+        notificationFailed.value = true
       }
       
       // Show success message
@@ -288,11 +299,19 @@ async function handleSubmit() {
     } else {
       throw new Error('Failed to save contact message')
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to submit form:', error)
     notificationSent.value = false
     notificationFailed.value = true
-    notificationError.value = t('home.destinations.destination_form.error_message')
+    
+    // Show more specific error message
+    if (error.data?.message) {
+      notificationError.value = error.data.message
+    } else if (error.message) {
+      notificationError.value = error.message
+    } else {
+      notificationError.value = t('home.destinations.destination_form.error_message')
+    }
   } finally {
     isSubmitting.value = false
   }

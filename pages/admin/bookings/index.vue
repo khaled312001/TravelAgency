@@ -113,6 +113,10 @@
         <Icon name="lucide:calendar" class="empty-icon" />
         <h3>لا توجد حجوزات</h3>
         <p>لم يتم العثور على أي حجوزات تطابق معايير البحث</p>
+        <p class="text-sm text-gray-500 mt-2">إجمالي الحجوزات: {{ totalBookings }}</p>
+        <button @click="loadBookings" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          إعادة تحميل الحجوزات
+        </button>
       </div>
 
       <div v-else class="bookings-table">
@@ -290,6 +294,100 @@
         </div>
       </div>
     </div>
+
+    <!-- Add Booking Modal -->
+    <div v-if="showAddBookingModal" class="modal-overlay" @click="showAddBookingModal = false">
+      <div class="modal-content large" @click.stop>
+        <div class="modal-header">
+          <h2 class="modal-title">إضافة حجز جديد</h2>
+          <button @click="showAddBookingModal = false" class="modal-close">
+            <Icon name="lucide:x" class="close-icon" />
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form @submit.prevent="submitNewBooking" class="booking-form">
+            <div class="form-grid">
+              <div class="form-section">
+                <h3 class="section-title">معلومات العميل</h3>
+                <div class="form-group">
+                  <label class="form-label">اسم العميل *</label>
+                  <input v-model="newBooking.customer_name" type="text" class="form-input" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">البريد الإلكتروني *</label>
+                  <input v-model="newBooking.customer_email" type="email" class="form-input" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">رقم الهاتف *</label>
+                  <input v-model="newBooking.customer_phone" type="tel" class="form-input" required />
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="section-title">معلومات الرحلة</h3>
+                <div class="form-group">
+                  <label class="form-label">الباقة *</label>
+                  <select v-model="newBooking.package_id" class="form-input" required>
+                    <option value="">اختر الباقة</option>
+                    <option v-for="pkg in packages" :key="pkg.id" :value="pkg.id">
+                      {{ pkg.title }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">الوجهة *</label>
+                  <input v-model="newBooking.destination" type="text" class="form-input" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">تاريخ السفر *</label>
+                  <input v-model="newBooking.travel_date" type="date" class="form-input" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">عدد الأشخاص *</label>
+                  <input v-model="newBooking.participants_count" type="number" min="1" class="form-input" required />
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="section-title">معلومات الدفع</h3>
+                <div class="form-group">
+                  <label class="form-label">المبلغ الإجمالي *</label>
+                  <input v-model="newBooking.total_price" type="number" min="0" step="0.01" class="form-input" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">المبلغ المدفوع</label>
+                  <input v-model="newBooking.paid_amount" type="number" min="0" step="0.01" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">الحالة *</label>
+                  <select v-model="newBooking.status" class="form-input" required>
+                    <option value="pending">في الانتظار</option>
+                    <option value="confirmed">مؤكد</option>
+                    <option value="cancelled">ملغي</option>
+                    <option value="completed">مكتمل</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">ملاحظات</label>
+                  <textarea v-model="newBooking.notes" class="form-input" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" @click="showAddBookingModal = false" class="btn-secondary">
+                إلغاء
+              </button>
+              <button type="submit" class="btn-primary">
+                <Icon name="lucide:save" class="btn-icon" />
+                حفظ الحجز
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -328,6 +426,21 @@ const showEditBookingModal = ref(false)
 const showAddBookingModal = ref(false)
 const selectedBooking = ref<Booking | null>(null)
 
+const newBooking = ref({
+  customer_name: '',
+  customer_email: '',
+  customer_phone: '',
+  package_id: '',
+  package_title: '',
+  destination: '',
+  travel_date: '',
+  participants_count: 1,
+  total_price: 0,
+  paid_amount: 0,
+  status: 'pending',
+  notes: ''
+})
+
 const filteredBookings = computed(() => {
   let filtered = bookings.value
 
@@ -344,7 +457,7 @@ const filteredBookings = computed(() => {
   }
 
   if (packageFilter.value) {
-    filtered = filtered.filter(booking => booking.package_title === packageFilter.value)
+    filtered = filtered.filter(booking => booking.package_id === packageFilter.value)
   }
 
   if (dateFilter.value) {
@@ -392,6 +505,21 @@ const formatDate = (dateString: string) => {
     return date.toLocaleDateString('ar-SA')
   } catch (error) {
     return 'تاريخ غير صحيح'
+  }
+}
+
+const loadPackages = async () => {
+  try {
+    const response = await $fetch('/api/admin/packages')
+    if (response.success && response.packages) {
+      packages.value = response.packages.map((pkg: any) => ({
+        id: pkg.id,
+        title: pkg.title
+      }))
+    }
+  } catch (error) {
+    console.error('Error loading packages:', error)
+    packages.value = []
   }
 }
 
@@ -451,109 +579,201 @@ const downloadInvoicePDF = async (invoiceData: any) => {
     const { jsPDF } = await import('jspdf')
     const doc = new jsPDF('p', 'mm', 'a4')
     
-    // Use default font for better compatibility
+    // Set font to helvetica for better compatibility
     doc.setFont('helvetica')
     
-    // Header
+    // Colors - Professional color scheme
+    const primaryColor = [59, 130, 246] // Blue
+    const secondaryColor = [107, 114, 128] // Gray
+    const accentColor = [34, 197, 94] // Green
+    const warningColor = [245, 158, 11] // Orange
+    
+    // Header with professional design
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2])
+    doc.rect(0, 0, 210, 50, 'F')
+    
+    // Company name and logo area
+    doc.setTextColor(255, 255, 255)
     doc.setFontSize(24)
-    doc.text('فاتورة', 105, 30, { align: 'center' })
-    
-    // Company info
-    doc.setFontSize(16)
-    doc.text(invoiceData.company.name, 20, 50)
+    doc.setFont('helvetica', 'bold')
+    doc.text('WONDERLAND TRAVEL', 20, 20)
     doc.setFontSize(12)
-    doc.text(invoiceData.company.address, 20, 60)
-    doc.text(`الهاتف: ${invoiceData.company.phone}`, 20, 70)
-    doc.text(`البريد الإلكتروني: ${invoiceData.company.email}`, 20, 80)
-    doc.text(`الرقم الضريبي: ${invoiceData.company.tax_number}`, 20, 90)
-    doc.text(`رقم الترخيص: ${invoiceData.company.license_number}`, 20, 100)
+    doc.setFont('helvetica', 'normal')
+    doc.text('Professional Travel Services', 20, 30)
     
-    // Invoice details
+    // Invoice title and number
+    doc.setFontSize(20)
+    doc.setFont('helvetica', 'bold')
+    doc.text('INVOICE', 150, 20)
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`#${invoiceData.invoice_number}`, 150, 30)
+    doc.text(`Date: ${invoiceData.invoice_date}`, 150, 40)
+    
+    // Reset text color
+    doc.setTextColor(0, 0, 0)
+    
+    // Company information section
+    doc.setFillColor(248, 250, 252)
+    doc.rect(20, 60, 170, 35, 'F')
+    
     doc.setFontSize(14)
-    doc.text(`رقم الفاتورة: ${invoiceData.invoice_number}`, 120, 50)
-    doc.text(`تاريخ الفاتورة: ${invoiceData.invoice_date}`, 120, 60)
-    doc.text(`تاريخ الاستحقاق: ${invoiceData.due_date}`, 120, 70)
-    doc.text(`حالة الحجز: ${invoiceData.status}`, 120, 80)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
+    doc.text('COMPANY INFORMATION', 25, 75)
     
-    // Customer info
-    doc.setFontSize(16)
-    doc.text('بيانات العميل', 20, 120)
+    doc.setTextColor(0, 0, 0)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.text(invoiceData.company.name || 'Wonderland Travel Agency', 25, 85)
+    doc.text(invoiceData.company.address || 'Riyadh, Saudi Arabia', 25, 92)
+    doc.text(`Phone: ${invoiceData.company.phone}`, 25, 99)
+    doc.text(`Email: ${invoiceData.company.email}`, 25, 106)
+    doc.text(`Tax ID: ${invoiceData.company.tax_number} | License: ${invoiceData.company.license_number}`, 25, 113)
+    
+    // Customer information section
+    doc.setFillColor(240, 240, 240)
+    doc.rect(20, 105, 170, 30, 'F')
+    
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
+    doc.text('BILL TO', 25, 120)
+    
+    doc.setTextColor(0, 0, 0)
+    doc.setFont('helvetica', 'normal')
     doc.setFontSize(12)
-    doc.text(`الاسم: ${invoiceData.customer.name}`, 20, 135)
-    doc.text(`البريد الإلكتروني: ${invoiceData.customer.email}`, 20, 145)
-    doc.text(`الهاتف: ${invoiceData.customer.phone}`, 20, 155)
+    doc.setFont('helvetica', 'bold')
+    doc.text(invoiceData.customer.name, 25, 130)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.text(invoiceData.customer.email, 25, 137)
+    doc.text(invoiceData.customer.phone, 25, 144)
     
-    // Booking details
-    doc.setFontSize(16)
-    doc.text('تفاصيل الحجز', 20, 175)
-    doc.setFontSize(12)
-    doc.text(`الباقة: ${invoiceData.booking.package_title}`, 20, 190)
-    doc.text(`الوجهة: ${invoiceData.booking.destination}`, 20, 200)
-    doc.text(`تاريخ السفر: ${invoiceData.booking.travel_date}`, 20, 210)
-    doc.text(`عدد المشاركين: ${invoiceData.booking.participants_count}`, 20, 220)
+    // Booking details section
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
+    doc.text('BOOKING DETAILS', 20, 160)
     
-    // Items table
-    doc.setFontSize(16)
-    doc.text('تفاصيل الخدمات', 20, 240)
+    doc.setTextColor(0, 0, 0)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.text(`Package: ${invoiceData.booking.package_title}`, 20, 170)
+    doc.text(`Destination: ${invoiceData.booking.destination}`, 20, 177)
+    doc.text(`Travel Date: ${invoiceData.booking.travel_date}`, 20, 184)
+    doc.text(`Participants: ${invoiceData.booking.participants_count}`, 20, 191)
+    doc.text(`Status: ${invoiceData.status_ar || invoiceData.status}`, 20, 198)
     
-    // Table headers
-    doc.setFontSize(12)
-    doc.text('الوصف', 20, 255)
-    doc.text('الكمية', 80, 255)
-    doc.text('سعر الوحدة', 110, 255)
-    doc.text('المجموع', 150, 255)
+    // Services table with professional styling
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
+    doc.text('SERVICES', 20, 215)
     
-    // Table line
-    doc.line(20, 260, 190, 260)
+    // Table header with gradient effect
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2])
+    doc.rect(20, 220, 170, 12, 'F')
     
-    // Table data
-    let y = 270
-    invoiceData.items.forEach((item: any) => {
-      doc.text(item.description.substring(0, 30), 20, y)
-      doc.text(item.quantity.toString(), 80, y)
-      doc.text(item.unit_price.toFixed(2) + ' ريال', 110, y)
-      doc.text(item.total_price.toFixed(2) + ' ريال', 150, y)
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Description', 25, 228)
+    doc.text('Qty', 120, 228)
+    doc.text('Unit Price', 140, 228)
+    doc.text('Total', 170, 228)
+    
+    // Table data with alternating rows
+    doc.setTextColor(0, 0, 0)
+    doc.setFont('helvetica', 'normal')
+    let y = 240
+    
+    invoiceData.items.forEach((item: any, index: number) => {
+      // Alternate row colors
+      if (index % 2 === 0) {
+        doc.setFillColor(248, 250, 252)
+        doc.rect(20, y - 5, 170, 10, 'F')
+      }
+      
+      doc.text((item.description_en || item.description).substring(0, 35), 25, y)
+      doc.text(item.quantity.toString(), 120, y)
+      doc.text(`${item.unit_price.toFixed(2)} SAR`, 140, y)
+      doc.text(`${item.total_price.toFixed(2)} SAR`, 170, y)
       y += 10
     })
     
-    // Totals
+    // Professional totals section
     y += 10
-    doc.line(20, y, 190, y)
-    y += 10
+    doc.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2])
+    doc.rect(120, y, 70, 50, 'F')
     
-    doc.text(`المجموع الفرعي: ${invoiceData.totals.subtotal.toFixed(2)} ريال`, 120, y)
-    y += 10
-    doc.text(`ضريبة القيمة المضافة (${invoiceData.totals.tax_rate}%): ${invoiceData.totals.tax_amount.toFixed(2)} ريال`, 120, y)
-    y += 10
-    doc.setFontSize(14)
-    doc.text(`المجموع الكلي: ${invoiceData.totals.total.toFixed(2)} ريال`, 120, y)
-    y += 10
+    doc.setTextColor(255, 255, 255)
     doc.setFontSize(12)
-    doc.text(`المبلغ المدفوع: ${invoiceData.totals.paid_amount.toFixed(2)} ريال`, 120, y)
-    y += 10
-    doc.setFontSize(14)
-    doc.text(`المبلغ المستحق: ${invoiceData.totals.balance_due.toFixed(2)} ريال`, 120, y)
+    doc.setFont('helvetica', 'bold')
+    doc.text('TOTAL SUMMARY', 125, y + 10)
     
-    // Notes
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.text(`Subtotal: ${invoiceData.totals.subtotal.toFixed(2)} SAR`, 125, y + 20)
+    doc.text(`VAT (${invoiceData.totals.tax_rate}%): ${invoiceData.totals.tax_amount.toFixed(2)} SAR`, 125, y + 27)
+    
+    // Highlight total amount
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(accentColor[0], accentColor[1], accentColor[2])
+    doc.text(`TOTAL: ${invoiceData.totals.total.toFixed(2)} SAR`, 125, y + 37)
+    
+    // Payment status
+    doc.setTextColor(0, 0, 0)
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`Paid: ${invoiceData.totals.paid_amount.toFixed(2)} SAR`, 20, y + 20)
+    doc.text(`Balance: ${invoiceData.totals.balance_due.toFixed(2)} SAR`, 20, y + 27)
+    
+    // Payment status indicator
+    const paymentStatus = invoiceData.totals.balance_due <= 0 ? 'PAID' : 'PENDING'
+    const statusColor = invoiceData.totals.balance_due <= 0 ? accentColor : warningColor
+    doc.setFillColor(statusColor[0], statusColor[1], statusColor[2])
+    doc.rect(20, y + 30, 30, 8, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'bold')
+    doc.text(paymentStatus, 25, y + 35)
+    
+    // Notes section
     if (invoiceData.notes) {
-      y += 20
+      y += 60
       doc.setFontSize(12)
-      doc.text('ملاحظات:', 20, y)
-      y += 10
-      doc.text(invoiceData.notes, 20, y)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
+      doc.text('NOTES', 20, y)
+      
+      doc.setTextColor(0, 0, 0)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(10)
+      doc.text(invoiceData.notes, 20, y + 10)
     }
     
-    // Footer
-    doc.setFontSize(10)
-    doc.text('شكراً لاختياركم أرض العجائب للسفر', 105, 280, { align: 'center' })
+    // Professional footer
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2])
+    doc.rect(0, 270, 210, 30, 'F')
     
-    // Download file
-    const fileName = `فاتورة_${invoiceData.invoice_number}.pdf`
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Thank you for choosing Wonderland Travel Agency', 105, 280, { align: 'center' })
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    doc.text('Professional Travel Services | www.worldtripagency.com', 105, 287, { align: 'center' })
+    doc.text('Phone: +966500982394 | Email: info@worldtripagency.com', 105, 294, { align: 'center' })
+    
+    // Download file with professional naming
+    const fileName = `Invoice_${invoiceData.invoice_number}_${invoiceData.customer.name.replace(/\s+/g, '_')}.pdf`
     doc.save(fileName)
     
   } catch (error) {
     console.error('Error creating PDF:', error)
-    alert('حدث خطأ أثناء إنشاء ملف PDF')
+    alert('Error creating PDF file')
   }
 }
 
@@ -777,6 +997,48 @@ const exportBookingsToPDF = async (data: any[]) => {
   doc.save(fileName)
 }
 
+const submitNewBooking = async () => {
+  try {
+    // Get package title
+    const selectedPackage = packages.value.find(pkg => pkg.id === newBooking.value.package_id)
+    if (selectedPackage) {
+      newBooking.value.package_title = selectedPackage.title
+    }
+
+    const response = await $fetch('/api/admin/bookings', {
+      method: 'POST',
+      body: newBooking.value
+    })
+
+    if (response.success) {
+      alert('تم إضافة الحجز بنجاح')
+      showAddBookingModal.value = false
+      // Reset form
+      newBooking.value = {
+        customer_name: '',
+        customer_email: '',
+        customer_phone: '',
+        package_id: '',
+        package_title: '',
+        destination: '',
+        travel_date: '',
+        participants_count: 1,
+        total_price: 0,
+        paid_amount: 0,
+        status: 'pending',
+        notes: ''
+      }
+      // Reload bookings
+      await loadBookings()
+    } else {
+      alert('حدث خطأ أثناء إضافة الحجز')
+    }
+  } catch (error) {
+    console.error('Error creating booking:', error)
+    alert('حدث خطأ أثناء إضافة الحجز')
+  }
+}
+
 const closeModal = () => {
   showBookingModal.value = false
   showEditBookingModal.value = false
@@ -785,9 +1047,10 @@ const closeModal = () => {
 }
 
 
-// Load bookings on mount
-onMounted(() => {
-  loadBookings()
+// Load bookings and packages on mount
+onMounted(async () => {
+  await loadPackages()
+  await loadBookings()
 })
 
 // Set page title

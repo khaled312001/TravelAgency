@@ -44,14 +44,16 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Generate invoice data
+    // Generate invoice data with proper encoding
     const invoiceData = {
       invoice_number: `INV-${bookingId.split('-')[1]}-${Date.now()}`,
       invoice_date: new Date().toISOString().split('T')[0],
       due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
       company: {
-        name: invoiceSettings.company_name || 'وكالة أرض العجائب للسفر',
-        address: invoiceSettings.company_address || 'الرياض، المملكة العربية السعودية',
+        name: invoiceSettings.company_name || 'Wonderland Travel Agency',
+        name_ar: invoiceSettings.company_name || 'وكالة أرض العجائب للسفر',
+        address: invoiceSettings.company_address || 'Riyadh, Saudi Arabia',
+        address_ar: invoiceSettings.company_address || 'الرياض، المملكة العربية السعودية',
         phone: invoiceSettings.company_phone || '+966500982394',
         email: invoiceSettings.company_email || 'info@worldtripagency.com',
         tax_number: invoiceSettings.tax_number || '1234567890',
@@ -72,6 +74,7 @@ export default defineEventHandler(async (event) => {
       items: [
         {
           description: `${booking.package_title} - ${booking.destination}`,
+          description_en: `${booking.package_title} - ${booking.destination}`,
           quantity: booking.participants_count,
           unit_price: booking.total_price / booking.participants_count,
           total_price: booking.total_price
@@ -86,6 +89,9 @@ export default defineEventHandler(async (event) => {
         balance_due: (booking.total_price * 1.15) - booking.paid_amount
       },
       status: booking.status,
+      status_ar: booking.status === 'pending' ? 'في الانتظار' : 
+                 booking.status === 'confirmed' ? 'مؤكد' :
+                 booking.status === 'cancelled' ? 'ملغي' : 'مكتمل',
       notes: booking.notes || ''
     }
 

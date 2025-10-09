@@ -140,10 +140,12 @@ const handleLogout = async () => {
   }
 }
 
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
+
 const closeSidebar = () => {
-  // Emit event to parent layout to close sidebar
-  const event = new CustomEvent('close-sidebar')
-  window.dispatchEvent(event)
+  emit('close')
 }
 </script>
 

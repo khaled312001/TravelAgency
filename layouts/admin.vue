@@ -1,7 +1,7 @@
 <template>
   <div class="admin-layout">
     <!-- Sidebar -->
-    <AdminSidebar v-if="!isMobile || showSidebar" class="admin-sidebar" />
+    <AdminSidebar v-if="!isMobile || showSidebar" class="admin-sidebar" @close="closeSidebar" />
 
     <!-- Main Content -->
     <div class="admin-main">

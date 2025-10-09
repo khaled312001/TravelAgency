@@ -18,6 +18,14 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // Phone is required for destination forms
+    if (body.destination_name && !body.phone) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Phone number is required for destination inquiries'
+      })
+    }
+
     // Email is optional for some forms (like destination forms)
     if (body.email) {
       // Validate email format only if provided
@@ -59,9 +67,9 @@ export default defineEventHandler(async (event) => {
         insertData.subject = `[${messageType.toUpperCase()}] ${insertData.subject}`
       }
 
-      // Add destination_name if provided (only if column exists)
+      // Add destination_name if provided (store in subject for now)
       if (body.destination_name) {
-        insertData.destination_name = body.destination_name
+        insertData.subject = `[DESTINATION] ${insertData.subject} - ${body.destination_name}`
       }
 
       const { data, error } = await supabase
