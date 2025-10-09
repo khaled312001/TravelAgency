@@ -9,8 +9,7 @@
           width="1920"
           height="1080"
           loading="eager"
-          format="webp"
-          quality="80"
+          preset="hero"
           class="w-full h-full object-cover"
           placeholder
         />

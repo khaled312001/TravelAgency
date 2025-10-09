@@ -81,8 +81,14 @@
           
           <select v-model="typeFilter" class="filter-select">
             <option value="">جميع الأنواع</option>
-            <option value="domestic">محلية</option>
-            <option value="international">دولية</option>
+            <option value="حضري">حضري</option>
+            <option value="ساحلي">ساحلي</option>
+            <option value="ديني">ديني</option>
+            <option value="تاريخي">تاريخي</option>
+            <option value="ثقافي">ثقافي</option>
+            <option value="شاطئي">شاطئي</option>
+            <option value="روحاني">روحاني</option>
+            <option value="متنوع">متنوع</option>
           </select>
 
           <select v-model="featuredFilter" class="filter-select">
@@ -118,12 +124,12 @@
         >
           <div class="destination-image">
             <img 
-              :src="destination.image_url || '/images/placeholder-destination.jpg'" 
-              :alt="destination.name"
+              :src="destination.main_image || '/images/placeholder-destination.jpg'" 
+              :alt="destination.name_ar"
               class="destination-img"
             />
             <div class="destination-badges">
-              <div v-if="destination.is_featured" class="badge featured">
+              <div v-if="destination.featured" class="badge featured">
                 <Icon name="lucide:star" class="badge-icon" />
                 مميز
               </div>
@@ -135,7 +141,7 @@
 
           <div class="destination-content">
             <div class="destination-header">
-              <h3 class="destination-name">{{ destination.name }}</h3>
+              <h3 class="destination-name">{{ destination.name_ar }}</h3>
               <div class="destination-actions">
                 <button @click="editDestination(destination)" class="action-btn edit">
                   <Icon name="lucide:edit" class="action-icon" />
@@ -146,20 +152,20 @@
               </div>
             </div>
 
-            <p class="destination-description">{{ destination.description }}</p>
+            <p class="destination-description">{{ destination.description_ar }}</p>
 
             <div class="destination-details">
               <div class="detail-item">
                 <Icon name="lucide:map-pin" class="detail-icon" />
-                <span>{{ destination.country }}</span>
+                <span>{{ destination.region_ar }}</span>
               </div>
               <div class="detail-item">
                 <Icon name="lucide:globe" class="detail-icon" />
-                <span>{{ getTypeText(destination.type) }}</span>
+                <span>{{ destination.destination_type_ar }}</span>
               </div>
               <div class="detail-item">
-                <Icon name="lucide:calendar" class="detail-icon" />
-                <span>أفضل وقت: {{ destination.best_time_to_visit }}</span>
+                <Icon name="lucide:tag" class="detail-icon" />
+                <span>{{ destination.location_type_ar }}</span>
               </div>
             </div>
 
@@ -169,7 +175,7 @@
                   {{ formatDate(destination.created_at) }}
                 </span>
                 <span class="packages-count">
-                  {{ destination.packages_count || 0 }} باقة
+                  {{ destination.featured ? 'مميز' : 'عادي' }}
                 </span>
               </div>
             </div>
@@ -193,9 +199,9 @@
         <form @submit.prevent="saveDestination" class="modal-form">
           <div class="form-grid">
             <div class="form-group">
-              <label class="form-label">اسم الوجهة *</label>
+              <label class="form-label">اسم الوجهة (عربي) *</label>
               <input 
-                v-model="destinationForm.name" 
+                v-model="destinationForm.name_ar" 
                 type="text" 
                 class="form-input"
                 required
@@ -203,9 +209,9 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">البلد *</label>
+              <label class="form-label">اسم الوجهة (إنجليزي) *</label>
               <input 
-                v-model="destinationForm.country" 
+                v-model="destinationForm.name_en" 
                 type="text" 
                 class="form-input"
                 required
@@ -213,27 +219,73 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">النوع *</label>
-              <select v-model="destinationForm.type" class="form-select" required>
-                <option value="domestic">محلية</option>
-                <option value="international">دولية</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">أفضل وقت للزيارة</label>
+              <label class="form-label">المنطقة (عربي) *</label>
               <input 
-                v-model="destinationForm.best_time_to_visit" 
+                v-model="destinationForm.region_ar" 
                 type="text" 
                 class="form-input"
-                placeholder="مثال: مارس - مايو"
+                required
               />
             </div>
 
             <div class="form-group">
-              <label class="form-label">رابط الصورة</label>
+              <label class="form-label">المنطقة (إنجليزي) *</label>
               <input 
-                v-model="destinationForm.image_url" 
+                v-model="destinationForm.region_en" 
+                type="text" 
+                class="form-input"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">نوع الموقع (عربي) *</label>
+              <input 
+                v-model="destinationForm.location_type_ar" 
+                type="text" 
+                class="form-input"
+                placeholder="مثال: مدينة، ساحلي، ديني"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">نوع الموقع (إنجليزي) *</label>
+              <input 
+                v-model="destinationForm.location_type_en" 
+                type="text" 
+                class="form-input"
+                placeholder="مثال: Urban, Coastal, Religious"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">نوع الوجهة (عربي) *</label>
+              <input 
+                v-model="destinationForm.destination_type_ar" 
+                type="text" 
+                class="form-input"
+                placeholder="مثال: حضري، ثقافي، تاريخي"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">نوع الوجهة (إنجليزي) *</label>
+              <input 
+                v-model="destinationForm.destination_type_en" 
+                type="text" 
+                class="form-input"
+                placeholder="مثال: Metropolitan, Cultural, Historical"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">رابط الصورة الرئيسية</label>
+              <input 
+                v-model="destinationForm.main_image" 
                 type="url" 
                 class="form-input"
               />
@@ -248,9 +300,18 @@
             </div>
 
             <div class="form-group full-width">
-              <label class="form-label">الوصف</label>
+              <label class="form-label">الوصف (عربي)</label>
               <textarea 
-                v-model="destinationForm.description" 
+                v-model="destinationForm.description_ar" 
+                class="form-textarea"
+                rows="4"
+              ></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">الوصف (إنجليزي)</label>
+              <textarea 
+                v-model="destinationForm.description_en" 
                 class="form-textarea"
                 rows="4"
               ></textarea>
@@ -259,7 +320,7 @@
             <div class="form-group">
               <label class="form-label flex items-center space-x-2 space-x-reverse">
                 <input 
-                  v-model="destinationForm.is_featured" 
+                  v-model="destinationForm.featured" 
                   type="checkbox" 
                   class="form-checkbox"
                 />
@@ -285,9 +346,25 @@
 </template>
 
 <script setup lang="ts">
-import type { Destination } from '~/composables/useAdminDestinations'
-
-const { getDestinations, createDestination, updateDestination, deleteDestination: deleteDestinationFromDB, toggleFeatured } = useAdminDestinations()
+// Define Destination interface locally since we're using static data
+interface Destination {
+  id: string
+  name_ar: string
+  name_en: string
+  description_ar: string
+  description_en: string
+  region_ar: string
+  region_en: string
+  location_type_ar: string
+  location_type_en: string
+  destination_type_ar: string
+  destination_type_en: string
+  main_image: string
+  featured: boolean
+  status: string
+  created_at: string
+  updated_at: string
+}
 
 const destinations = ref<Destination[]>([])
 const loading = ref(true)
@@ -371,11 +448,7 @@ const getStatusText = (status: string) => {
 }
 
 const getTypeText = (type: string) => {
-  const typeMap = {
-    domestic: 'محلية',
-    international: 'دولية'
-  }
-  return typeMap[type] || type
+  return type || 'غير محدد'
 }
 
 const formatDate = (dateString: string) => {
@@ -386,8 +459,8 @@ const loadDestinations = async () => {
   try {
     loading.value = true
     
-    const data = await getDestinations()
-    destinations.value = data
+    const response = await $fetch('/api/admin/destinations')
+    destinations.value = response.destinations || []
   } catch (error) {
     console.error('Error loading destinations:', error)
     destinations.value = []
@@ -407,15 +480,12 @@ const deleteDestination = async (destination: Destination) => {
     try {
       saving.value = true
       
-      const success = await deleteDestinationFromDB(destination.id)
+      // Since these are static destinations, we'll just show a message
+      console.log('Delete destination:', destination.id)
+      alert('لا يمكن حذف الوجهات الثابتة. يمكنك تعديلها فقط.')
       
-      if (success) {
-        await loadDestinations()
-        // Show success message
-      }
     } catch (error) {
       console.error('Error deleting destination:', error)
-      // Show error message
     } finally {
       saving.value = false
     }
@@ -428,18 +498,12 @@ const saveDestination = async () => {
     
     if (showEditModal.value && editingDestination.value) {
       // Update existing destination
-      // await $fetch(`/api/admin/destinations/${editingDestination.value.id}`, {
-      //   method: 'PUT',
-      //   body: destinationForm.value
-      // })
       console.log('Update destination:', destinationForm.value)
+      alert('تم حفظ التعديلات بنجاح! (هذه بيانات ثابتة)')
     } else {
       // Create new destination
-      // await $fetch('/api/admin/destinations', {
-      //   method: 'POST',
-      //   body: destinationForm.value
-      // })
       console.log('Create destination:', destinationForm.value)
+      alert('تم إنشاء الوجهة بنجاح! (هذه بيانات ثابتة)')
     }
     
     await loadDestinations()
@@ -456,14 +520,22 @@ const closeModal = () => {
   showEditModal.value = false
   editingDestination.value = null
   destinationForm.value = {
-    name: '',
-    description: '',
-    country: '',
-    type: 'domestic',
-    best_time_to_visit: '',
-    status: 'active',
-    is_featured: false,
-    image_url: ''
+    name_ar: '',
+    name_en: '',
+    description_ar: '',
+    description_en: '',
+    region_ar: '',
+    region_en: '',
+    location_type_ar: '',
+    location_type_en: '',
+    destination_type_ar: '',
+    destination_type_en: '',
+    main_image: '',
+    featured: false,
+    gallery: [],
+    tourist_spots: [],
+    upcoming_events: [],
+    coordinates: { latitude: 0, longitude: 0 }
   }
 }
 

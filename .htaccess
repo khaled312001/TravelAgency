@@ -22,6 +22,9 @@ RewriteRule ^images/(.*)$ - [L]
 RewriteRule ^videos/(.*)$ - [L]
 RewriteRule ^icons/(.*)$ - [L]
 
+# Handle specific image files
+RewriteRule ^images/packages/home/packages-hero-bg\.jpeg$ - [L]
+
 # Handle client-side routing for Nuxt.js
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

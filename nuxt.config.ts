@@ -18,7 +18,7 @@ export default defineNuxtConfig({
 
   icon: {
     serverBundle: 'auto',
-    collections: ['material-symbols', 'lucide', 'heroicons']
+    collections: ['lucide', 'heroicons', 'material-symbols']
   },
 
 
@@ -228,7 +228,7 @@ export default defineNuxtConfig({
     provider: 'ipx',
     dir: 'public',
     domains: ['images.unsplash.com', 'images.pexels.com', 'worldtripagency.com', 'www.worldtripagency.com'],
-    format: ['webp'],
+    format: ['webp', 'jpeg', 'png'],
     screens: {
       xs: 320,
       sm: 640,
@@ -245,7 +245,18 @@ export default defineNuxtConfig({
           height: 600,
           quality: 90
         }
+      },
+      hero: {
+        modifiers: {
+          format: 'webp',
+          width: 1920,
+          height: 1080,
+          quality: 80
+        }
       }
+    },
+    ipx: {
+      maxAge: 60 * 60 * 24 * 7 // 7 days
     }
   },
 
@@ -331,7 +342,7 @@ export default defineNuxtConfig({
         baseURL: '/'
       }
     ],
-    // Handle domain redirects
+    // Handle image processing and domain redirects
     experimental: {
       wasm: true
     },
@@ -367,7 +378,8 @@ export default defineNuxtConfig({
         headers: { 
           'cache-control': 's-maxage=31536000',
           'access-control-allow-origin': '*',
-          'access-control-allow-methods': 'GET, HEAD, OPTIONS'
+          'access-control-allow-methods': 'GET, HEAD, OPTIONS',
+          'content-type': 'image/webp'
         }
       },
       '/api/**': { 
@@ -380,8 +392,7 @@ export default defineNuxtConfig({
   ssr: true,
 
   experimental: {
-    viewTransition: true,
-    wasm: true
+    viewTransition: true
   },
 
   app: {

@@ -112,6 +112,155 @@
         </div>
       </div>
 
+      <!-- Logo Settings -->
+      <div v-if="activeTab === 'logo'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">إعدادات اللوجو</h2>
+          <p class="section-description">إدارة لوجو الموقع</p>
+        </div>
+
+        <div class="settings-grid">
+          <div class="setting-card">
+            <div class="setting-header">
+              <h3 class="setting-title">لوجو الموقع الرئيسي</h3>
+              <p class="setting-description">اللوجو المستخدم في الهيدر والموقع</p>
+            </div>
+            <div class="setting-content">
+              <div class="logo-upload-area">
+                <div class="current-logo">
+                  <img 
+                    :src="settings.logo.mainLogo || '/images/home/logo/WonderlandLogo.svg'" 
+                    alt="اللوجو الحالي" 
+                    class="logo-preview"
+                  />
+                  <p class="logo-info">اللوجو الحالي</p>
+                </div>
+                <div class="upload-section">
+                  <input 
+                    ref="mainLogoInput"
+                    type="file" 
+                    accept="image/*" 
+                    @change="handleMainLogoUpload"
+                    class="file-input"
+                    id="main-logo-upload"
+                  />
+                  <label for="main-logo-upload" class="upload-button">
+                    <Icon name="lucide:upload" class="upload-icon" />
+                    رفع لوجو جديد
+                  </label>
+                  <p class="upload-hint">PNG, JPG, SVG - الحد الأقصى 2MB</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <div class="setting-header">
+              <h3 class="setting-title">لوجو الفوتر</h3>
+              <p class="setting-description">اللوجو المستخدم في الفوتر (أبيض)</p>
+            </div>
+            <div class="setting-content">
+              <div class="logo-upload-area">
+                <div class="current-logo">
+                  <img 
+                    :src="settings.logo.footerLogo || '/images/home/logo/WonderlandLogoWhite.svg'" 
+                    alt="لوجو الفوتر الحالي" 
+                    class="logo-preview"
+                  />
+                  <p class="logo-info">لوجو الفوتر الحالي</p>
+                </div>
+                <div class="upload-section">
+                  <input 
+                    ref="footerLogoInput"
+                    type="file" 
+                    accept="image/*" 
+                    @change="handleFooterLogoUpload"
+                    class="file-input"
+                    id="footer-logo-upload"
+                  />
+                  <label for="footer-logo-upload" class="upload-button">
+                    <Icon name="lucide:upload" class="upload-icon" />
+                    رفع لوجو جديد
+                  </label>
+                  <p class="upload-hint">PNG, JPG, SVG - الحد الأقصى 2MB</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <div class="setting-header">
+              <h3 class="setting-title">أيقونة الموقع (Favicon)</h3>
+              <p class="setting-description">الأيقونة الصغيرة في تبويب المتصفح</p>
+            </div>
+            <div class="setting-content">
+              <div class="logo-upload-area">
+                <div class="current-logo">
+                  <img 
+                    :src="settings.logo.favicon || '/favicon.ico'" 
+                    alt="الأيقونة الحالية" 
+                    class="favicon-preview"
+                  />
+                  <p class="logo-info">الأيقونة الحالية</p>
+                </div>
+                <div class="upload-section">
+                  <input 
+                    ref="faviconInput"
+                    type="file" 
+                    accept="image/*" 
+                    @change="handleFaviconUpload"
+                    class="file-input"
+                    id="favicon-upload"
+                  />
+                  <label for="favicon-upload" class="upload-button">
+                    <Icon name="lucide:upload" class="upload-icon" />
+                    رفع أيقونة جديدة
+                  </label>
+                  <p class="upload-hint">ICO, PNG - 32x32 أو 16x16 بكسل</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <div class="setting-header">
+              <h3 class="setting-title">إعدادات اللوجو</h3>
+              <p class="setting-description">إعدادات عرض اللوجو</p>
+            </div>
+            <div class="setting-content">
+              <div class="form-group">
+                <label class="form-label">ارتفاع اللوجو (بالبكسل)</label>
+                <input 
+                  v-model="settings.logo.logoHeight" 
+                  type="number" 
+                  class="form-input"
+                  min="20"
+                  max="100"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label flex items-center space-x-2 space-x-reverse">
+                  <input 
+                    v-model="settings.logo.showLogoText" 
+                    type="checkbox" 
+                    class="form-checkbox"
+                  />
+                  <span>إظهار نص اللوجو بجانب الصورة</span>
+                </label>
+              </div>
+              <div v-if="settings.logo.showLogoText" class="form-group">
+                <label class="form-label">نص اللوجو</label>
+                <input 
+                  v-model="settings.logo.logoText" 
+                  type="text" 
+                  class="form-input"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Email Settings -->
       <div v-if="activeTab === 'email'" class="settings-section">
         <div class="section-header">
@@ -423,6 +572,14 @@ interface Settings {
     contactPhone: string
     contactAddress: string
   }
+  logo: {
+    mainLogo: string
+    footerLogo: string
+    favicon: string
+    logoHeight: number
+    showLogoText: boolean
+    logoText: string
+  }
   email: {
     smtpHost: string
     smtpPort: number
@@ -459,6 +616,7 @@ const saving = ref(false)
 
 const tabs = [
   { id: 'general', name: 'عام', icon: 'lucide:settings' },
+  { id: 'logo', name: 'اللوجو', icon: 'lucide:image' },
   { id: 'email', name: 'البريد الإلكتروني', icon: 'lucide:mail' },
   { id: 'payment', name: 'الدفع', icon: 'lucide:credit-card' },
   { id: 'seo', name: 'SEO', icon: 'lucide:search' },
@@ -473,6 +631,14 @@ const settings = ref<Settings>({
     contactEmail: 'info@worldtripagency.com',
     contactPhone: '+966501234567',
     contactAddress: 'الرياض، المملكة العربية السعودية'
+  },
+  logo: {
+    mainLogo: '/images/home/logo/WonderlandLogo.svg',
+    footerLogo: '/images/home/logo/WonderlandLogoWhite.svg',
+    favicon: '/favicon.ico',
+    logoHeight: 48,
+    showLogoText: true,
+    logoText: 'Wonder Land'
   },
   email: {
     smtpHost: '',
@@ -504,6 +670,55 @@ const settings = ref<Settings>({
     enableRateLimit: true
   }
 })
+
+// Logo upload functions
+const handleMainLogoUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    if (file.size > 2 * 1024 * 1024) {
+      alert('حجم الملف كبير جداً. الحد الأقصى 2MB')
+      return
+    }
+    
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      settings.value.logo.mainLogo = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const handleFooterLogoUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    if (file.size > 2 * 1024 * 1024) {
+      alert('حجم الملف كبير جداً. الحد الأقصى 2MB')
+      return
+    }
+    
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      settings.value.logo.footerLogo = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const handleFaviconUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    if (file.size > 500 * 1024) {
+      alert('حجم الملف كبير جداً. الحد الأقصى 500KB')
+      return
+    }
+    
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      settings.value.logo.favicon = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
 
 const loadSettings = async () => {
   try {
@@ -672,6 +887,47 @@ definePageMeta({
 
 .form-checkbox {
   @apply w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500;
+}
+
+/* Logo upload styles */
+.logo-upload-area {
+  @apply space-y-4;
+}
+
+.current-logo {
+  @apply text-center;
+}
+
+.logo-preview {
+  @apply max-w-32 max-h-20 object-contain mx-auto border border-gray-200 rounded-lg p-2;
+}
+
+.favicon-preview {
+  @apply w-16 h-16 object-contain mx-auto border border-gray-200 rounded-lg p-2;
+}
+
+.logo-info {
+  @apply text-sm text-gray-600 mt-2;
+}
+
+.upload-section {
+  @apply text-center;
+}
+
+.file-input {
+  @apply hidden;
+}
+
+.upload-button {
+  @apply inline-flex items-center space-x-2 space-x-reverse px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer;
+}
+
+.upload-icon {
+  @apply w-4 h-4;
+}
+
+.upload-hint {
+  @apply text-xs text-gray-500 mt-2;
 }
 
 /* Responsive */

@@ -24,6 +24,11 @@
   status = 200
 
 [[redirects]]
+  from = "/images/packages/home/packages-hero-bg.jpeg"
+  to = "/images/packages/home/packages-hero-bg.jpeg"
+  status = 200
+
+[[redirects]]
   from = "/images/*"
   to = "/images/:splat"
   status = 200

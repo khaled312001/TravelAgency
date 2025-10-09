@@ -32,17 +32,17 @@
         <div class="filter-controls">
           <select v-model="statusFilter" class="filter-select">
             <option value="">جميع الحالات</option>
-            <option value="active">نشط</option>
-            <option value="inactive">غير نشط</option>
-            <option value="draft">مسودة</option>
+            <option value="featured">مميز</option>
+            <option value="normal">عادي</option>
           </select>
           
           <select v-model="categoryFilter" class="filter-select">
-            <option value="">جميع الفئات</option>
-            <option value="domestic">رحلات داخلية</option>
-            <option value="international">رحلات خارجية</option>
-            <option value="umrah">عمرة</option>
-            <option value="hajj">حج</option>
+            <option value="">جميع فترات السفر</option>
+            <option value="All Year">طوال السنة</option>
+            <option value="Winter">الشتاء</option>
+            <option value="Spring">الربيع</option>
+            <option value="Summer">الصيف</option>
+            <option value="Autumn">الخريف</option>
           </select>
         </div>
       </div>
@@ -73,17 +73,17 @@
           <div class="package-image">
             <img 
               :src="pkg.image_url || '/images/placeholder-package.jpg'" 
-              :alt="pkg.title"
+              :alt="pkg.title_ar"
               class="package-img"
             />
-            <div class="package-status" :class="pkg.status">
-              {{ getStatusText(pkg.status) }}
+            <div class="package-status" :class="pkg.featured ? 'featured' : 'normal'">
+              {{ getStatusText(pkg.featured) }}
             </div>
           </div>
 
           <div class="package-content">
             <div class="package-header">
-              <h3 class="package-title">{{ pkg.title }}</h3>
+              <h3 class="package-title">{{ pkg.title_ar }}</h3>
               <div class="package-actions">
                 <button @click="editPackage(pkg)" class="action-btn edit">
                   <Icon name="lucide:edit" class="action-icon" />
@@ -94,20 +94,24 @@
               </div>
             </div>
 
-            <p class="package-description">{{ pkg.description }}</p>
+            <p class="package-description">{{ pkg.description_ar }}</p>
 
             <div class="package-details">
               <div class="detail-item">
-                <Icon name="lucide:map-pin" class="detail-icon" />
-                <span>{{ pkg.destination }}</span>
-              </div>
-              <div class="detail-item">
                 <Icon name="lucide:calendar" class="detail-icon" />
-                <span>{{ pkg.duration }} أيام</span>
+                <span>{{ pkg.duration_days }} أيام</span>
               </div>
               <div class="detail-item">
                 <Icon name="lucide:users" class="detail-icon" />
-                <span>{{ pkg.max_participants }} أشخاص</span>
+                <span>{{ pkg.max_persons }} أشخاص</span>
+              </div>
+              <div class="detail-item">
+                <Icon name="lucide:clock" class="detail-icon" />
+                <span>{{ pkg.travel_period }}</span>
+              </div>
+              <div class="detail-item">
+                <Icon name="lucide:star" class="detail-icon" />
+                <span>{{ pkg.featured ? 'مميز' : 'عادي' }}</span>
               </div>
             </div>
 
@@ -142,9 +146,9 @@
         <form @submit.prevent="savePackage" class="modal-form">
           <div class="form-grid">
             <div class="form-group">
-              <label class="form-label">عنوان الباقة *</label>
+              <label class="form-label">عنوان الباقة (عربي) *</label>
               <input 
-                v-model="packageForm.title" 
+                v-model="packageForm.title_ar" 
                 type="text" 
                 class="form-input"
                 required
@@ -152,9 +156,9 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">الوجهة *</label>
+              <label class="form-label">عنوان الباقة (إنجليزي) *</label>
               <input 
-                v-model="packageForm.destination" 
+                v-model="packageForm.title_en" 
                 type="text" 
                 class="form-input"
                 required
@@ -174,7 +178,7 @@
             <div class="form-group">
               <label class="form-label">المدة (أيام) *</label>
               <input 
-                v-model="packageForm.duration" 
+                v-model="packageForm.duration_days" 
                 type="number" 
                 class="form-input"
                 required
@@ -182,28 +186,37 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">الحد الأقصى للمشاركين</label>
+              <label class="form-label">الحد الأقصى للأشخاص</label>
               <input 
-                v-model="packageForm.max_participants" 
+                v-model="packageForm.max_persons" 
                 type="number" 
                 class="form-input"
               />
             </div>
 
             <div class="form-group">
-              <label class="form-label">الفئة</label>
-              <select v-model="packageForm.category" class="form-select">
-                <option value="domestic">رحلات داخلية</option>
-                <option value="international">رحلات خارجية</option>
-                <option value="umrah">عمرة</option>
-                <option value="hajj">حج</option>
-              </select>
+              <label class="form-label">فترة السفر</label>
+              <input 
+                v-model="packageForm.travel_period" 
+                type="text" 
+                class="form-input"
+                placeholder="مثال: طوال السنة، الشتاء، الصيف"
+              />
             </div>
 
             <div class="form-group full-width">
-              <label class="form-label">الوصف</label>
+              <label class="form-label">الوصف (عربي)</label>
               <textarea 
-                v-model="packageForm.description" 
+                v-model="packageForm.description_ar" 
+                class="form-textarea"
+                rows="4"
+              ></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">الوصف (إنجليزي)</label>
+              <textarea 
+                v-model="packageForm.description_en" 
                 class="form-textarea"
                 rows="4"
               ></textarea>
@@ -219,12 +232,21 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">الحالة</label>
-              <select v-model="packageForm.status" class="form-select">
-                <option value="active">نشط</option>
-                <option value="inactive">غير نشط</option>
-                <option value="draft">مسودة</option>
-              </select>
+              <label class="form-label">رابط صورة البطل</label>
+              <input 
+                v-model="packageForm.hero_image_url" 
+                type="url" 
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">مميز</label>
+              <input 
+                v-model="packageForm.featured" 
+                type="checkbox" 
+                class="form-checkbox"
+              />
             </div>
           </div>
 
@@ -247,15 +269,17 @@
 <script setup lang="ts">
 interface Package {
   id: string
-  title: string
-  description: string
-  destination: string
+  title_ar: string
+  title_en: string
+  description_ar: string
+  description_en: string
   price: number
-  duration: number
-  max_participants: number
-  category: string
-  status: string
+  duration_days: number
+  max_persons: number
+  travel_period: string
+  featured: boolean
   image_url?: string
+  hero_image_url?: string
   created_at: string
   updated_at: string
 }
@@ -271,45 +295,45 @@ const showEditModal = ref(false)
 const editingPackage = ref<Package | null>(null)
 
 const packageForm = ref({
-  title: '',
-  description: '',
-  destination: '',
+  title_ar: '',
+  title_en: '',
+  description_ar: '',
+  description_en: '',
   price: 0,
-  duration: 0,
-  max_participants: 0,
-  category: 'domestic',
-  status: 'active',
-  image_url: ''
+  duration_days: 0,
+  max_persons: 0,
+  travel_period: '',
+  featured: false,
+  image_url: '',
+  hero_image_url: ''
 })
 
 const filteredPackages = computed(() => {
   let filtered = packages.value
 
   if (searchQuery.value) {
+    const searchLower = searchQuery.value.toLowerCase()
     filtered = filtered.filter(pkg => 
-      pkg.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      pkg.destination.toLowerCase().includes(searchQuery.value.toLowerCase())
+      pkg.title_ar.toLowerCase().includes(searchLower) ||
+      pkg.title_en.toLowerCase().includes(searchLower) ||
+      pkg.description_ar.toLowerCase().includes(searchLower) ||
+      pkg.description_en.toLowerCase().includes(searchLower)
     )
   }
 
   if (statusFilter.value) {
-    filtered = filtered.filter(pkg => pkg.status === statusFilter.value)
+    filtered = filtered.filter(pkg => pkg.featured === (statusFilter.value === 'featured'))
   }
 
   if (categoryFilter.value) {
-    filtered = filtered.filter(pkg => pkg.category === categoryFilter.value)
+    filtered = filtered.filter(pkg => pkg.travel_period === categoryFilter.value)
   }
 
   return filtered
 })
 
-const getStatusText = (status: string) => {
-  const statusMap = {
-    active: 'نشط',
-    inactive: 'غير نشط',
-    draft: 'مسودة'
-  }
-  return statusMap[status] || status
+const getStatusText = (featured: boolean) => {
+  return featured ? 'مميز' : 'عادي'
 }
 
 const formatPrice = (price: number) => {
@@ -339,21 +363,8 @@ const loadPackages = async () => {
     const response = await $fetch(url)
     
     if (response.packages) {
-      // Transform the data to match the expected format
-      packages.value = response.packages.map((pkg: any) => ({
-        id: pkg.id,
-        title: pkg.title_ar || pkg.title_en || 'غير محدد',
-        description: pkg.description_ar || pkg.description_en || '',
-        destination: pkg.destination || 'غير محدد',
-        price: pkg.price || 0,
-        duration: pkg.duration_days || 0,
-        max_participants: pkg.max_persons || 0,
-        category: pkg.category || 'domestic',
-        status: pkg.status || 'active',
-        image_url: pkg.image_url || '/images/placeholder-package.jpg',
-        created_at: pkg.created_at,
-        updated_at: pkg.updated_at
-      }))
+      // Use the data directly from database
+      packages.value = response.packages
     } else {
       packages.value = []
     }
@@ -372,10 +383,11 @@ const editPackage = (pkg: Package) => {
 }
 
 const deletePackage = async (pkg: Package) => {
-  if (confirm(`هل أنت متأكد من حذف الباقة "${pkg.title}"؟`)) {
+  if (confirm(`هل أنت متأكد من حذف الباقة "${pkg.title_ar}"؟`)) {
     try {
-      // TODO: Implement delete API
-      console.log('Delete package:', pkg.id)
+      await $fetch(`/api/admin/packages/${pkg.id}`, {
+        method: 'DELETE'
+      })
       await loadPackages()
     } catch (error) {
       console.error('Error deleting package:', error)
@@ -387,17 +399,32 @@ const savePackage = async () => {
   try {
     saving.value = true
     
+    // Prepare the data for API
+    const packageData = {
+      title_ar: packageForm.value.title_ar,
+      title_en: packageForm.value.title_en,
+      description_ar: packageForm.value.description_ar,
+      description_en: packageForm.value.description_en,
+      price: Number(packageForm.value.price),
+      duration_days: Number(packageForm.value.duration_days),
+      max_persons: Number(packageForm.value.max_persons) || null,
+      travel_period: packageForm.value.travel_period || null,
+      featured: packageForm.value.featured || false,
+      image_url: packageForm.value.image_url || null,
+      hero_image_url: packageForm.value.hero_image_url || null
+    }
+    
     if (showEditModal.value && editingPackage.value) {
       // Update existing package
       await $fetch(`/api/admin/packages/${editingPackage.value.id}`, {
         method: 'PUT',
-        body: packageForm.value
+        body: packageData
       })
     } else {
       // Create new package
       await $fetch('/api/admin/packages', {
         method: 'POST',
-        body: packageForm.value
+        body: packageData
       })
     }
     
@@ -415,15 +442,17 @@ const closeModal = () => {
   showEditModal.value = false
   editingPackage.value = null
   packageForm.value = {
-    title: '',
-    description: '',
-    destination: '',
+    title_ar: '',
+    title_en: '',
+    description_ar: '',
+    description_en: '',
     price: 0,
-    duration: 0,
-    max_participants: 0,
-    category: 'domestic',
-    status: 'active',
-    image_url: ''
+    duration_days: 0,
+    max_persons: 0,
+    travel_period: '',
+    featured: false,
+    image_url: '',
+    hero_image_url: ''
   }
 }
 
@@ -545,16 +574,12 @@ definePageMeta({
   @apply absolute top-3 right-3 px-2 py-1 text-xs font-medium rounded-full;
 }
 
-.package-status.active {
-  @apply bg-green-100 text-green-800;
+.package-status.featured {
+  @apply bg-purple-100 text-purple-800;
 }
 
-.package-status.inactive {
-  @apply bg-red-100 text-red-800;
-}
-
-.package-status.draft {
-  @apply bg-yellow-100 text-yellow-800;
+.package-status.normal {
+  @apply bg-gray-100 text-gray-800;
 }
 
 .package-content {
@@ -693,5 +718,9 @@ definePageMeta({
 
 .btn-primary:disabled {
   @apply cursor-not-allowed;
+}
+
+.form-checkbox {
+  @apply w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500;
 }
 </style>
