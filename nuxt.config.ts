@@ -227,7 +227,7 @@ export default defineNuxtConfig({
   image: {
     provider: 'ipx',
     dir: 'public',
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', 'images.pexels.com'],
     format: ['webp'],
     screens: {
       xs: 320,
@@ -352,12 +352,12 @@ export default defineNuxtConfig({
           'content-type': 'text/css; charset=utf-8'
         } 
       },
-      '/': { prerender: false },
-      '/en-US': { prerender: false },
-      '/en-US/': { prerender: false },
-      '/packages/**': { prerender: false },
-      '/destinations/**': { prerender: false },
-      '/about': { prerender: false },
+      '/': { prerender: true },
+      '/en-US': { prerender: true },
+      '/en-US/': { prerender: true },
+      '/packages/**': { prerender: true },
+      '/destinations/**': { prerender: true },
+      '/about': { prerender: true },
       '/admin/**': { ssr: false, index: false }
     },
     // Ensure proper static deployment
@@ -410,7 +410,7 @@ export default defineNuxtConfig({
   vite: {
     build: {
       cssMinify: true,
-      minify: 'esbuild',
+      minify: 'terser',
       rollupOptions: {
         output: {
           manualChunks: {

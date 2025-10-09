@@ -43,7 +43,7 @@ export const useDestinations = () => {
             en: 'Iconic 99-floor skyscraper with sky bridge observation deck',
             ar: 'ناطحة سحاب أيقونية من 99 طابقاً مع جسر سماوي للمشاهدة'
           },
-          image: '/images/destinations/placeholder.jpg'
+          image: 'https://images.pexels.com/photos/35761/pexels-photo.jpg'
         },
         {
           id: 'diriyah',
@@ -55,7 +55,7 @@ export const useDestinations = () => {
             en: 'UNESCO World Heritage site and the birthplace of the first Saudi state',
             ar: 'موقع تراث عالمي لليونسكو ومهد الدولة السعودية الأولى'
           },
-          image: '/images/destinations/placeholder.jpg'
+          image: 'https://images.pexels.com/photos/1885720/pexels-photo-1885720.jpeg'
         },
         {
           id: 'edge-of-the-world',
@@ -67,7 +67,7 @@ export const useDestinations = () => {
             en: 'Dramatic cliffs offering stunning desert views and hiking trails',
             ar: 'منحدرات دراماتيكية توفر إطلالات خلابة على الصحراء ومسارات للمشي'
           },
-          image: '/images/destinations/placeholder.jpg'
+          image: 'https://images.pexels.com/photos/7107495/pexels-photo-7107495.jpeg'
         }
       ],
       upcomingEvents: [
@@ -82,7 +82,7 @@ export const useDestinations = () => {
             ar: 'مهرجان ترفيهي سنوي يتضمن حفلات موسيقية وعروض وفعاليات ثقافية'
           },
           date: '2025-10-15',
-          image: '/images/destinations/placeholder.jpg'
+          image: 'https://images.pexels.com/photos/2263436/pexels-photo-2263436.jpeg'
         },
         {
           id: 'saudi-national-day',
@@ -95,7 +95,7 @@ export const useDestinations = () => {
             ar: 'احتفالات وطنية تتضمن مسيرات وألعاب نارية وعروض ثقافية'
           },
           date: '2025-09-23',
-          image: '/images/destinations/placeholder.jpg'
+          image: 'https://images.pexels.com/photos/461940/pexels-photo-461940.jpeg'
         }
       ],
       coordinates: {
@@ -131,7 +131,7 @@ export const useDestinations = () => {
           ar: 'شاطئي'
         }
       },
-      mainImage: '/images/destinations/placeholder.jpg',
+      mainImage: 'https://images.pexels.com/photos/1320684/pexels-photo-1320684.jpeg',
       touristSpots: [
         {
           id: 'coral-reefs',
@@ -143,7 +143,7 @@ export const useDestinations = () => {
             en: 'Vibrant marine ecosystem with diverse coral species and sea life',
             ar: 'نظام بيئي بحري نابض بالحياة مع أنواع متنوعة من الشعاب المرجانية والحياة البحرية'
           },
-          image: '/images/destinations/placeholder.jpg'
+          image: 'https://images.pexels.com/photos/3601425/pexels-photo-3601425.jpeg'
         },
         {
           id: 'diving-spots',
@@ -155,7 +155,7 @@ export const useDestinations = () => {
             en: 'World-class diving locations with rich marine life and clear waters',
             ar: 'مواقع غوص عالمية المستوى مع حياة بحرية غنية ومياه صافية'
           },
-          image: '/images/destinations/placeholder.jpg'
+          image: 'https://images.pexels.com/photos/3601426/pexels-photo-3601426.jpeg'
         }
       ],
       upcomingEvents: [//to be replaced with other events
@@ -170,7 +170,7 @@ export const useDestinations = () => {
             ar: 'مهرجان سينمائي سنوي يعرض السينما العالمية والإقليمية'
           },
           date: '2025-12-05',
-          image: '/images/destinations/placeholder.jpg'
+          image: 'https://images.pexels.com/photos/3601427/pexels-photo-3601427.jpeg'
         }
       ],
       coordinates: {
@@ -218,7 +218,7 @@ export const useDestinations = () => {
             en: 'UNESCO World Heritage site featuring traditional architecture and bustling souks',
             ar: 'موقع تراث عالمي لليونسكو يضم العمارة التقليدية والأسواق النابضة بالحياة'
           },
-          image: '/images/destinations/placeholder.jpg28506244/pexels-photo-28506244.jpeg'
+          image: 'https://images.pexels.com/photos/28506244/pexels-photo-28506244.jpeg'
         },
         {
           id: 'corniche',
@@ -230,7 +230,7 @@ export const useDestinations = () => {
             en: 'Stunning waterfront promenade with modern art sculptures and recreational areas',
             ar: 'متنزه ساحلي خلاب مع منحوتات فنية حديثة ومناطق ترفيهية'
           },
-          image: '/images/destinations/placeholder.jpg4614473/pexels-photo-4614473.jpeg'
+          image: 'https://images.pexels.com/photos/4614473/pexels-photo-4614473.jpeg'
         }
       ],
       upcomingEvents: [
@@ -245,7 +245,7 @@ export const useDestinations = () => {
             ar: 'مهرجان ثقافي وترفيهي يحتفي بتراث المدينة'
           },
           date: '2025-06-01',
-          image: '/images/destinations/placeholder.jpg12692700/pexels-photo-12692700.jpeg'
+          image: 'https://images.pexels.com/photos/12692700/pexels-photo-12692700.jpeg'
         }
       ],
       coordinates: {
@@ -293,7 +293,7 @@ export const useDestinations = () => {
             en: 'The holiest site in Islam, featuring the Kaaba and historic architecture',
             ar: 'أقدس موقع في الإسلام، يضم الكعبة والعمارة التاريخية'
           },
-          image: '/images/destinations/placeholder.jpg18274181/pexels-photo-18274181.jpeg'
+          image: 'https://images.pexels.com/photos/18274181/pexels-photo-18274181.jpeg'
         },
         {
           id: 'jabal-al-nour',
@@ -320,7 +320,7 @@ export const useDestinations = () => {
             ar: 'برامج رمضانية خاصة وفرص متزايدة للعبادة'
           },
           date: '2025-03-01',
-          image: '/images/destinations/placeholder.jpg5550014/pexels-photo-5550014.jpeg'
+          image: 'https://images.pexels.com/photos/5550014/pexels-photo-5550014.jpeg'
         }
       ],
       coordinates: {
@@ -368,7 +368,7 @@ export const useDestinations = () => {
             en: 'The second-holiest site in Islam, built by Prophet Muhammad',
             ar: 'ثاني أقدس موقع في الإسلام، بناه النبي محمد صلى الله عليه وسلم'
           },
-          image: '/images/destinations/placeholder.jpg19495539/pexels-photo-19495539.jpeg'
+          image: 'https://images.pexels.com/photos/19495539/pexels-photo-19495539.jpeg'
         }
       ],
       upcomingEvents: [
@@ -383,7 +383,7 @@ export const useDestinations = () => {
             ar: 'احتفالات تقليدية تحيي نهاية شهر رمضان'
           },
           date: '2025-04-20',
-          image: '/images/destinations/placeholder.jpg5550017/pexels-photo-5550017.jpeg'
+          image: 'https://images.pexels.com/photos/5550017/pexels-photo-5550017.jpeg'
         }
       ],
       coordinates: {
@@ -431,7 +431,7 @@ export const useDestinations = () => {
             en: 'Ancient Nabataean city with over 100 well-preserved monumental tombs carved in rock formations',
             ar: 'مدينة نبطية قديمة تضم أكثر من 100 مقبرة أثرية محفوظة جيداً منحوتة في التكوينات الصخرية'
           },
-          image: '/images/destinations/placeholder.jpg11215342/pexels-photo-11215342.jpeg'
+          image: 'https://images.pexels.com/photos/11215342/pexels-photo-11215342.jpeg'
         },
         {
           id: 'elephant-rock',
@@ -443,7 +443,7 @@ export const useDestinations = () => {
             en: 'Naturally weathered sandstone formation resembling an elephant, standing at a height of 52 meters',
             ar: 'تكوين من الحجر الرملي المتآكل طبيعياً يشبه الفيل، يبلغ ارتفاعه 52 متراً'
           },
-          image: '/images/destinations/placeholder.jpg17186685/pexels-photo-17186685.jpeg'
+          image: 'https://images.pexels.com/photos/17186685/pexels-photo-17186685.jpeg'
         },
         {
           id: 'old-town',
@@ -470,7 +470,7 @@ export const useDestinations = () => {
             ar: 'مهرجان ثقافي يتضمن عروضاً موسيقية ومعارض فنية وتجارب تراثية'
           },
           date: '2025-12-21',
-          image: '/images/destinations/placeholder.jpg12555627/pexels-photo-12555627.jpeg'
+          image: 'https://images.pexels.com/photos/12555627/pexels-photo-12555627.jpeg'
         },
         {
           id: 'alula-arts',
@@ -483,7 +483,7 @@ export const useDestinations = () => {
             ar: 'مهرجان للفن المعاصر يعرض أعمال فنانين محليين وعالميين'
           },
           date: '2025-02-28',
-          image: '/images/destinations/placeholder.jpg5550024/pexels-photo-5550024.jpeg'
+          image: 'https://images.pexels.com/photos/5550024/pexels-photo-5550024.jpeg'
         }
       ],
       coordinates: {
