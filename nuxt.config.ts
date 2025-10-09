@@ -332,10 +332,22 @@ export default defineNuxtConfig({
     routeRules: {
       '/images/**': { headers: { 'cache-control': 's-maxage=31536000' } },
       '/icons/**': { headers: { 'cache-control': 's-maxage=31536000' } },
-      '/_nuxt/**': { 
+      '/_nuxt/*.js': { 
         headers: { 
           'cache-control': 's-maxage=31536000',
           'content-type': 'application/javascript; charset=utf-8'
+        } 
+      },
+      '/_nuxt/*.mjs': { 
+        headers: { 
+          'cache-control': 's-maxage=31536000',
+          'content-type': 'application/javascript; charset=utf-8'
+        } 
+      },
+      '/_nuxt/*.css': { 
+        headers: { 
+          'cache-control': 's-maxage=31536000',
+          'content-type': 'text/css; charset=utf-8'
         } 
       },
       '/': { prerender: true },
