@@ -246,25 +246,48 @@ async function handleSubmit() {
   try {
     isSubmitting.value = true
     
-    // Send the form data to the WhatsApp notification API
-    const result = await sendDestinationNotification({
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      message: form.details,
-      destinationName: props.destinationName
+    // Send to contact API first
+    const response = await $fetch('/api/contact', {
+      method: 'POST',
+      body: {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.details,
+        type: 'destination_inquiry',
+        destination_name: props.destinationName
+      }
     })
 
-    // Update notification status
-    notificationSent.value = result.success
-    notificationError.value = result.error || ''
-    notificationFailed.value = !result.success && !result.error
-    
-    // Show success message
-    formSubmitted.value = true
-    
-    // Emit the form data
-    emit('submit', { ...form })
+    if (response.success) {
+      // Also send WhatsApp notification
+      try {
+        const result = await sendDestinationNotification({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          message: form.details,
+          destinationName: props.destinationName
+        })
+
+        // Update notification status
+        notificationSent.value = result.success
+        notificationError.value = result.error || ''
+        notificationFailed.value = !result.success && !result.error
+      } catch (whatsappError) {
+        console.error('WhatsApp notification failed:', whatsappError)
+        notificationSent.value = false
+        notificationError.value = 'تم حفظ الرسالة ولكن فشل إرسال إشعار WhatsApp'
+      }
+      
+      // Show success message
+      formSubmitted.value = true
+      
+      // Emit the form data
+      emit('submit', { ...form })
+    } else {
+      throw new Error('Failed to save contact message')
+    }
   } catch (error) {
     console.error('Failed to submit form:', error)
     notificationSent.value = false

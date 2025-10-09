@@ -14,11 +14,39 @@ export default defineEventHandler(async (event) => {
       .eq('page', 'settings')
       .single()
 
-    if (error) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Failed to fetch settings'
-      })
+    // If no settings record exists, return default settings
+    if (error || !settings) {
+      console.log('No settings record found, returning default settings')
+      const defaultSettings = {
+        general: {
+          siteName: { ar: 'وكالة أرض العجائب للسفر', en: 'Wonder Land Traveling Agency' },
+          siteDescription: { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
+          siteUrl: 'https://www.worldtripagency.com',
+          contactEmail: 'info@worldtripagency.com',
+          contactPhone: '+966500982394',
+          contactAddress: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' }
+        },
+        logo: {
+          mainLogo: '/images/home/logo/WonderlandLogo.svg',
+          footerLogo: '/images/home/logo/WonderlandLogoWhite.svg',
+          favicon: '/favicon.ico',
+          logoHeight: 48,
+          showLogoText: true,
+          logoText: { ar: 'أرض العجائب', en: 'Wonder Land' }
+        },
+        seo: {
+          metaTitle: { ar: 'أرض العجائب - وكالة سفر متخصصة', en: 'Wonder Land - Specialized Travel Agency' },
+          metaDescription: { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية والعمرة والحج', en: 'Specialized travel agency for organizing tourist trips, Umrah and Hajj' },
+          metaKeywords: { ar: 'سفر, رحلات, عمرة, حج, سياحة', en: 'travel, trips, umrah, hajj, tourism' },
+          googleAnalyticsId: '',
+          googleSearchConsole: ''
+        }
+      }
+
+      return {
+        success: true,
+        data: defaultSettings
+      }
     }
 
     // Parse JSON data from the settings record

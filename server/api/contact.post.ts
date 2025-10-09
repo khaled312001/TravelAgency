@@ -11,37 +11,48 @@ export default defineEventHandler(async (event) => {
     console.log('Contact form data received:', body)
     
     // Validate required fields
-    if (!body.name || !body.email || !body.message) {
+    if (!body.name || !body.message) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Missing required fields: name, email, message'
+        statusMessage: 'Missing required fields: name, message'
       })
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(body.email)) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Invalid email format'
-      })
+    // Email is optional for some forms (like destination forms)
+    if (body.email) {
+      // Validate email format only if provided
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(body.email)) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Invalid email format'
+        })
+      }
     }
 
     // Try to save to database
     try {
+      // Prepare insert data
+      const insertData: any = {
+        name: body.name,
+        email: body.email,
+        phone: body.phone || null,
+        subject: body.subject || 'رسالة تواصل',
+        message: body.message,
+        type: body.type || 'inquiry',
+        status: 'unread',
+        package_id: body.package_id || null,
+        package_name: body.package_name || null
+      }
+
+      // Add destination_name if provided (only if column exists)
+      if (body.destination_name) {
+        insertData.destination_name = body.destination_name
+      }
+
       const { data, error } = await supabase
         .from('contact_messages')
-        .insert({
-          name: body.name,
-          email: body.email,
-          phone: body.phone || null,
-          subject: body.subject || 'رسالة تواصل',
-          message: body.message,
-          type: body.type || 'inquiry',
-          status: 'unread',
-          package_id: body.package_id || null,
-          package_name: body.package_name || null
-        })
+        .insert(insertData)
         .select()
         .single()
 
@@ -54,13 +65,16 @@ export default defineEventHandler(async (event) => {
 
       // Create notification for admin
       try {
-        const notificationTitle = body.package_name 
-          ? `رسالة جديدة - ${body.package_name}`
-          : 'رسالة تواصل جديدة'
+        let notificationTitle = 'رسالة تواصل جديدة'
+        let notificationMessage = `رسالة تواصل جديدة من ${body.name}`
         
-        const notificationMessage = body.package_name
-          ? `رسالة جديدة من ${body.name} بخصوص ${body.package_name}`
-          : `رسالة تواصل جديدة من ${body.name}`
+        if (body.package_name) {
+          notificationTitle = `رسالة جديدة - ${body.package_name}`
+          notificationMessage = `رسالة جديدة من ${body.name} بخصوص ${body.package_name}`
+        } else if (body.destination_name) {
+          notificationTitle = `استفسار عن الوجهة - ${body.destination_name}`
+          notificationMessage = `استفسار جديد من ${body.name} عن ${body.destination_name}`
+        }
 
         await supabase
           .from('notifications')
