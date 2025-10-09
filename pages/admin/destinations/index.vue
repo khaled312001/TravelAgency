@@ -386,43 +386,41 @@ const formatDate = (dateString: string) => {
 const loadDestinations = async () => {
   try {
     loading.value = true
-    // TODO: Implement API call
-    // const { data } = await $fetch('/api/admin/destinations')
-    // destinations.value = data || []
     
-    // Mock data for now
-    destinations.value = [
-      {
-        id: '1',
-        name: 'دبي',
-        description: 'مدينة الأحلام والرفاهية في الإمارات العربية المتحدة',
-        country: 'الإمارات العربية المتحدة',
-        type: 'international',
-        best_time_to_visit: 'نوفمبر - مارس',
-        status: 'active',
-        is_featured: true,
-        image_url: '/images/dubai.jpg',
-        packages_count: 5,
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z'
-      },
-      {
-        id: '2',
-        name: 'الرياض',
-        description: 'عاصمة المملكة العربية السعودية ومركزها التجاري',
-        country: 'المملكة العربية السعودية',
-        type: 'domestic',
-        best_time_to_visit: 'أكتوبر - أبريل',
-        status: 'active',
-        is_featured: false,
-        image_url: '/images/riyadh.jpg',
-        packages_count: 3,
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z'
-      }
-    ]
+    // Build query parameters
+    const params = new URLSearchParams()
+    if (statusFilter.value) params.append('status', statusFilter.value)
+    if (typeFilter.value) params.append('type', typeFilter.value)
+    if (featuredFilter.value) params.append('featured', featuredFilter.value === 'featured' ? 'true' : 'false')
+    if (searchQuery.value) params.append('search', searchQuery.value)
+    
+    const queryString = params.toString()
+    const url = `/api/admin/destinations${queryString ? `?${queryString}` : ''}`
+    
+    const response = await $fetch(url)
+    
+    if (response.destinations) {
+      // Transform the data to match the expected format
+      destinations.value = response.destinations.map((dest: any) => ({
+        id: dest.id,
+        name: dest.name_ar || dest.name_en || 'غير محدد',
+        description: dest.description_ar || dest.description_en || '',
+        country: dest.country_ar || dest.country_en || 'غير محدد',
+        type: dest.type || 'domestic',
+        best_time_to_visit: dest.best_time_to_visit || '',
+        status: dest.status || 'active',
+        is_featured: dest.featured || false,
+        image_url: dest.image_url || '/images/placeholder-destination.jpg',
+        packages_count: dest.packages_count || 0,
+        created_at: dest.created_at,
+        updated_at: dest.updated_at
+      }))
+    } else {
+      destinations.value = []
+    }
   } catch (error) {
     console.error('Error loading destinations:', error)
+    destinations.value = []
   } finally {
     loading.value = false
   }

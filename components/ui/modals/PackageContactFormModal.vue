@@ -251,22 +251,45 @@ const handleSubmit = async () => {
   submitting.value = true
 
   try {
-    // Send the form data to the WhatsApp notification API
-    const result = await sendPackageNotification({
-      name: form.value.name,
-      email: form.value.email,
-      phone: form.value.phone,
-      message: form.value.message,
-      packageId: props.package_.id,
-      packageName: packageName.value
-    }) as NotificationResult
+    // Send to contact API
+    const response = await $fetch('/api/contact', {
+      method: 'POST',
+      body: {
+        name: form.value.name,
+        email: form.value.email,
+        phone: form.value.phone,
+        message: form.value.message,
+        type: 'booking',
+        package_id: props.package_.id,
+        package_name: packageName.value
+      }
+    })
 
-    // Update notification status
-    notificationSent.value = result.success
-    notificationError.value = result.error || ''
-    
-    // Show success message
-    formSubmitted.value = true
+    if (response.success) {
+      // Also send WhatsApp notification
+      try {
+        const result = await sendPackageNotification({
+          name: form.value.name,
+          email: form.value.email,
+          phone: form.value.phone,
+          message: form.value.message,
+          packageId: props.package_.id,
+          packageName: packageName.value
+        }) as NotificationResult
+
+        notificationSent.value = result.success
+        notificationError.value = result.error || ''
+      } catch (whatsappError) {
+        console.error('WhatsApp notification failed:', whatsappError)
+        notificationSent.value = false
+        notificationError.value = 'تم حفظ الرسالة ولكن فشل إرسال إشعار WhatsApp'
+      }
+      
+      // Show success message
+      formSubmitted.value = true
+    } else {
+      throw new Error('Failed to save contact message')
+    }
   } catch (error) {
     console.error('Failed to submit form:', error)
     notificationSent.value = false

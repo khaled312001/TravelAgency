@@ -25,13 +25,14 @@ export default defineEventHandler(async (event) => {
       queryBuilder = queryBuilder.or(`title_ar.ilike.%${search}%,title_en.ilike.%${search}%,description_ar.ilike.%${search}%,description_en.ilike.%${search}%`)
     }
 
-    if (status) {
-      queryBuilder = queryBuilder.eq('status', status)
-    }
+    // Note: status and category columns don't exist in the current schema
+    // if (status) {
+    //   queryBuilder = queryBuilder.eq('status', status)
+    // }
 
-    if (category) {
-      queryBuilder = queryBuilder.eq('category', category)
-    }
+    // if (category) {
+    //   queryBuilder = queryBuilder.eq('category', category)
+    // }
 
     // Apply pagination
     const from = (Number(page) - 1) * Number(limit)

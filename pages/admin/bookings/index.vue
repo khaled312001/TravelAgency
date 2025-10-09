@@ -389,46 +389,43 @@ const formatDate = (dateString: string) => {
 const loadBookings = async () => {
   try {
     loading.value = true
-    // TODO: Implement API call
-    // const { data } = await $fetch('/api/admin/bookings')
-    // bookings.value = data || []
     
-    // Mock data for now
-    bookings.value = [
-      {
-        id: 'booking-001',
-        customer_name: 'أحمد محمد',
-        customer_email: 'ahmed@example.com',
-        customer_phone: '+966501234567',
-        package_title: 'رحلة إلى دبي',
-        destination: 'دبي، الإمارات',
-        travel_date: '2024-03-15',
-        participants_count: 2,
-        total_amount: 5000,
-        paid_amount: 2500,
-        status: 'confirmed',
-        notes: 'طلب غرف متجاورة',
-        created_at: '2024-01-15T10:00:00Z',
-        updated_at: '2024-01-15T10:00:00Z'
-      },
-      {
-        id: 'booking-002',
-        customer_name: 'فاطمة علي',
-        customer_email: 'fatima@example.com',
-        customer_phone: '+966507654321',
-        package_title: 'عمرة رمضان',
-        destination: 'مكة المكرمة',
-        travel_date: '2024-04-10',
-        participants_count: 4,
-        total_amount: 8000,
-        paid_amount: 0,
-        status: 'pending',
-        created_at: '2024-01-20T14:30:00Z',
-        updated_at: '2024-01-20T14:30:00Z'
-      }
-    ]
+    // Build query parameters
+    const params = new URLSearchParams()
+    if (statusFilter.value) params.append('status', statusFilter.value)
+    if (packageFilter.value) params.append('package_id', packageFilter.value)
+    if (dateFilter.value) params.append('date_from', dateFilter.value)
+    if (searchQuery.value) params.append('search', searchQuery.value)
+    
+    const queryString = params.toString()
+    const url = `/api/admin/bookings${queryString ? `?${queryString}` : ''}`
+    
+    const response = await $fetch(url)
+    
+    if (response.bookings) {
+      // Transform the data to match the expected format
+      bookings.value = response.bookings.map((booking: any) => ({
+        id: booking.id,
+        customer_name: booking.users?.name || 'غير محدد',
+        customer_email: booking.users?.email || 'غير محدد',
+        customer_phone: booking.users?.phone || 'غير محدد',
+        package_title: booking.packages?.title_ar || booking.packages?.title_en || 'غير محدد',
+        destination: booking.destination || 'غير محدد',
+        travel_date: booking.travel_date || booking.created_at,
+        participants_count: booking.participants_count || 1,
+        total_amount: booking.total_price || 0,
+        paid_amount: booking.paid_amount || 0,
+        status: booking.status || 'pending',
+        notes: booking.notes || '',
+        created_at: booking.created_at,
+        updated_at: booking.updated_at
+      }))
+    } else {
+      bookings.value = []
+    }
   } catch (error) {
     console.error('Error loading bookings:', error)
+    bookings.value = []
   } finally {
     loading.value = false
   }

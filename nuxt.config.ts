@@ -21,18 +21,18 @@ export default defineNuxtConfig({
     serverBundle: 'local',
     clientBundle: 'local'
   },
-  
+
   // Supabase module configuration
-    supabase: {
-      url: 'https://ueofktshvaqtxjsxvisv.supabase.co',
-      key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA',
-      redirectOptions: {
-        login: '/auth/login',
-        callback: '/auth/confirm',
-        exclude: ['/*']
-      }
-    },
-  
+  supabase: {
+    url: 'https://ueofktshvaqtxjsxvisv.supabase.co',
+    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA',
+    redirectOptions: {
+      login: '/auth/login',
+      callback: '/auth/confirm',
+      exclude: ['/*']
+    }
+  },
+
   pwa: {
     registerType: 'autoUpdate',
     injectRegister: 'script',
@@ -196,6 +196,7 @@ export default defineNuxtConfig({
       type: 'module'
     }
   },
+
   // AOS configuration
   aos: {
     offset: 15,
@@ -226,7 +227,7 @@ export default defineNuxtConfig({
   image: {
     provider: 'ipx',
     dir: 'public',
-    domains: ['images.unsplash.com', 'images.pexels.com'],
+    domains: ['images.unsplash.com'],
     format: ['webp'],
     screens: {
       xs: 320,
@@ -290,6 +291,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   // Configure sitemap for multiple languages
   sitemap: {
     urls: async () => {
@@ -350,12 +352,12 @@ export default defineNuxtConfig({
           'content-type': 'text/css; charset=utf-8'
         } 
       },
-      '/': { prerender: true },
-      '/en-US': { prerender: true },
-      '/en-US/': { prerender: true },
-      '/packages/**': { prerender: true },
-      '/destinations/**': { prerender: true },
-      '/about': { prerender: true },
+      '/': { prerender: false },
+      '/en-US': { prerender: false },
+      '/en-US/': { prerender: false },
+      '/packages/**': { prerender: false },
+      '/destinations/**': { prerender: false },
+      '/about': { prerender: false },
       '/admin/**': { ssr: false, index: false }
     },
     // Ensure proper static deployment
@@ -408,7 +410,7 @@ export default defineNuxtConfig({
   vite: {
     build: {
       cssMinify: true,
-      minify: 'terser',
+      minify: 'esbuild',
       rollupOptions: {
         output: {
           manualChunks: {
@@ -425,5 +427,7 @@ export default defineNuxtConfig({
       include: ['vue', 'vue-router'],
       exclude: ['@nuxt/icon']
     }
-  }
+  },
+
+  compatibilityDate: '2025-10-09'
 })

@@ -32,9 +32,10 @@ export default defineEventHandler(async (event) => {
         max_persons: Number(body.max_persons) || null,
         travel_period: body.travel_period || null,
         image_url: body.image_url || null,
-        featured: body.featured || false,
-        status: body.status || 'active',
-        category: body.category || 'international'
+        featured: body.featured || false
+        // Note: status and category columns don't exist in the current schema
+        // status: body.status || 'active',
+        // category: body.category || 'international'
       })
       .select()
       .single()

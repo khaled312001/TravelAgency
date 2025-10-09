@@ -185,21 +185,36 @@ const handleSubmit = async () => {
     showError.value = false
     showSuccess.value = false
 
+    // Send to API
+    const response = await $fetch('/api/contact', {
+      method: 'POST',
+      body: {
+        name: form.fullName,
+        email: form.email,
+        phone: `${form.countryCode}${form.phone}`,
+        message: form.message,
+        type: 'inquiry',
+        package_id: props.package_?.id || null,
+        package_name: props.package_ ? (locale.value === 'ar-SA' ? props.package_.title_ar : props.package_.title_en) : null
+      }
+    })
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    showSuccess.value = true
-    form.fullName = ''
-    form.email = ''
-    form.phone = ''
-    form.message = ''
-    
-    // Close modal after 2 seconds
-    setTimeout(() => {
-      closeModal()
-    }, 2000)
+    if (response.success) {
+      showSuccess.value = true
+      form.fullName = ''
+      form.email = ''
+      form.phone = ''
+      form.message = ''
+      
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        closeModal()
+      }, 2000)
+    } else {
+      showError.value = true
+    }
   } catch (error) {
+    console.error('Error submitting contact form:', error)
     showError.value = true
   } finally {
     isSubmitting.value = false

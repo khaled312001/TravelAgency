@@ -30,9 +30,10 @@ export default defineEventHandler(async (event) => {
         travel_period: body.travel_period || null,
         image_url: body.image_url || null,
         featured: body.featured || false,
-        status: body.status || 'active',
-        category: body.category || 'international',
         updated_at: new Date().toISOString()
+        // Note: status and category columns don't exist in the current schema
+        // status: body.status || 'active',
+        // category: body.category || 'international'
       })
       .eq('id', id)
       .select()

@@ -462,10 +462,53 @@
     },
     "copyright": "© {year} Wonderland Travel Agency. All rights reserved."
   },
+  "contact": {
+    "title": "Contact Us",
+    "description": "We're here to help you plan your perfect trip. Contact us for a free consultation",
+    "free": "free",
+    "subDescription": "We'll get back to you as soon as possible",
+    "form": {
+      "fullName": {
+        "label": "Full Name",
+        "placeholder": "Enter your full name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email",
+        "error": "Please enter a valid email"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "error": "Please enter a valid phone number"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Write your message here..."
+      },
+      "submit": "Send Message"
+    },
+    "section": {
+      "title": "Contact Us",
+      "subtitle": "We're here to help you plan your perfect trip. Contact us for a free consultation",
+      "info_title": "Contact Information",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "address_text": "Riyadh, Saudi Arabia",
+      "hours": "Working Hours",
+      "hours_text": "Sunday - Thursday: 9:00 AM - 6:00 PM",
+      "whatsapp": "Contact via WhatsApp",
+      "form_title": "Send us a message",
+      "subject": "Subject",
+      "subject_placeholder": "Message subject (optional)",
+      "success_message": "Your message has been sent successfully! We'll contact you soon.",
+      "error_message": "An error occurred while sending the message. Please try again."
+    }
+  },
   "error": {
     "404": {
       "title": "Page Not Found",
-      "description": "Sorry, the page you are looking for does not exist. You may have mistyped the address or the page may have moved. Let’s get you back on track!",
+      "description": "Sorry, the page you are looking for does not exist. You may have mistyped the address or the page may have moved. Let's get you back on track!",
       "back_home": "Back to Home"
     }
   }

@@ -478,37 +478,39 @@ const formatDateTime = (dateString: string) => {
 const loadUsers = async () => {
   try {
     loading.value = true
-    // TODO: Implement API call
-    // const { data } = await $fetch('/api/admin/users')
-    // users.value = data || []
     
-    // Mock data for now
-    users.value = [
-      {
-        id: 'user-001',
-        name: 'أحمد محمد',
-        email: 'ahmed@example.com',
-        phone: '+966501234567',
-        role: 'user',
-        status: 'active',
-        bookings_count: 3,
-        created_at: '2024-01-15T10:00:00Z',
-        last_login: '2024-01-20T14:30:00Z'
-      },
-      {
-        id: 'user-002',
-        name: 'فاطمة علي',
-        email: 'fatima@example.com',
-        phone: '+966507654321',
-        role: 'admin',
-        status: 'active',
-        bookings_count: 1,
-        created_at: '2024-01-10T09:00:00Z',
-        last_login: '2024-01-21T08:15:00Z'
-      }
-    ]
+    // Build query parameters
+    const params = new URLSearchParams()
+    if (statusFilter.value) params.append('status', statusFilter.value)
+    if (roleFilter.value) params.append('role', roleFilter.value)
+    if (dateFilter.value) params.append('date_from', dateFilter.value)
+    if (searchQuery.value) params.append('search', searchQuery.value)
+    
+    const queryString = params.toString()
+    const url = `/api/admin/users${queryString ? `?${queryString}` : ''}`
+    
+    const response = await $fetch(url)
+    
+    if (response.users) {
+      // Transform the data to match the expected format
+      users.value = response.users.map((user: any) => ({
+        id: user.id,
+        name: user.name || 'غير محدد',
+        email: user.email || 'غير محدد',
+        phone: user.phone || '',
+        role: user.role || 'user',
+        status: user.status || 'active',
+        avatar_url: user.avatar_url || '',
+        bookings_count: user.bookings_count || 0,
+        created_at: user.created_at,
+        last_login: user.last_login || user.created_at
+      }))
+    } else {
+      users.value = []
+    }
   } catch (error) {
     console.error('Error loading users:', error)
+    users.value = []
   } finally {
     loading.value = false
   }

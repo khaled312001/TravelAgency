@@ -15,17 +15,15 @@ export default defineEventHandler(async (event) => {
       { count: totalDestinations },
       { count: newMessages },
       { count: confirmedBookings },
-      { count: pendingBookings },
-      { count: totalRevenue }
+      { count: pendingBookings }
     ] = await Promise.all([
-      supabase.from('users').select('*', { count: 'exact', head: true }),
+      supabase.from('admin_users').select('*', { count: 'exact', head: true }),
       supabase.from('packages').select('*', { count: 'exact', head: true }),
       supabase.from('bookings').select('*', { count: 'exact', head: true }),
       supabase.from('destinations').select('*', { count: 'exact', head: true }),
       supabase.from('contact_messages').select('*', { count: 'exact', head: true }).eq('status', 'unread'),
       supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'confirmed'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-      supabase.from('bookings').select('total_price', { count: 'exact', head: true }).eq('status', 'confirmed')
+      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'pending')
     ])
 
     // Calculate total revenue

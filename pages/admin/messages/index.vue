@@ -392,47 +392,39 @@ const formatDateTime = (dateString: string) => {
 const loadMessages = async () => {
   try {
     loading.value = true
-    // TODO: Implement API call
-    // const { data } = await $fetch('/api/admin/messages')
-    // messages.value = data || []
     
-    // Mock data for now
-    messages.value = [
-      {
-        id: 'msg-001',
-        sender_name: 'أحمد محمد',
-        sender_email: 'ahmed@example.com',
-        sender_phone: '+966501234567',
-        subject: 'استفسار عن رحلة دبي',
-        message: 'أرغب في معرفة تفاصيل رحلة دبي المتاحة في شهر مارس، وما هي الخدمات المدرجة في السعر؟',
-        type: 'inquiry',
-        status: 'unread',
-        created_at: '2024-01-15T10:00:00Z',
-        updated_at: '2024-01-15T10:00:00Z'
-      },
-      {
-        id: 'msg-002',
-        sender_name: 'فاطمة علي',
-        sender_email: 'fatima@example.com',
-        sender_phone: '+966507654321',
-        subject: 'شكوى في الخدمة',
-        message: 'واجهت مشكلة في خدمة العملاء أثناء حجز رحلتي الأخيرة، وأرغب في تقديم شكوى رسمية.',
-        type: 'complaint',
-        status: 'read',
-        created_at: '2024-01-20T14:30:00Z',
-        updated_at: '2024-01-20T14:30:00Z',
-        replies: [
-          {
-            id: 'reply-001',
-            author_name: 'فريق خدمة العملاء',
-            message: 'نعتذر عن المشكلة التي واجهتها. سنقوم بمراجعة الأمر وإصلاحه في أقرب وقت ممكن.',
-            created_at: '2024-01-21T09:00:00Z'
-          }
-        ]
-      }
-    ]
+    // Build query parameters
+    const params = new URLSearchParams()
+    if (statusFilter.value) params.append('status', statusFilter.value)
+    if (typeFilter.value) params.append('type', typeFilter.value)
+    if (searchQuery.value) params.append('search', searchQuery.value)
+    
+    const queryString = params.toString()
+    const url = `/api/admin/contact-messages${queryString ? `?${queryString}` : ''}`
+    
+    const response = await $fetch(url)
+    
+    if (response.success) {
+      messages.value = response.data.map((msg: any) => ({
+        id: msg.id,
+        sender_name: msg.name,
+        sender_email: msg.email,
+        sender_phone: msg.phone,
+        subject: msg.subject,
+        message: msg.message,
+        type: msg.type,
+        status: msg.status,
+        created_at: msg.created_at,
+        updated_at: msg.updated_at,
+        package_name: msg.package_name
+      }))
+    } else {
+      throw new Error('Failed to load messages')
+    }
   } catch (error) {
     console.error('Error loading messages:', error)
+    // Fallback to empty array
+    messages.value = []
   } finally {
     loading.value = false
   }
@@ -458,20 +450,20 @@ const sendReply = async () => {
   try {
     sendingReply.value = true
     
-    // TODO: Implement API call
-    // await $fetch('/api/admin/messages/reply', {
-    //   method: 'POST',
-    //   body: {
-    //     message_id: selectedMessage.value?.id,
-    //     message: replyForm.value.message
-    //   }
-    // })
-    
-    console.log('Send reply:', replyForm.value.message)
-    
-    // Update message status
+    // Update message status to replied
     if (selectedMessage.value) {
-      selectedMessage.value.status = 'replied'
+      const response = await $fetch(`/api/admin/contact-messages/${selectedMessage.value.id}`, {
+        method: 'PUT',
+        body: {
+          status: 'replied'
+        }
+      })
+      
+      if (response.success) {
+        selectedMessage.value.status = 'replied'
+        // Reload messages to reflect changes
+        await loadMessages()
+      }
     }
     
     closeReplyModal()
@@ -485,31 +477,38 @@ const sendReply = async () => {
 const deleteMessage = async (message: Message) => {
   if (confirm(`هل أنت متأكد من حذف الرسالة من ${message.sender_name}؟`)) {
     try {
-      // TODO: Implement API call
-      // await $fetch(`/api/admin/messages/${message.id}`, {
-      //   method: 'DELETE'
-      // })
+      const response = await $fetch(`/api/admin/contact-messages/${message.id}`, {
+        method: 'DELETE'
+      })
       
-      console.log('Delete message:', message.id)
-      await loadMessages()
+      if (response.success) {
+        await loadMessages()
+      } else {
+        throw new Error('Failed to delete message')
+      }
     } catch (error) {
       console.error('Error deleting message:', error)
+      alert('حدث خطأ أثناء حذف الرسالة')
     }
   }
 }
 
 const markAllAsRead = async () => {
   try {
-    // TODO: Implement API call
-    // await $fetch('/api/admin/messages/mark-all-read', {
-    //   method: 'POST'
-    // })
+    // Update all unread messages to read
+    const unreadMessages = messages.value.filter(msg => msg.status === 'unread')
     
-    messages.value.forEach(message => {
-      if (message.status === 'unread') {
-        message.status = 'read'
-      }
-    })
+    for (const message of unreadMessages) {
+      await $fetch(`/api/admin/contact-messages/${message.id}`, {
+        method: 'PUT',
+        body: {
+          status: 'read'
+        }
+      })
+    }
+    
+    // Reload messages to reflect changes
+    await loadMessages()
   } catch (error) {
     console.error('Error marking all as read:', error)
   }
@@ -530,6 +529,11 @@ const closeReplyModal = () => {
 onMounted(() => {
   loadMessages()
 })
+
+// Watch for filter changes and reload messages
+watch([statusFilter, typeFilter, searchQuery], () => {
+  loadMessages()
+}, { debounce: 300 })
 
 // Set page title
 useHead({

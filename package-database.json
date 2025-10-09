@@ -1,0 +1,25 @@
+{
+  "name": "travel-agency-database-setup",
+  "version": "1.0.0",
+  "description": "Database setup scripts for Travel Agency contact forms",
+  "main": "setup-contact-database.js",
+  "scripts": {
+    "test-connection": "node test-database-connection.js",
+    "setup-database": "node setup-contact-database.js",
+    "update-database": "node update-database-simple.js",
+    "update-database-rest": "node update-database-rest.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "supabase",
+    "database",
+    "contact-forms",
+    "travel-agency"
+  ],
+  "author": "Travel Agency",
+  "license": "MIT"
+}

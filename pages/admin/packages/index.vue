@@ -326,10 +326,40 @@ const formatDate = (dateString: string) => {
 const loadPackages = async () => {
   try {
     loading.value = true
-    const { data } = await $fetch('/api/admin/packages')
-    packages.value = data || []
+    
+    // Build query parameters
+    const params = new URLSearchParams()
+    if (statusFilter.value) params.append('status', statusFilter.value)
+    if (categoryFilter.value) params.append('category', categoryFilter.value)
+    if (searchQuery.value) params.append('search', searchQuery.value)
+    
+    const queryString = params.toString()
+    const url = `/api/admin/packages${queryString ? `?${queryString}` : ''}`
+    
+    const response = await $fetch(url)
+    
+    if (response.packages) {
+      // Transform the data to match the expected format
+      packages.value = response.packages.map((pkg: any) => ({
+        id: pkg.id,
+        title: pkg.title_ar || pkg.title_en || 'غير محدد',
+        description: pkg.description_ar || pkg.description_en || '',
+        destination: pkg.destination || 'غير محدد',
+        price: pkg.price || 0,
+        duration: pkg.duration_days || 0,
+        max_participants: pkg.max_persons || 0,
+        category: pkg.category || 'domestic',
+        status: pkg.status || 'active',
+        image_url: pkg.image_url || '/images/placeholder-package.jpg',
+        created_at: pkg.created_at,
+        updated_at: pkg.updated_at
+      }))
+    } else {
+      packages.value = []
+    }
   } catch (error) {
     console.error('Error loading packages:', error)
+    packages.value = []
   } finally {
     loading.value = false
   }
