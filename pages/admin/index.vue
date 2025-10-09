@@ -192,8 +192,8 @@
       </div>
     </div>
 
-      <!-- Monthly Sales Chart -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+    <!-- Monthly Sales Chart -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
         <h3 class="text-lg font-semibold text-gray-900 mb-2">المبيعات الشهرية</h3>
         <p class="text-sm text-gray-600 mb-6">آخر 6 أشهر</p>
         

@@ -9,6 +9,15 @@
           <p class="logo-subtitle">لوحة التحكم</p>
         </div>
       </div>
+      
+      <!-- Close Button for Mobile -->
+      <button 
+        @click="closeSidebar" 
+        class="close-sidebar-btn lg:hidden"
+        aria-label="إغلاق القائمة الجانبية"
+      >
+        <Icon name="lucide:x" class="close-icon" />
+      </button>
     </div>
 
     <!-- Navigation Menu -->
@@ -124,6 +133,12 @@ const handleLogout = async () => {
     console.error('Logout error:', error)
   }
 }
+
+const closeSidebar = () => {
+  // Emit event to parent layout to close sidebar
+  const event = new CustomEvent('close-sidebar')
+  window.dispatchEvent(event)
+}
 </script>
 
 <style scoped>
@@ -133,7 +148,7 @@ const handleLogout = async () => {
 }
 
 .sidebar-header {
-  @apply p-6 border-b border-purple-600;
+  @apply p-6 border-b border-purple-600 relative;
 }
 
 .logo-container {
