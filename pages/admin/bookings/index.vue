@@ -1039,7 +1039,7 @@ definePageMeta({
 }
 
 .invoice-preview .invoice-container {
-  @apply relative static left-auto top-auto w-full min-h-auto;
+  @apply relative static left-auto top-auto w-full;
 }
 
 .add-btn {
