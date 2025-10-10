@@ -643,19 +643,20 @@ const downloadInvoicePDF = async () => {
     
     const html2pdf = (await import('html2pdf.js')).default
     
-    // Function to wait for element to be available
-    const waitForElement = (selector: string, timeout = 5000) => {
+    // Function to wait for element to be available and visible
+    const waitForElement = (selector: string, timeout = 10000) => {
       return new Promise((resolve, reject) => {
         const startTime = Date.now()
         
         const checkElement = () => {
           const element = document.querySelector(selector)
-          if (element) {
+          if (element && element.offsetParent !== null) {
+            // Element exists and is visible
             resolve(element)
           } else if (Date.now() - startTime > timeout) {
-            reject(new Error(`Element ${selector} not found within ${timeout}ms`))
+            reject(new Error(`Element ${selector} not found or not visible within ${timeout}ms`))
           } else {
-            setTimeout(checkElement, 100)
+            setTimeout(checkElement, 200)
           }
         }
         
@@ -664,8 +665,26 @@ const downloadInvoicePDF = async () => {
     }
     
     try {
-      // Wait for the invoice content to be available
+      // Ensure the modal is visible first
+      if (!showInvoiceModal.value) {
+        alert('يرجى عرض الفاتورة أولاً قبل تحميلها')
+        return
+      }
+      
+      // Wait for the invoice content to be available and visible
       const element = await waitForElement('#invoice-content')
+      
+      // Additional check to ensure element has content
+      if (!element.innerHTML.trim()) {
+        throw new Error('Invoice content is empty')
+      }
+      
+      // Force element to be visible for PDF generation
+      element.style.display = 'block'
+      element.style.visibility = 'visible'
+      element.style.position = 'static'
+      element.style.left = 'auto'
+      element.style.top = 'auto'
       
       const opt = {
         margin: 0.5,
@@ -676,7 +695,8 @@ const downloadInvoicePDF = async () => {
           useCORS: true,
           letterRendering: true,
           allowTaint: true,
-          backgroundColor: '#ffffff'
+          backgroundColor: '#ffffff',
+          logging: false
         },
         jsPDF: { 
           unit: 'in', 

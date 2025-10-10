@@ -283,7 +283,13 @@ const unreadCount = computed(() => notifications.value.filter(n => !n.isRead).le
 const readCount = computed(() => notifications.value.filter(n => n.isRead).length)
 const todayCount = computed(() => {
   const today = new Date().toDateString()
-  return notifications.value.filter(n => new Date(n.createdAt).toDateString() === today).length
+  return notifications.value.filter(n => {
+    try {
+      return new Date(n.createdAt).toDateString() === today
+    } catch (e) {
+      return false
+    }
+  }).length
 })
 
 const filteredNotifications = computed(() => {
@@ -367,20 +373,25 @@ const getNotificationTypeText = (type: string) => {
 }
 
 const formatTime = (dateString: string) => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  
-  const minutes = Math.floor(diff / 60000)
-  const hours = Math.floor(diff / 3600000)
-  const days = Math.floor(diff / 86400000)
-  
-  if (minutes < 1) return 'الآن'
-  if (minutes < 60) return `منذ ${minutes} دقيقة`
-  if (hours < 24) return `منذ ${hours} ساعة`
-  if (days < 7) return `منذ ${days} يوم`
-  
-  return date.toLocaleDateString('ar-SA')
+  try {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+    
+    const minutes = Math.floor(diff / 60000)
+    const hours = Math.floor(diff / 3600000)
+    const days = Math.floor(diff / 86400000)
+    
+    if (minutes < 1) return 'الآن'
+    if (minutes < 60) return `منذ ${minutes} دقيقة`
+    if (hours < 24) return `منذ ${hours} ساعة`
+    if (days < 7) return `منذ ${days} يوم`
+    
+    return date.toLocaleDateString('ar-SA')
+  } catch (error) {
+    console.error('Error formatting date:', error)
+    return 'تاريخ غير صحيح'
+  }
 }
 
 // Main functions
@@ -406,8 +417,11 @@ const loadNotifications = async () => {
         createdAt: notification.created_at,
         data: notification.data
       }))
+      
+      console.log('Loaded notifications:', notifications.value.length)
     } else {
-      throw new Error('Failed to load notifications')
+      console.log('No notifications found or API error:', response)
+      notifications.value = []
     }
   } catch (error) {
     console.error('Error loading notifications:', error)

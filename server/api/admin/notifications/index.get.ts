@@ -52,6 +52,13 @@ export default defineEventHandler(async (event) => {
     
     if (error) {
       console.error('Error fetching notifications:', error)
+      // If table doesn't exist, return empty array instead of error
+      if (error.code === 'PGRST116' || error.message.includes('relation "notifications" does not exist')) {
+        return {
+          success: true,
+          notifications: []
+        }
+      }
       throw createError({
         statusCode: 500,
         statusMessage: 'Failed to fetch notifications'
