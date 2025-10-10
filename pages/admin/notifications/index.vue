@@ -3,6 +3,15 @@
     <div class="page-header">
       <h1 class="page-title">إدارة الإشعارات</h1>
       <p class="page-description">إرسال إشعارات للمستخدمين حتى لو كان المتصفح مغلق</p>
+      <div class="mt-4">
+        <NuxtLink
+          to="/admin/notifications/setup"
+          class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <Icon name="lucide:settings" class="w-4 h-4 mr-2" />
+          إعداد الإشعارات للإدمن
+        </NuxtLink>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -22,8 +31,8 @@
                 placeholder="عنوان الإشعار"
                 required
               />
-            </div>
-
+      </div>
+      
             <div class="form-group">
               <label class="form-label">الرسالة</label>
               <textarea
@@ -33,18 +42,18 @@
                 placeholder="نص الإشعار"
                 required
               ></textarea>
-            </div>
+    </div>
 
             <div class="form-group">
               <label class="form-label">الرابط (اختياري)</label>
-              <input
+          <input 
                 v-model="notificationForm.url"
                 type="url"
                 class="form-input"
                 placeholder="https://www.worldtripagency.com"
-              />
-            </div>
-
+          />
+        </div>
+        
             <button
               type="submit"
               :disabled="isSending"
@@ -54,14 +63,14 @@
               {{ isSending ? 'جاري الإرسال...' : 'إرسال الإشعار' }}
             </button>
           </form>
-        </div>
       </div>
+    </div>
 
       <!-- Notification Settings -->
       <div class="card">
         <div class="card-header">
           <h2 class="card-title">إعدادات الإشعارات</h2>
-        </div>
+      </div>
         <div class="card-content">
           <div class="space-y-6">
             <!-- Permission Status -->
@@ -69,7 +78,7 @@
               <div class="setting-info">
                 <h3 class="setting-title">حالة الإذن</h3>
                 <p class="setting-description">حالة إذن الإشعارات في المتصفح</p>
-              </div>
+      </div>
               <div class="setting-value">
                 <span :class="permissionStatusClass">
                   {{ permissionStatusText }}
@@ -87,8 +96,8 @@
                 <span :class="swStatusClass">
                   {{ swStatusText }}
                 </span>
-              </div>
             </div>
+          </div>
 
             <!-- Push API Status -->
             <div class="setting-item">
@@ -99,7 +108,7 @@
               <div class="setting-value">
                 <span :class="pushStatusClass">
                   {{ pushStatusText }}
-                </span>
+                  </span>
               </div>
             </div>
 
@@ -108,7 +117,7 @@
               <div class="setting-info">
                 <h3 class="setting-title">عدد المشتركين</h3>
                 <p class="setting-description">عدد المستخدمين المشتركين في الإشعارات</p>
-              </div>
+            </div>
               <div class="setting-value">
                 <span class="text-primary-600 font-semibold">
                   {{ subscriptionsCount }}

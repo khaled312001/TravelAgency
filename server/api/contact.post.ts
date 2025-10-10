@@ -1,8 +1,71 @@
 import { createClient } from '@supabase/supabase-js'
+import webpush from 'web-push'
 
 const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
 const supabase = createClient(supabaseUrl, supabaseKey)
+
+// Configure web-push for admin notifications
+webpush.setVapidDetails(
+  'mailto:admin@worldtripagency.com',
+  'BEl62iUYgUivxIkv69yViEuiBIa40HI8F7j7ZAd9cn9jKIHaMqI5t9Dg6Ok3U7e1zKqoAZ4j2twFJqOPWqQW60', // Public key
+  'your-private-vapid-key' // Private key (you should generate your own)
+)
+
+// Function to send push notification to admin
+async function sendAdminNotification({ title, message, url = '/admin/messages' }: { title: string, message: string, url?: string }) {
+  try {
+    // Get admin subscriptions (you might want to filter for admin users only)
+    const { data: subscriptions, error } = await supabase
+      .from('push_subscriptions')
+      .select('*')
+
+    if (error || !subscriptions || subscriptions.length === 0) {
+      console.log('No admin subscriptions found')
+      return
+    }
+
+    const notificationPayload = JSON.stringify({
+      title,
+      body: message,
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/icon-64x64.png',
+      data: {
+        url,
+        timestamp: Date.now()
+      },
+      actions: [
+        {
+          action: 'open',
+          title: 'فتح',
+          icon: '/icons/icon-64x64.png'
+        },
+        {
+          action: 'close',
+          title: 'إغلاق',
+          icon: '/icons/icon-64x64.png'
+        }
+      ]
+    })
+
+    // Send to all admin subscriptions
+    for (const subscription of subscriptions) {
+      try {
+        await webpush.sendNotification(
+          {
+            endpoint: subscription.endpoint,
+            keys: subscription.keys
+          },
+          notificationPayload
+        )
+      } catch (error) {
+        console.error('Error sending notification to subscription:', error)
+      }
+    }
+  } catch (error) {
+    console.error('Error in sendAdminNotification:', error)
+  }
+}
 
 export default defineEventHandler(async (event) => {
   try {
@@ -114,11 +177,14 @@ export default defineEventHandler(async (event) => {
         } else {
           console.log('Notification created for new contact message:', notification)
           
-          // Send push notification
+          // Send push notification to admin
           try {
-            // This would trigger a push notification to all connected admin clients
-            // For now, we'll log it - in a real implementation, you'd use a push service
-            console.log('Push notification triggered for new contact message')
+            await sendAdminNotification({
+              title: notificationTitle,
+              message: notificationMessage,
+              url: '/admin/messages'
+            })
+            console.log('Push notification sent to admin for new contact message')
           } catch (pushError) {
             console.error('Push notification error:', pushError)
           }
