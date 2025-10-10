@@ -8,7 +8,7 @@
           <p class="page-subtitle">إدارة جميع حجوزات العملاء</p>
         </div>
         <div class="header-right">
-          <button @click="showAddBookingModal = true" class="add-btn">
+          <button @click="openAddBookingModal" class="add-btn">
             <Icon name="lucide:plus" class="btn-icon" />
             إضافة حجز جديد
           </button>
@@ -564,8 +564,12 @@
           
           <!-- Invoice Preview -->
           <div class="invoice-preview">
+            <div v-if="!currentInvoiceData" class="loading-invoice">
+              <div class="loading-spinner"></div>
+              <p>جاري تحميل الفاتورة...</p>
+            </div>
             <InvoiceTemplate 
-              v-if="currentInvoiceData" 
+              v-else
               :invoice-data="currentInvoiceData" 
               :show="true"
             />
@@ -582,6 +586,7 @@ interface Booking {
   customer_name: string
   customer_email: string
   customer_phone: string
+  package_id?: string
   package_title: string
   destination: string
   travel_date: string
@@ -702,8 +707,9 @@ const loadPackages = async () => {
     if (response.success && response.packages) {
       packages.value = response.packages.map((pkg: any) => ({
         id: pkg.id,
-        title: pkg.title
+        title: pkg.title_ar || pkg.title_en || 'باقة غير محددة'
       }))
+      console.log('Loaded packages:', packages.value)
     }
   } catch (error) {
     console.error('Error loading packages:', error)
@@ -745,45 +751,94 @@ const viewBooking = (booking: Booking) => {
   showBookingModal.value = true
 }
 
-const editBooking = (booking: Booking) => {
-  // Close the details modal if open
-  showBookingModal.value = false
-  
-  // Set the booking to edit
-  editingBooking.value = { ...booking }
-  showEditBookingModal.value = true
+const openAddBookingModal = async () => {
+  try {
+    // Ensure packages are loaded
+    if (packages.value.length === 0) {
+      await loadPackages()
+    }
+    showAddBookingModal.value = true
+  } catch (error) {
+    console.error('Error opening add booking modal:', error)
+    alert('حدث خطأ أثناء فتح مودال إضافة الحجز')
+  }
+}
+
+const editBooking = async (booking: Booking) => {
+  try {
+    // Close the details modal if open
+    showBookingModal.value = false
+    
+    // Ensure packages are loaded
+    if (packages.value.length === 0) {
+      await loadPackages()
+    }
+    
+    // Find the package_id based on package_title if package_id is not available
+    let packageId = booking.package_id
+    if (!packageId && booking.package_title) {
+      const matchingPackage = packages.value.find(pkg => pkg.title === booking.package_title)
+      if (matchingPackage) {
+        packageId = matchingPackage.id
+      }
+    }
+    
+    // Set the booking to edit with proper package_id
+    editingBooking.value = { 
+      ...booking,
+      package_id: packageId || '' // Ensure package_id is set
+    }
+    
+    console.log('Editing booking:', editingBooking.value)
+    console.log('Available packages:', packages.value)
+    
+    showEditBookingModal.value = true
+  } catch (error) {
+    console.error('Error opening edit modal:', error)
+    alert('حدث خطأ أثناء فتح مودال التعديل')
+  }
 }
 
 const generateInvoice = async (booking: Booking) => {
   try {
+    console.log('Generating invoice for booking:', booking)
+    
+    // Reset current invoice data first
+    currentInvoiceData.value = null
+    
     // Prepare invoice data
     const invoiceData = {
       invoiceNumber: `INV-${booking.id.slice(-8).toUpperCase()}`,
       issueDate: new Date().toLocaleDateString('ar-SA'),
       travelDate: new Date(booking.travel_date).toLocaleDateString('ar-SA'),
-      customerName: booking.customer_name,
-      customerEmail: booking.customer_email,
-      customerPhone: booking.customer_phone,
-      packageTitle: booking.package_title,
-      destination: booking.destination,
-      packageDescription: `باقة سفر إلى ${booking.destination} تشمل الإقامة والوجبات والجولات السياحية`,
-      participantsCount: booking.participants_count,
-      unitPrice: booking.total_amount / booking.participants_count,
-      subtotal: booking.total_amount,
+      customerName: booking.customer_name || 'غير محدد',
+      customerEmail: booking.customer_email || 'غير محدد',
+      customerPhone: booking.customer_phone || 'غير محدد',
+      packageTitle: booking.package_title || 'باقة غير محددة',
+      destination: booking.destination || 'وجهة غير محددة',
+      packageDescription: `باقة سفر إلى ${booking.destination || 'الوجهة المحددة'} تشمل الإقامة والوجبات والجولات السياحية`,
+      participantsCount: booking.participants_count || 1,
+      unitPrice: (booking.total_amount || 0) / (booking.participants_count || 1),
+      subtotal: booking.total_amount || 0,
       discount: 0,
-      tax: booking.total_amount * 0.15, // 15% VAT
+      tax: (booking.total_amount || 0) * 0.15, // 15% VAT
       taxRate: 15,
-      totalAmount: booking.total_amount * 1.15,
-      paidAmount: booking.paid_amount,
-      remainingAmount: (booking.total_amount * 1.15) - booking.paid_amount,
-      paymentStatus: booking.status,
+      totalAmount: (booking.total_amount || 0) * 1.15,
+      paidAmount: booking.paid_amount || 0,
+      remainingAmount: ((booking.total_amount || 0) * 1.15) - (booking.paid_amount || 0),
+      paymentStatus: booking.status || 'pending',
       paymentDueDate: 7,
       notes: booking.notes || ''
     }
     
+    console.log('Invoice data prepared:', invoiceData)
+    
     // Show invoice template
     selectedBooking.value = booking
     showInvoiceModal.value = true
+    
+    // Set invoice data after a small delay to ensure modal is open
+    await nextTick()
     currentInvoiceData.value = invoiceData
     
   } catch (error) {
@@ -1572,5 +1627,14 @@ definePageMeta({
 
 .form-actions {
   @apply flex items-center justify-end space-x-3 space-x-reverse pt-6 border-t border-gray-200;
+}
+
+/* Loading Styles */
+.loading-invoice {
+  @apply flex flex-col items-center justify-center py-12 text-gray-500;
+}
+
+.loading-spinner {
+  @apply w-8 h-8 border-4 border-gray-200 border-t-purple-600 rounded-full animate-spin mb-4;
 }
 </style>
