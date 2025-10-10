@@ -1,6 +1,8 @@
 # Netlify redirects file
-# Redirect www to non-www
-https://www.worldtripagency.com/* https://worldtripagency.com/:splat 301!
+# Redirect non-www to www (consistent with netlify.toml)
+https://worldtripagency.com/* https://www.worldtripagency.com/:splat 301!
+http://worldtripagency.com/* https://www.worldtripagency.com/:splat 301!
+http://www.worldtripagency.com/* https://www.worldtripagency.com/:splat 301!
 
 # Handle static assets
 /api/* /api/:splat 200

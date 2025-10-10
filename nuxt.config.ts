@@ -256,7 +256,11 @@ export default defineNuxtConfig({
       }
     },
     ipx: {
-      maxAge: 60 * 60 * 24 * 7 // 7 days
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      // Ensure HTTPS compatibility
+      baseURL: process.env.NODE_ENV === 'production' 
+        ? 'https://www.worldtripagency.com' 
+        : 'http://localhost:3000'
     }
   },
 

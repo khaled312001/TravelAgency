@@ -4,41 +4,8 @@ Allow: /
 # Sitemap
 Sitemap: https://www.worldtripagency.com/sitemap.xml
 
-# Crawl-delay for better server performance
-Crawl-delay: 1
-
-# Block admin areas
+# Disallow admin areas
 Disallow: /admin/
 Disallow: /api/
 Disallow: /_nuxt/
 Disallow: /_ipx/
-
-# Allow important pages
-Allow: /packages/
-Allow: /destinations/
-Allow: /about
-Allow: /contact
-
-# Block duplicate content
-Disallow: /*?*
-Disallow: /*#
-
-# Allow social media crawlers
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-# Block bad bots
-User-agent: AhrefsBot
-Disallow: /
-
-User-agent: MJ12bot
-Disallow: /
-
-User-agent: DotBot
-Disallow: /

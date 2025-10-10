@@ -1,196 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
   <!-- Homepage -->
   <url>
     <loc>https://www.worldtripagency.com/</loc>
-    <lastmod>2025-01-09</lastmod>
+    <lastmod>2025-01-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://www.worldtripagency.com/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.worldtripagency.com/en" />
   </url>
-
-  <!-- About Page -->
-  <url>
-    <loc>https://www.worldtripagency.com/about</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Packages Pages -->
+  
+  <!-- Packages -->
   <url>
     <loc>https://www.worldtripagency.com/packages</loc>
-    <lastmod>2025-01-09</lastmod>
+    <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://www.worldtripagency.com/packages" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.worldtripagency.com/en/packages" />
   </url>
-
-  <!-- Destinations Pages -->
+  
+  <!-- About -->
   <url>
-    <loc>https://www.worldtripagency.com/destinations</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://www.worldtripagency.com/about</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://www.worldtripagency.com/about" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.worldtripagency.com/en/about" />
   </url>
-
-  <!-- Search Page -->
+  
+  <!-- Contact -->
   <url>
-    <loc>https://www.worldtripagency.com/packages/search</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://www.worldtripagency.com/contact</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://www.worldtripagency.com/contact" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.worldtripagency.com/en/contact" />
   </url>
-
-  <!-- Individual Package Pages (Examples) -->
-  <url>
-    <loc>https://www.worldtripagency.com/packages/umrah-package</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/packages/hajj-package</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/packages/dubai-package</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/packages/turkey-package</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/packages/malaysia-package</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Individual Destination Pages -->
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/makkah</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/medina</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/riyadh</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/jeddah</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/dammam</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/alula</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/taif</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/abha</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/tabuk</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/hail</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/baha</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/najran</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/jazan</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/qassim</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/eastern-province</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.worldtripagency.com/destinations/northern-borders</loc>
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
+  
 </urlset>
