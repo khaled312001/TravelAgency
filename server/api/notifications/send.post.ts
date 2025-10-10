@@ -20,8 +20,8 @@ export default defineEventHandler(async (event) => {
     // Configure web-push
     webpush.setVapidDetails(
       'mailto:info@worldtripagency.com',
-      'BEl62iUYgUivxIkv69yViEuiBIa40HI8F7j7ZAd9cn9jKIHaMqI5t9Dg6Ok3U7e1zKqoAZ4j2twFJqOPWqQW60', // Public key
-      'your-private-vapid-key' // Private key (you should generate your own)
+      'BFdVyptxcvboSd9zX8m-IciFTHpCkS6Ok1BJBPhnOn8kG4Es_eXCgPbh0c5vOniOo4kS24MlEciLsF7Adw1i7sY', // Public key
+      '5sWLQmMWoafI6LySdj-WRJznNWooki4PK6DsJTsL5T8' // Private key
     )
 
     // Get all subscriptions

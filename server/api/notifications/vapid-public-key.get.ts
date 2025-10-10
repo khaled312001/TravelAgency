@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   try {
     // VAPID public key (you should generate your own)
-    const publicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI8F7j7ZAd9cn9jKIHaMqI5t9Dg6Ok3U7e1zKqoAZ4j2twFJqOPWqQW60'
+    const publicKey = 'BFdVyptxcvboSd9zX8m-IciFTHpCkS6Ok1BJBPhnOn8kG4Es_eXCgPbh0c5vOniOo4kS24MlEciLsF7Adw1i7sY'
     
     return {
       publicKey

@@ -1,4 +1,4 @@
--- إنشاء جدول push_subscriptions لتخزين اشتراكات الإشعارات
+-- Create push_subscriptions table for storing push notification subscriptions
 CREATE TABLE IF NOT EXISTS push_subscriptions (
   id SERIAL PRIMARY KEY,
   endpoint TEXT NOT NULL UNIQUE,
@@ -8,21 +8,30 @@ CREATE TABLE IF NOT EXISTS push_subscriptions (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- إنشاء فهرس للبحث السريع
+-- Create notifications table for storing admin notifications
+CREATE TABLE IF NOT EXISTS notifications (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  type VARCHAR(50) DEFAULT 'message',
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Add indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_push_subscriptions_endpoint ON push_subscriptions(endpoint);
+CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
+CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON notifications(created_at);
 
--- إنشاء دالة لتحديث updated_at تلقائياً
-CREATE OR REPLACE FUNCTION update_push_subscriptions_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
+-- Add RLS policies if needed
+ALTER TABLE push_subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
--- إنشاء trigger لتحديث updated_at تلقائياً
-DROP TRIGGER IF EXISTS update_push_subscriptions_updated_at ON push_subscriptions;
-CREATE TRIGGER update_push_subscriptions_updated_at
-    BEFORE UPDATE ON push_subscriptions
-    FOR EACH ROW
-    EXECUTE FUNCTION update_push_subscriptions_updated_at();
+-- Allow public access to push_subscriptions (for subscription management)
+CREATE POLICY "Allow public access to push_subscriptions" ON push_subscriptions
+  FOR ALL USING (true);
+
+-- Allow public access to notifications (for admin notifications)
+CREATE POLICY "Allow public access to notifications" ON notifications
+  FOR ALL USING (true);

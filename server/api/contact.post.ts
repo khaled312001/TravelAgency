@@ -2,21 +2,26 @@ import { createClient } from '@supabase/supabase-js'
 import webpush from 'web-push'
 
 const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
+const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTkyMzE3NiwiZXhwIjoyMDc1NDk5MTc2fQ.8x1bRWz6UgyRgkMQf5c32qABhgRNnY-p8Q2Sz9S-jn0'
+
+// Use anon key for contact form (public access)
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Use service key for admin operations (push notifications)
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 // Configure web-push for admin notifications
 webpush.setVapidDetails(
   'mailto:admin@worldtripagency.com',
-  'BEl62iUYgUivxIkv69yViEuiBIa40HI8F7j7ZAd9cn9jKIHaMqI5t9Dg6Ok3U7e1zKqoAZ4j2twFJqOPWqQW60', // Public key
-  'your-private-vapid-key' // Private key (you should generate your own)
+  'BFdVyptxcvboSd9zX8m-IciFTHpCkS6Ok1BJBPhnOn8kG4Es_eXCgPbh0c5vOniOo4kS24MlEciLsF7Adw1i7sY', // Public key
+  '5sWLQmMWoafI6LySdj-WRJznNWooki4PK6DsJTsL5T8' // Private key
 )
 
 // Function to send push notification to admin
 async function sendAdminNotification({ title, message, url = '/admin/messages' }: { title: string, message: string, url?: string }) {
   try {
     // Get admin subscriptions (you might want to filter for admin users only)
-    const { data: subscriptions, error } = await supabase
+    const { data: subscriptions, error } = await supabaseAdmin
       .from('push_subscriptions')
       .select('*')
 
@@ -161,7 +166,7 @@ export default defineEventHandler(async (event) => {
           notificationMessage = `استفسار جديد من ${body.name} عن ${body.destination_name}`
         }
 
-        const { data: notification, error: notificationError } = await supabase
+        const { data: notification, error: notificationError } = await supabaseAdmin
           .from('notifications')
           .insert({
             title: notificationTitle,
