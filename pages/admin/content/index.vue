@@ -66,29 +66,32 @@
               </div>
               <div class="form-group">
                 <label class="form-label">فيديو سطح المكتب</label>
-                <input
+                <FileUpload
                   v-model="content.hero.video_desktop"
-                  type="text"
-                  class="form-input"
-                  placeholder="/videos/hero/desktop/hero-desktop.webm"
+                  accept="video/*"
+                  :max-size="50"
+                  drag-text="اسحب فيديو سطح المكتب هنا"
+                  @uploaded="onVideoUploaded"
                 />
               </div>
               <div class="form-group">
                 <label class="form-label">فيديو الهاتف</label>
-                <input
+                <FileUpload
                   v-model="content.hero.video_mobile"
-                  type="text"
-                  class="form-input"
-                  placeholder="/videos/hero/mobile/hero-mobile-center.webm"
+                  accept="video/*"
+                  :max-size="50"
+                  drag-text="اسحب فيديو الهاتف هنا"
+                  @uploaded="onVideoUploaded"
                 />
               </div>
               <div class="form-group">
                 <label class="form-label">صورة الخلفية</label>
-                <input
+                <FileUpload
                   v-model="content.hero.poster_image"
-                  type="text"
-                  class="form-input"
-                  placeholder="/images/home/heroSection/hero-image.webp"
+                  accept="image/*"
+                  :max-size="10"
+                  drag-text="اسحب صورة الخلفية هنا"
+                  @uploaded="onImageUploaded"
                 />
               </div>
             </div>
@@ -130,29 +133,32 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Desktop Video</label>
-                <input
+                <FileUpload
                   v-model="content.hero.video_desktop"
-                  type="text"
-                  class="form-input"
-                  placeholder="/videos/hero/desktop/hero-desktop.webm"
+                  accept="video/*"
+                  :max-size="50"
+                  drag-text="Drag desktop video here"
+                  @uploaded="onVideoUploaded"
                 />
               </div>
               <div class="form-group">
                 <label class="form-label">Mobile Video</label>
-                <input
+                <FileUpload
                   v-model="content.hero.video_mobile"
-                  type="text"
-                  class="form-input"
-                  placeholder="/videos/hero/mobile/hero-mobile-center.webm"
+                  accept="video/*"
+                  :max-size="50"
+                  drag-text="Drag mobile video here"
+                  @uploaded="onVideoUploaded"
                 />
               </div>
               <div class="form-group">
                 <label class="form-label">Poster Image</label>
-                <input
+                <FileUpload
                   v-model="content.hero.poster_image"
-                  type="text"
-                  class="form-input"
-                  placeholder="/images/home/heroSection/hero-image.webp"
+                  accept="image/*"
+                  :max-size="10"
+                  drag-text="Drag poster image here"
+                  @uploaded="onImageUploaded"
                 />
               </div>
             </div>
@@ -423,6 +429,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import FileUpload from '~/components/admin/FileUpload.vue'
 
 // Use admin layout
 definePageMeta({
@@ -574,6 +581,25 @@ const saveAllContent = async () => {
   } finally {
     isSaving.value = false
   }
+}
+
+// File upload handlers
+const onVideoUploaded = (data: any) => {
+  console.log('Video uploaded:', data)
+  message.value = 'تم رفع الفيديو بنجاح!'
+  messageType.value = 'success'
+  setTimeout(() => {
+    message.value = ''
+  }, 3000)
+}
+
+const onImageUploaded = (data: any) => {
+  console.log('Image uploaded:', data)
+  message.value = 'تم رفع الصورة بنجاح!'
+  messageType.value = 'success'
+  setTimeout(() => {
+    message.value = ''
+  }, 3000)
 }
 
 // Load content on mount
