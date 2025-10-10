@@ -1,4 +1,21 @@
 // Service Worker for Push Notifications
+
+// Convert VAPID key from base64 to Uint8Array
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/')
+  
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
 self.addEventListener('push', function(event) {
   console.log('Push event received:', event)
   
@@ -115,9 +132,20 @@ async function handleNotificationSync() {
 async function resubscribeToPush() {
   try {
     const registration = await self.registration
+    
+    // Get VAPID public key from server
+    const response = await fetch('/api/notifications/vapid-public-key')
+    if (!response.ok) {
+      console.log('Failed to get VAPID key for re-subscription')
+      return
+    }
+    
+    const { publicKey } = await response.json()
+    const applicationServerKey = urlBase64ToUint8Array(publicKey)
+    
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: 'BEl62iUYgUivxIkv69yViEuiBIa40HI8F7j7ZAd9cn9jKIHaMqI5t9Dg6Ok3U7e1zKqoAZ4j2twFJqOPWqQW60'
+      applicationServerKey: applicationServerKey
     })
     
     // Send new subscription to server

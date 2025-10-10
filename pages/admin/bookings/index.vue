@@ -285,11 +285,20 @@
 
         <div class="modal-actions">
           <button @click="closeModal" class="btn-secondary">
+            <Icon name="lucide:x" class="btn-icon" />
             إغلاق
           </button>
-          <button @click="editBooking(selectedBooking)" class="btn-primary">
+          <button @click="generateInvoice(selectedBooking)" class="btn-invoice">
+            <Icon name="lucide:file-text" class="btn-icon" />
+            طباعة الفاتورة
+          </button>
+          <button @click="editBooking(selectedBooking)" class="btn-edit">
             <Icon name="lucide:edit" class="btn-icon" />
             تعديل الحجز
+          </button>
+          <button @click="deleteBooking(selectedBooking)" class="btn-delete">
+            <Icon name="lucide:trash" class="btn-icon" />
+            حذف الحجز
           </button>
         </div>
       </div>
@@ -389,6 +398,148 @@
       </div>
     </div>
 
+    <!-- Edit Booking Modal -->
+    <div v-if="showEditBookingModal" class="modal-overlay" @click="showEditBookingModal = false">
+      <div class="modal-content large" @click.stop>
+        <div class="modal-header">
+          <h2 class="modal-title">تعديل الحجز #{{ editingBooking?.id.slice(-8) }}</h2>
+          <button @click="showEditBookingModal = false" class="modal-close">
+            <Icon name="lucide:x" class="close-icon" />
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form @submit.prevent="updateBooking" class="space-y-6">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">اسم العميل *</label>
+                <input 
+                  v-model="editingBooking.customer_name" 
+                  type="text" 
+                  class="form-input" 
+                  required 
+                />
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">البريد الإلكتروني *</label>
+                <input 
+                  v-model="editingBooking.customer_email" 
+                  type="email" 
+                  class="form-input" 
+                  required 
+                />
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">رقم الهاتف *</label>
+                <input 
+                  v-model="editingBooking.customer_phone" 
+                  type="tel" 
+                  class="form-input" 
+                  required 
+                />
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">الباقة *</label>
+                <select v-model="editingBooking.package_id" class="form-input" required>
+                  <option value="">اختر الباقة</option>
+                  <option v-for="pkg in packages" :key="pkg.id" :value="pkg.id">
+                    {{ pkg.title }}
+                  </option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">الوجهة</label>
+                <input 
+                  v-model="editingBooking.destination" 
+                  type="text" 
+                  class="form-input" 
+                />
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">تاريخ السفر *</label>
+                <input 
+                  v-model="editingBooking.travel_date" 
+                  type="date" 
+                  class="form-input" 
+                  required 
+                />
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">عدد المشاركين *</label>
+                <input 
+                  v-model.number="editingBooking.participants_count" 
+                  type="number" 
+                  min="1" 
+                  class="form-input" 
+                  required 
+                />
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">المبلغ الإجمالي *</label>
+                <input 
+                  v-model.number="editingBooking.total_amount" 
+                  type="number" 
+                  min="0" 
+                  step="0.01" 
+                  class="form-input" 
+                  required 
+                />
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">المبلغ المدفوع</label>
+                <input 
+                  v-model.number="editingBooking.paid_amount" 
+                  type="number" 
+                  min="0" 
+                  step="0.01" 
+                  class="form-input" 
+                />
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">حالة الحجز *</label>
+                <select v-model="editingBooking.status" class="form-input" required>
+                  <option value="pending">في الانتظار</option>
+                  <option value="confirmed">مؤكد</option>
+                  <option value="cancelled">ملغي</option>
+                  <option value="completed">مكتمل</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">ملاحظات</label>
+              <textarea 
+                v-model="editingBooking.notes" 
+                class="form-input" 
+                rows="3"
+                placeholder="أي ملاحظات إضافية..."
+              ></textarea>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" @click="showEditBookingModal = false" class="btn-secondary">
+                <Icon name="lucide:x" class="btn-icon" />
+                إلغاء
+              </button>
+              <button type="submit" class="btn-primary">
+                <Icon name="lucide:save" class="btn-icon" />
+                حفظ التعديلات
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <!-- Invoice Modal -->
     <div v-if="showInvoiceModal" class="modal-overlay" @click="showInvoiceModal = false">
       <div class="modal-content invoice-modal" @click.stop>
@@ -461,6 +612,7 @@ const showAddBookingModal = ref(false)
 const showInvoiceModal = ref(false)
 const selectedBooking = ref<Booking | null>(null)
 const currentInvoiceData = ref<any>(null)
+const editingBooking = ref<Booking | null>(null)
 
 const newBooking = ref({
   customer_name: '',
@@ -594,7 +746,11 @@ const viewBooking = (booking: Booking) => {
 }
 
 const editBooking = (booking: Booking) => {
-  selectedBooking.value = booking
+  // Close the details modal if open
+  showBookingModal.value = false
+  
+  // Set the booking to edit
+  editingBooking.value = { ...booking }
   showEditBookingModal.value = true
 }
 
@@ -997,11 +1153,42 @@ const submitNewBooking = async () => {
   }
 }
 
+const updateBooking = async () => {
+  try {
+    if (!editingBooking.value) return
+
+    // Get package title
+    const selectedPackage = packages.value.find(pkg => pkg.id === editingBooking.value.package_id)
+    if (selectedPackage) {
+      editingBooking.value.package_title = selectedPackage.title
+    }
+
+    const response = await $fetch(`/api/admin/bookings/${editingBooking.value.id}`, {
+      method: 'PUT',
+      body: editingBooking.value
+    })
+
+    if (response.success) {
+      alert('تم تحديث الحجز بنجاح')
+      showEditBookingModal.value = false
+      editingBooking.value = null
+      // Reload bookings
+      await loadBookings()
+    } else {
+      alert('حدث خطأ أثناء تحديث الحجز')
+    }
+  } catch (error) {
+    console.error('Error updating booking:', error)
+    alert('حدث خطأ أثناء تحديث الحجز')
+  }
+}
+
 const closeModal = () => {
   showBookingModal.value = false
   showEditBookingModal.value = false
   showAddBookingModal.value = false
   selectedBooking.value = null
+  editingBooking.value = null
 }
 
 
@@ -1352,5 +1539,38 @@ definePageMeta({
 
 .btn-primary {
   @apply flex items-center space-x-2 space-x-reverse px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors;
+}
+
+.btn-invoice {
+  @apply flex items-center space-x-2 space-x-reverse px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors;
+}
+
+.btn-edit {
+  @apply flex items-center space-x-2 space-x-reverse px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors;
+}
+
+.btn-delete {
+  @apply flex items-center space-x-2 space-x-reverse px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors;
+}
+
+/* Form Styles */
+.form-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.form-group {
+  @apply space-y-2;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors;
+}
+
+.form-actions {
+  @apply flex items-center justify-end space-x-3 space-x-reverse pt-6 border-t border-gray-200;
 }
 </style>
