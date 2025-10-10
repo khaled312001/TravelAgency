@@ -135,7 +135,7 @@ const heroTitlePhrases = computed(() => {
 // Initialize content loading and video optimization
 onMounted(async () => {
   // Load content from database
-  await init()
+  await initContent()
   
   // Setup video optimization
   if (videoRef.value) {
