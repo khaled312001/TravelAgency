@@ -1,7 +1,7 @@
 export default defineNuxtPlugin(() => {
   // Check if we're in the browser
   if (typeof window === 'undefined') return
-
+  
   // Check if service worker is supported
   if (!('serviceWorker' in navigator)) {
     console.log('Service Worker not supported')
@@ -46,8 +46,19 @@ export default defineNuxtPlugin(() => {
     try {
       const registration = await navigator.serviceWorker.ready
       
+      // Check if push manager is available
+      if (!registration.pushManager) {
+        console.log('Push messaging not supported')
+        return null
+      }
+      
       // Get VAPID public key from server
       const response = await fetch('/api/notifications/vapid-public-key')
+      if (!response.ok) {
+        console.log('Failed to get VAPID key')
+        return null
+      }
+      
       const { publicKey } = await response.json()
       
       // Convert VAPID key to Uint8Array
@@ -60,7 +71,7 @@ export default defineNuxtPlugin(() => {
       })
       
       // Send subscription to server
-      await fetch('/api/notifications/subscribe', {
+      const subscribeResponse = await fetch('/api/notifications/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -68,7 +79,12 @@ export default defineNuxtPlugin(() => {
         body: JSON.stringify(subscription)
       })
       
-      console.log('Successfully subscribed to push notifications')
+      if (subscribeResponse.ok) {
+        console.log('Successfully subscribed to push notifications')
+      } else {
+        console.log('Failed to save subscription to server')
+      }
+      
       return subscription
     } catch (error) {
       console.error('Error subscribing to push notifications:', error)
@@ -94,20 +110,28 @@ export default defineNuxtPlugin(() => {
 
   // Initialize notifications
   const initializeNotifications = async () => {
-    // Request permission
-    const hasPermission = await requestNotificationPermission()
-    
-    if (hasPermission) {
-      // Subscribe to push notifications
-      await subscribeToPushNotifications()
+    try {
+      // Request permission
+      const hasPermission = await requestNotificationPermission()
+      
+      if (hasPermission) {
+        // Subscribe to push notifications
+        await subscribeToPushNotifications()
+      }
+    } catch (error) {
+      console.error('Error initializing notifications:', error)
     }
   }
 
-  // Auto-initialize on page load
+  // Auto-initialize on page load with delay
+  const initWithDelay = () => {
+    setTimeout(initializeNotifications, 1000) // Wait 1 second after page load
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeNotifications)
+    document.addEventListener('DOMContentLoaded', initWithDelay)
   } else {
-    initializeNotifications()
+    initWithDelay()
   }
 
   // Provide notification functions globally

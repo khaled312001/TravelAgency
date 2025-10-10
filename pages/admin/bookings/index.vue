@@ -388,6 +388,38 @@
         </div>
       </div>
     </div>
+
+    <!-- Invoice Modal -->
+    <div v-if="showInvoiceModal" class="modal-overlay" @click="showInvoiceModal = false">
+      <div class="modal-content invoice-modal" @click.stop>
+        <div class="modal-header">
+          <h2 class="modal-title">فاتورة الحجز</h2>
+          <button @click="showInvoiceModal = false" class="modal-close">
+            <Icon name="lucide:x" class="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="invoice-actions">
+            <button @click="downloadInvoicePDF" class="btn-primary">
+              <Icon name="lucide:download" class="btn-icon" />
+              تحميل PDF
+            </button>
+            <button @click="showInvoiceModal = false" class="btn-secondary">
+              <Icon name="lucide:x" class="btn-icon" />
+              إغلاق
+            </button>
+          </div>
+          
+          <!-- Invoice Template -->
+          <InvoiceTemplate 
+            v-if="currentInvoiceData" 
+            :invoice-data="currentInvoiceData" 
+            :show="true"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -424,7 +456,9 @@ const dateFilter = ref('')
 const showBookingModal = ref(false)
 const showEditBookingModal = ref(false)
 const showAddBookingModal = ref(false)
+const showInvoiceModal = ref(false)
 const selectedBooking = ref<Booking | null>(null)
+const currentInvoiceData = ref<any>(null)
 
 const newBooking = ref({
   customer_name: '',
@@ -564,216 +598,85 @@ const editBooking = (booking: Booking) => {
 
 const generateInvoice = async (booking: Booking) => {
   try {
-    const response = await $fetch(`/api/admin/bookings/${booking.id}/invoice`)
-    if (response.success) {
-      await downloadInvoicePDF(response.invoice)
+    // Prepare invoice data
+    const invoiceData = {
+      invoiceNumber: `INV-${booking.id.slice(-8).toUpperCase()}`,
+      issueDate: new Date().toLocaleDateString('ar-SA'),
+      travelDate: new Date(booking.travel_date).toLocaleDateString('ar-SA'),
+      customerName: booking.customer_name,
+      customerEmail: booking.customer_email,
+      customerPhone: booking.customer_phone,
+      packageTitle: booking.package_title,
+      destination: booking.destination,
+      packageDescription: `باقة سفر إلى ${booking.destination} تشمل الإقامة والوجبات والجولات السياحية`,
+      participantsCount: booking.participants_count,
+      unitPrice: booking.total_amount / booking.participants_count,
+      subtotal: booking.total_amount,
+      discount: 0,
+      tax: booking.total_amount * 0.15, // 15% VAT
+      taxRate: 15,
+      totalAmount: booking.total_amount * 1.15,
+      paidAmount: booking.paid_amount,
+      remainingAmount: (booking.total_amount * 1.15) - booking.paid_amount,
+      paymentStatus: booking.status,
+      paymentDueDate: 7,
+      notes: booking.notes || ''
     }
+    
+    // Show invoice template
+    selectedBooking.value = booking
+    showInvoiceModal.value = true
+    currentInvoiceData.value = invoiceData
+    
   } catch (error) {
     console.error('Error generating invoice:', error)
     alert('حدث خطأ أثناء إنشاء الفاتورة')
   }
 }
 
-const downloadInvoicePDF = async (invoiceData: any) => {
+const downloadInvoicePDF = async () => {
   try {
-    const { jsPDF } = await import('jspdf')
-    const doc = new jsPDF('p', 'mm', 'a4')
+    // Wait for DOM to be ready
+    await nextTick()
     
-    // Set font to helvetica for better compatibility
-    doc.setFont('helvetica')
+    const html2pdf = (await import('html2pdf.js')).default
     
-    // Colors - Professional color scheme
-    const primaryColor = [59, 130, 246] // Blue
-    const secondaryColor = [107, 114, 128] // Gray
-    const accentColor = [34, 197, 94] // Green
-    const warningColor = [245, 158, 11] // Orange
-    
-    // Header with professional design
-    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2])
-    doc.rect(0, 0, 210, 50, 'F')
-    
-    // Company name and logo area
-    doc.setTextColor(255, 255, 255)
-    doc.setFontSize(24)
-    doc.setFont('helvetica', 'bold')
-    doc.text('World Trip Agency', 20, 20)
-    doc.setFontSize(12)
-    doc.setFont('helvetica', 'normal')
-    doc.text('Professional Travel Services', 20, 30)
-    
-    // Invoice title and number
-    doc.setFontSize(20)
-    doc.setFont('helvetica', 'bold')
-    doc.text('INVOICE', 150, 20)
-    doc.setFontSize(12)
-    doc.setFont('helvetica', 'normal')
-    doc.text(`#${invoiceData.invoice_number}`, 150, 30)
-    doc.text(`Date: ${invoiceData.invoice_date}`, 150, 40)
-    
-    // Reset text color
-    doc.setTextColor(0, 0, 0)
-    
-    // Company information section
-    doc.setFillColor(248, 250, 252)
-    doc.rect(20, 60, 170, 35, 'F')
-    
-    doc.setFontSize(14)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
-    doc.text('COMPANY INFORMATION', 25, 75)
-    
-    doc.setTextColor(0, 0, 0)
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
-    doc.text(invoiceData.company.name || 'Wonderland Travel Agency', 25, 85)
-    doc.text(invoiceData.company.address || 'Riyadh, Saudi Arabia', 25, 92)
-    doc.text(`Phone: ${invoiceData.company.phone}`, 25, 99)
-    doc.text(`Email: ${invoiceData.company.email}`, 25, 106)
-    doc.text(`Tax ID: ${invoiceData.company.tax_number} | License: ${invoiceData.company.license_number}`, 25, 113)
-    
-    // Customer information section
-    doc.setFillColor(240, 240, 240)
-    doc.rect(20, 105, 170, 30, 'F')
-    
-    doc.setFontSize(14)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
-    doc.text('BILL TO', 25, 120)
-    
-    doc.setTextColor(0, 0, 0)
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(12)
-    doc.setFont('helvetica', 'bold')
-    doc.text(invoiceData.customer.name, 25, 130)
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
-    doc.text(invoiceData.customer.email, 25, 137)
-    doc.text(invoiceData.customer.phone, 25, 144)
-    
-    // Booking details section
-    doc.setFontSize(14)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
-    doc.text('BOOKING DETAILS', 20, 160)
-    
-    doc.setTextColor(0, 0, 0)
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
-    doc.text(`Package: ${invoiceData.booking.package_title}`, 20, 170)
-    doc.text(`Destination: ${invoiceData.booking.destination}`, 20, 177)
-    doc.text(`Travel Date: ${invoiceData.booking.travel_date}`, 20, 184)
-    doc.text(`Participants: ${invoiceData.booking.participants_count}`, 20, 191)
-    doc.text(`Status: ${invoiceData.status_ar || invoiceData.status}`, 20, 198)
-    
-    // Services table with professional styling
-    doc.setFontSize(14)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
-    doc.text('SERVICES', 20, 215)
-    
-    // Table header with gradient effect
-    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2])
-    doc.rect(20, 220, 170, 12, 'F')
-    
-    doc.setTextColor(255, 255, 255)
-    doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
-    doc.text('Description', 25, 228)
-    doc.text('Qty', 120, 228)
-    doc.text('Unit Price', 140, 228)
-    doc.text('Total', 170, 228)
-    
-    // Table data with alternating rows
-    doc.setTextColor(0, 0, 0)
-    doc.setFont('helvetica', 'normal')
-    let y = 240
-    
-    invoiceData.items.forEach((item: any, index: number) => {
-      // Alternate row colors
-      if (index % 2 === 0) {
-        doc.setFillColor(248, 250, 252)
-        doc.rect(20, y - 5, 170, 10, 'F')
+    // Wait a bit more to ensure the invoice template is rendered
+    setTimeout(async () => {
+      const element = document.getElementById('invoice-content')
+      if (!element) {
+        alert('لم يتم العثور على محتوى الفاتورة. يرجى المحاولة مرة أخرى.')
+        return
       }
       
-      doc.text((item.description_en || item.description).substring(0, 35), 25, y)
-      doc.text(item.quantity.toString(), 120, y)
-      doc.text(`${item.unit_price.toFixed(2)} SAR`, 140, y)
-      doc.text(`${item.total_price.toFixed(2)} SAR`, 170, y)
-      y += 10
-    })
-    
-    // Professional totals section
-    y += 10
-    doc.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2])
-    doc.rect(120, y, 70, 50, 'F')
-    
-    doc.setTextColor(255, 255, 255)
-    doc.setFontSize(12)
-    doc.setFont('helvetica', 'bold')
-    doc.text('TOTAL SUMMARY', 125, y + 10)
-    
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
-    doc.text(`Subtotal: ${invoiceData.totals.subtotal.toFixed(2)} SAR`, 125, y + 20)
-    doc.text(`VAT (${invoiceData.totals.tax_rate}%): ${invoiceData.totals.tax_amount.toFixed(2)} SAR`, 125, y + 27)
-    
-    // Highlight total amount
-    doc.setFontSize(14)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(accentColor[0], accentColor[1], accentColor[2])
-    doc.text(`TOTAL: ${invoiceData.totals.total.toFixed(2)} SAR`, 125, y + 37)
-    
-    // Payment status
-    doc.setTextColor(0, 0, 0)
-    doc.setFontSize(10)
-    doc.setFont('helvetica', 'normal')
-    doc.text(`Paid: ${invoiceData.totals.paid_amount.toFixed(2)} SAR`, 20, y + 20)
-    doc.text(`Balance: ${invoiceData.totals.balance_due.toFixed(2)} SAR`, 20, y + 27)
-    
-    // Payment status indicator
-    const paymentStatus = invoiceData.totals.balance_due <= 0 ? 'PAID' : 'PENDING'
-    const statusColor = invoiceData.totals.balance_due <= 0 ? accentColor : warningColor
-    doc.setFillColor(statusColor[0], statusColor[1], statusColor[2])
-    doc.rect(20, y + 30, 30, 8, 'F')
-    doc.setTextColor(255, 255, 255)
-    doc.setFontSize(8)
-    doc.setFont('helvetica', 'bold')
-    doc.text(paymentStatus, 25, y + 35)
-    
-    // Notes section
-    if (invoiceData.notes) {
-      y += 60
-      doc.setFontSize(12)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2])
-      doc.text('NOTES', 20, y)
+      const opt = {
+        margin: 0.5,
+        filename: `فاتورة-${currentInvoiceData.value?.invoiceNumber || 'invoice'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          allowTaint: true
+        },
+        jsPDF: { 
+          unit: 'in', 
+          format: 'a4', 
+          orientation: 'portrait',
+          compress: true
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      }
       
-      doc.setTextColor(0, 0, 0)
-      doc.setFont('helvetica', 'normal')
-      doc.setFontSize(10)
-      doc.text(invoiceData.notes, 20, y + 10)
-    }
-    
-    // Professional footer
-    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2])
-    doc.rect(0, 270, 210, 30, 'F')
-    
-    doc.setTextColor(255, 255, 255)
-    doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
-    doc.text('Thank you for choosing Wonderland Travel Agency', 105, 280, { align: 'center' })
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(8)
-    doc.text('Professional Travel Services | www.worldtripagency.com', 105, 287, { align: 'center' })
-    doc.text('Phone: +966500982394 | Email: info@worldtripagency.com', 105, 294, { align: 'center' })
-    
-    // Download file with professional naming
-    const fileName = `Invoice_${invoiceData.invoice_number}_${invoiceData.customer.name.replace(/\s+/g, '_')}.pdf`
-    doc.save(fileName)
+      await html2pdf().set(opt).from(element).save()
+      
+      // Close modal after successful download
+      showInvoiceModal.value = false
+    }, 500) // Wait 500ms for rendering
     
   } catch (error) {
-    console.error('Error creating PDF:', error)
-    alert('Error creating PDF file')
+    console.error('Error generating PDF:', error)
+    alert('حدث خطأ أثناء إنشاء ملف PDF')
   }
 }
 
@@ -1084,6 +987,28 @@ definePageMeta({
 
 .page-subtitle {
   @apply text-gray-600 mt-1;
+}
+
+/* Invoice Modal Styles */
+.invoice-modal {
+  @apply max-w-6xl w-full max-h-[90vh] overflow-hidden;
+}
+
+.invoice-actions {
+  @apply flex gap-4 mb-6 p-4 bg-gray-50 rounded-lg;
+}
+
+.invoice-actions .btn-primary,
+.invoice-actions .btn-secondary {
+  @apply flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+}
+
+.invoice-actions .btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.invoice-actions .btn-secondary {
+  @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
 }
 
 .add-btn {
