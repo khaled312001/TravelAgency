@@ -568,11 +568,18 @@
               <div class="loading-spinner"></div>
               <p>جاري تحميل الفاتورة...</p>
             </div>
-            <InvoiceTemplate 
-              v-else
-              :invoice-data="currentInvoiceData" 
-              :show="true"
-            />
+            <div v-else>
+              <div class="invoice-actions mb-4">
+                <button @click="downloadInvoicePDF" class="btn-primary">
+                  <Icon name="lucide:download" class="btn-icon" />
+                  تحميل PDF
+                </button>
+              </div>
+              <InvoiceTemplate 
+                :invoice-data="currentInvoiceData" 
+                :show="true"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -837,9 +844,14 @@ const generateInvoice = async (booking: Booking) => {
     selectedBooking.value = booking
     showInvoiceModal.value = true
     
-    // Set invoice data after a small delay to ensure modal is open
+    // Set invoice data after ensuring modal is open
     await nextTick()
     currentInvoiceData.value = invoiceData
+    
+    // Wait a bit more to ensure the invoice content is rendered
+    await new Promise(resolve => setTimeout(resolve, 500))
+    
+    console.log('Invoice modal should be visible now')
     
   } catch (error) {
     console.error('Error generating invoice:', error)
@@ -882,8 +894,14 @@ const downloadInvoicePDF = async () => {
         return
       }
       
+      console.log('Starting PDF generation...')
+      console.log('Modal visible:', showInvoiceModal.value)
+      console.log('Invoice data available:', !!currentInvoiceData.value)
+      
       // Wait for the invoice content to be available and visible
+      console.log('Waiting for #invoice-content element...')
       const element = await waitForElement('#invoice-content')
+      console.log('Element found:', element)
       
       // Additional check to ensure element has content
       if (!element.innerHTML.trim()) {

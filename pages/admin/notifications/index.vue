@@ -405,7 +405,11 @@ const loadNotifications = async () => {
     if (typeFilter.value) params.append('type', typeFilter.value)
     if (dateFilter.value) params.append('date', dateFilter.value)
     
-    const response = await $fetch(`/api/admin/notifications?${params.toString()}`)
+    const url = `/api/admin/notifications?${params.toString()}`
+    console.log('Loading notifications from:', url)
+    
+    const response = await $fetch(url)
+    console.log('API response:', response)
     
     if (response.success && response.notifications) {
       notifications.value = response.notifications.map((notification: any) => ({

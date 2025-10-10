@@ -156,11 +156,16 @@ const toggleNotifications = () => {
 // Load notification count
 const loadNotificationCount = async () => {
   try {
+    console.log('Loading notification count...')
     const response = await $fetch('/api/admin/notifications?status=unread')
+    console.log('Notification count response:', response)
+    
     if (response.success) {
       // Fix: Use response.notifications instead of response.data
       const notifications = response.notifications || []
       const newCount = notifications.length
+      
+      console.log('Notification count:', newCount)
       
       // Check if there are new notifications
       if (newCount > previousNotificationCount.value && previousNotificationCount.value > 0) {
