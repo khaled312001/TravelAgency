@@ -119,6 +119,13 @@ export default defineNuxtConfig({
       skipWaiting: true,
       clientsClaim: true,
       maximumFileSizeToCacheInBytes: 7 * 1024 * 1024, // 7 MB
+      // Enable background sync for notifications
+      backgroundSync: {
+        name: 'notification-queue',
+        options: {
+          maxRetentionTime: 24 * 60 // 24 hours
+        }
+      },
       globPatterns: [
         '**/*.{js,css,html}',
         'images/**/*.{png,jpg,jpeg,svg,webp}',

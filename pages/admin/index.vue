@@ -325,15 +325,25 @@
         <p class="text-sm font-medium text-gray-900">عرض الرسائل</p>
       </NuxtLink>
 
-      <NuxtLink
-        to="/admin/content"
-        class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-center"
-      >
-        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-          <Icon name="lucide:edit-3" class="w-6 h-6 text-orange-600" />
-        </div>
-        <p class="text-sm font-medium text-gray-900">إدارة المحتوى</p>
-      </NuxtLink>
+          <NuxtLink
+            to="/admin/content"
+            class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-center"
+          >
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+              <Icon name="lucide:edit-3" class="w-6 h-6 text-orange-600" />
+            </div>
+            <p class="text-sm font-medium text-gray-900">إدارة المحتوى</p>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/admin/notifications"
+            class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-center"
+          >
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+              <Icon name="lucide:bell" class="w-6 h-6 text-blue-600" />
+            </div>
+            <p class="text-sm font-medium text-gray-900">الإشعارات</p>
+          </NuxtLink>
 
       <NuxtLink
         to="/admin/seo"

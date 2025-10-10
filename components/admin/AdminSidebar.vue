@@ -117,12 +117,18 @@ const menuItems = [
     icon: 'lucide:bar-chart-3',
     badge: false
   },
-  {
-    name: 'إدارة المحتوى',
-    path: '/admin/content',
-    icon: 'lucide:edit-3',
-    badge: false
-  },
+      {
+        name: 'إدارة المحتوى',
+        path: '/admin/content',
+        icon: 'lucide:edit-3',
+        badge: false
+      },
+      {
+        name: 'الإشعارات',
+        path: '/admin/notifications',
+        icon: 'lucide:bell',
+        badge: false
+      },
   {
     name: 'إدارة SEO',
     path: '/admin/seo',
