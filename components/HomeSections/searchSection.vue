@@ -342,8 +342,8 @@ const { locale, t } = useI18n()
 const { getSearchContent, init: initContent } = useSiteContent()
 
 // Initialize content
-onMounted(() => {
-  initContent()
+onMounted(async () => {
+  await initContent()
 })
 
 // Get search content with fallback to translations

@@ -72,8 +72,8 @@ const { locale, t } = useI18n()
 const { getServicesContent, init: initContent } = useSiteContent()
 
 // Initialize content
-onMounted(() => {
-  initContent()
+onMounted(async () => {
+  await initContent()
 })
 
 // Get services content with fallback to translations

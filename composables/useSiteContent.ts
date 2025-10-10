@@ -49,7 +49,18 @@ export const useSiteContent = () => {
 
   // Get destinations content
   const getDestinationsContent = (destination: 'saudi' | 'global', field: 'title' | 'subtitle', language: 'ar' | 'en' = 'ar') => {
-    return getContent('destinations', destination, language) || getContent('destinations', destination, language)
+    if (!content.value) return ''
+    
+    const destinationsContent = content.value.destinations
+    if (!destinationsContent) return ''
+    
+    const destinationContent = destinationsContent[destination]
+    if (!destinationContent) return ''
+    
+    const fieldContent = destinationContent[field]
+    if (!fieldContent) return ''
+    
+    return fieldContent[language] || ''
   }
 
   // Initialize content loading

@@ -46,8 +46,8 @@ const localePath = useLocalePath()
 const { getDestinationsContent, init: initContent } = useSiteContent()
 
 // Initialize content
-onMounted(() => {
-  initContent()
+onMounted(async () => {
+  await initContent()
 })
 
 // Get global destinations content with fallback to translations

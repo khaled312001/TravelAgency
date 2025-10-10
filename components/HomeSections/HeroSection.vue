@@ -132,8 +132,12 @@ const heroTitlePhrases = computed(() => {
   }
 })
 
-// Intersection Observer for video optimization
-onMounted(() => {
+// Initialize content loading and video optimization
+onMounted(async () => {
+  // Load content from database
+  await init()
+  
+  // Setup video optimization
   if (videoRef.value) {
     const { stop } = useIntersectionObserver(
       videoRef,
