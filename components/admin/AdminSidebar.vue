@@ -136,12 +136,7 @@ const menuItems = [
     icon: 'lucide:qr-code',
     badge: false
   },
-  {
-    name: 'اختبار الفواتير',
-    path: '/admin/invoice-test',
-    icon: 'lucide:file-text',
-    badge: false
-  },
+
   {
     name: 'الإعدادات',
     path: '/admin/settings',
