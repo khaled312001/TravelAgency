@@ -33,7 +33,7 @@ export const useSiteContent = () => {
   }
 
   // Get hero content
-  const getHeroContent = (field: 'title' | 'subtitle' | 'cta', language: 'ar' | 'en' = 'ar') => {
+  const getHeroContent = (field: 'title' | 'subtitle' | 'cta' | 'video_desktop' | 'video_mobile' | 'poster_image', language: 'ar' | 'en' = 'ar') => {
     return getContent('hero', field, language)
   }
 

@@ -64,6 +64,33 @@
                   placeholder="نص الزر"
                 />
               </div>
+              <div class="form-group">
+                <label class="form-label">فيديو سطح المكتب</label>
+                <input
+                  v-model="content.hero.video_desktop"
+                  type="text"
+                  class="form-input"
+                  placeholder="/videos/hero/desktop/hero-desktop.webm"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">فيديو الهاتف</label>
+                <input
+                  v-model="content.hero.video_mobile"
+                  type="text"
+                  class="form-input"
+                  placeholder="/videos/hero/mobile/hero-mobile-center.webm"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">صورة الخلفية</label>
+                <input
+                  v-model="content.hero.poster_image"
+                  type="text"
+                  class="form-input"
+                  placeholder="/images/home/heroSection/hero-image.webp"
+                />
+              </div>
             </div>
           </div>
 
@@ -99,6 +126,33 @@
                   type="text"
                   class="form-input"
                   placeholder="Button text"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Desktop Video</label>
+                <input
+                  v-model="content.hero.video_desktop"
+                  type="text"
+                  class="form-input"
+                  placeholder="/videos/hero/desktop/hero-desktop.webm"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mobile Video</label>
+                <input
+                  v-model="content.hero.video_mobile"
+                  type="text"
+                  class="form-input"
+                  placeholder="/videos/hero/mobile/hero-mobile-center.webm"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Poster Image</label>
+                <input
+                  v-model="content.hero.poster_image"
+                  type="text"
+                  class="form-input"
+                  placeholder="/images/home/heroSection/hero-image.webp"
                 />
               </div>
             </div>
@@ -386,7 +440,10 @@ const content = ref({
   hero: {
     title: { ar: '', en: '' },
     subtitle: { ar: '', en: '' },
-    cta: { ar: '', en: '' }
+    cta: { ar: '', en: '' },
+    video_desktop: '',
+    video_mobile: '',
+    poster_image: ''
   },
   search: {
     title: { ar: '', en: '' },
@@ -438,7 +495,10 @@ const loadDefaultContent = () => {
       cta: { 
         ar: 'استكشف باقاتنا',
         en: 'Explore Our Packages'
-      }
+      },
+      video_desktop: '/videos/hero/desktop/hero-desktop.webm',
+      video_mobile: '/videos/hero/mobile/hero-mobile-center.webm',
+      poster_image: '/images/home/heroSection/hero-image.webp'
     },
     search: {
       title: { 

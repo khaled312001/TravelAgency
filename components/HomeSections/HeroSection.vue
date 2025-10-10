@@ -4,16 +4,16 @@
     <div class="absolute inset-0 z-0">
       <!-- Desktop Video -->
       <video ref="videoRef" preload="auto" autoplay loop muted playsinline class="hidden md:block w-full h-full object-cover"
-        poster="/images/home/heroSection/hero-image.webp">
-        <source src="/videos/hero/desktop/hero-desktop.webm" type="video/webm">
-        <source src="/videos/hero/desktop/hero-desktop.mp4" type="video/mp4">
+        :poster="heroPosterImage">
+        <source :src="heroVideoDesktop" type="video/webm">
+        <source :src="heroVideoDesktop.replace('.webm', '.mp4')" type="video/mp4">
       </video>
 
       <!-- Mobile Video -->
       <video autoplay loop muted playsinline preload="auto" class="md:hidden w-full h-full object-cover"
-        poster="/images/home/heroSection/hero-image.webp">
-        <source src="/videos/hero/mobile/hero-mobile-center.webm" type="video/webm">
-        <source src="/videos/hero/mobile/hero-mobile-center.mp4" type="video/mp4">
+        :poster="heroPosterImage">
+        <source :src="heroVideoMobile" type="video/webm">
+        <source :src="heroVideoMobile.replace('.webm', '.mp4')" type="video/mp4">
       </video>
 
       <!-- Gradient Overlay -->
@@ -93,6 +93,21 @@ const heroSubtitle = computed(() => {
 const heroCta = computed(() => {
   const customCta = getHeroContent('cta', locale.value === 'ar-SA' ? 'ar' : 'en')
   return customCta || t('home.hero.cta')
+})
+
+const heroVideoDesktop = computed(() => {
+  const customVideo = getHeroContent('video_desktop', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customVideo || '/videos/hero/desktop/hero-desktop.webm'
+})
+
+const heroVideoMobile = computed(() => {
+  const customVideo = getHeroContent('video_mobile', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customVideo || '/videos/hero/mobile/hero-mobile-center.webm'
+})
+
+const heroPosterImage = computed(() => {
+  const customPoster = getHeroContent('poster_image', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customPoster || '/images/home/heroSection/hero-image.webp'
 })
 
 // Create an array of phrases for the sliding text effect
