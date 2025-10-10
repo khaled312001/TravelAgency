@@ -685,6 +685,18 @@ const downloadInvoicePDF = async () => {
       element.style.position = 'static'
       element.style.left = 'auto'
       element.style.top = 'auto'
+      element.style.width = '100%'
+      element.style.height = 'auto'
+      
+      // Also ensure parent container is visible
+      const container = element.closest('.invoice-container')
+      if (container) {
+        container.style.display = 'block'
+        container.style.visibility = 'visible'
+        container.style.position = 'static'
+        container.style.left = 'auto'
+        container.style.top = 'auto'
+      }
       
       const opt = {
         margin: 0.5,

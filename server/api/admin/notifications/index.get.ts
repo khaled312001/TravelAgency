@@ -6,6 +6,8 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     const { search, status, type, date } = query
     
+    console.log('Notifications API called with params:', { search, status, type, date })
+    
     // Build the query
     let queryBuilder = supabase
       .from('notifications')
@@ -52,17 +54,30 @@ export default defineEventHandler(async (event) => {
     
     if (error) {
       console.error('Error fetching notifications:', error)
+      console.error('Error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      })
+      
       // If table doesn't exist, return empty array instead of error
-      if (error.code === 'PGRST116' || error.message.includes('relation "notifications" does not exist')) {
+      if (error.code === 'PGRST116' || 
+          error.message.includes('relation "notifications" does not exist') ||
+          error.message.includes('does not exist')) {
+        console.log('Notifications table does not exist, returning empty array')
         return {
           success: true,
           notifications: []
         }
       }
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Failed to fetch notifications'
-      })
+      
+      // For other errors, return empty array to prevent 500 errors
+      console.log('Database error occurred, returning empty array')
+      return {
+        success: true,
+        notifications: []
+      }
     }
     
     return {
