@@ -411,12 +411,14 @@
             </button>
           </div>
           
-          <!-- Invoice Template -->
-          <InvoiceTemplate 
-            v-if="currentInvoiceData" 
-            :invoice-data="currentInvoiceData" 
-            :show="true"
-          />
+          <!-- Invoice Preview -->
+          <div class="invoice-preview">
+            <InvoiceTemplate 
+              v-if="currentInvoiceData" 
+              :invoice-data="currentInvoiceData" 
+              :show="true"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -641,13 +643,29 @@ const downloadInvoicePDF = async () => {
     
     const html2pdf = (await import('html2pdf.js')).default
     
-    // Wait a bit more to ensure the invoice template is rendered
-    setTimeout(async () => {
-      const element = document.getElementById('invoice-content')
-      if (!element) {
-        alert('لم يتم العثور على محتوى الفاتورة. يرجى المحاولة مرة أخرى.')
-        return
-      }
+    // Function to wait for element to be available
+    const waitForElement = (selector: string, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        const startTime = Date.now()
+        
+        const checkElement = () => {
+          const element = document.querySelector(selector)
+          if (element) {
+            resolve(element)
+          } else if (Date.now() - startTime > timeout) {
+            reject(new Error(`Element ${selector} not found within ${timeout}ms`))
+          } else {
+            setTimeout(checkElement, 100)
+          }
+        }
+        
+        checkElement()
+      })
+    }
+    
+    try {
+      // Wait for the invoice content to be available
+      const element = await waitForElement('#invoice-content')
       
       const opt = {
         margin: 0.5,
@@ -657,7 +675,8 @@ const downloadInvoicePDF = async () => {
           scale: 2,
           useCORS: true,
           letterRendering: true,
-          allowTaint: true
+          allowTaint: true,
+          backgroundColor: '#ffffff'
         },
         jsPDF: { 
           unit: 'in', 
@@ -672,7 +691,11 @@ const downloadInvoicePDF = async () => {
       
       // Close modal after successful download
       showInvoiceModal.value = false
-    }, 500) // Wait 500ms for rendering
+      
+    } catch (elementError) {
+      console.error('Element not found:', elementError)
+      alert('لم يتم العثور على محتوى الفاتورة. يرجى التأكد من أن الفاتورة معروضة بشكل صحيح.')
+    }
     
   } catch (error) {
     console.error('Error generating PDF:', error)
@@ -1009,6 +1032,14 @@ definePageMeta({
 
 .invoice-actions .btn-secondary {
   @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+}
+
+.invoice-preview {
+  @apply overflow-auto max-h-[70vh] border border-gray-200 rounded-lg;
+}
+
+.invoice-preview .invoice-container {
+  @apply relative static left-auto top-auto w-full min-h-auto;
 }
 
 .add-btn {

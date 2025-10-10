@@ -12,24 +12,24 @@ export default defineEventHandler(async (event) => {
     
     const { error } = await supabase
       .from('notifications')
-      .delete()
+      .update({ is_read: true })
       .eq('id', id)
     
     if (error) {
-      console.error('Error deleting notification:', error)
+      console.error('Error updating notification:', error)
       throw createError({
         statusCode: 500,
-        statusMessage: 'Failed to delete notification'
+        statusMessage: 'Failed to update notification'
       })
     }
     
     return {
       success: true,
-      message: 'Notification deleted successfully'
+      message: 'Notification marked as read'
     }
     
   } catch (error) {
-    console.error('Error in delete notification API:', error)
+    console.error('Error in mark as read API:', error)
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal server error'

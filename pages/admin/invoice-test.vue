@@ -132,13 +132,29 @@ const downloadTestInvoice = async () => {
     
     const html2pdf = (await import('html2pdf.js')).default
     
-    // Wait a bit more to ensure the invoice template is rendered
-    setTimeout(async () => {
-      const element = document.getElementById('invoice-content')
-      if (!element) {
-        alert('لم يتم العثور على محتوى الفاتورة. يرجى المحاولة مرة أخرى.')
-        return
-      }
+    // Function to wait for element to be available
+    const waitForElement = (selector: string, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        const startTime = Date.now()
+        
+        const checkElement = () => {
+          const element = document.querySelector(selector)
+          if (element) {
+            resolve(element)
+          } else if (Date.now() - startTime > timeout) {
+            reject(new Error(`Element ${selector} not found within ${timeout}ms`))
+          } else {
+            setTimeout(checkElement, 100)
+          }
+        }
+        
+        checkElement()
+      })
+    }
+    
+    try {
+      // Wait for the invoice content to be available
+      const element = await waitForElement('#invoice-content')
       
       const opt = {
         margin: 0.5,
@@ -148,7 +164,8 @@ const downloadTestInvoice = async () => {
           scale: 2,
           useCORS: true,
           letterRendering: true,
-          allowTaint: true
+          allowTaint: true,
+          backgroundColor: '#ffffff'
         },
         jsPDF: { 
           unit: 'in', 
@@ -160,7 +177,11 @@ const downloadTestInvoice = async () => {
       }
       
       await html2pdf().set(opt).from(element).save()
-    }, 500) // Wait 500ms for rendering
+      
+    } catch (elementError) {
+      console.error('Element not found:', elementError)
+      alert('لم يتم العثور على محتوى الفاتورة. يرجى التأكد من أن الفاتورة معروضة بشكل صحيح.')
+    }
     
   } catch (error) {
     console.error('Error generating PDF:', error)

@@ -1,35 +1,27 @@
 export default defineEventHandler(async (event) => {
   try {
     const supabase = serverSupabaseServiceRole(event)
-    const id = getRouterParam(event, 'id')
-    
-    if (!id) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Notification ID is required'
-      })
-    }
     
     const { error } = await supabase
       .from('notifications')
-      .delete()
-      .eq('id', id)
+      .update({ is_read: true })
+      .eq('is_read', false)
     
     if (error) {
-      console.error('Error deleting notification:', error)
+      console.error('Error marking all notifications as read:', error)
       throw createError({
         statusCode: 500,
-        statusMessage: 'Failed to delete notification'
+        statusMessage: 'Failed to mark all notifications as read'
       })
     }
     
     return {
       success: true,
-      message: 'Notification deleted successfully'
+      message: 'All notifications marked as read'
     }
     
   } catch (error) {
-    console.error('Error in delete notification API:', error)
+    console.error('Error in mark all read API:', error)
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal server error'

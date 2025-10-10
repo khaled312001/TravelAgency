@@ -1,81 +1,73 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
-const supabase = createClient(supabaseUrl, supabaseKey)
-
 export default defineEventHandler(async (event) => {
   try {
-    console.log('Fetching notifications from database...')
+    const supabase = serverSupabaseServiceRole(event)
     
     // Get query parameters
     const query = getQuery(event)
-    const { status, type, search } = query
-
+    const { search, status, type, date } = query
+    
     // Build the query
-    let supabaseQuery = supabase
+    let queryBuilder = supabase
       .from('notifications')
       .select('*')
       .order('created_at', { ascending: false })
-
+    
     // Apply filters
-    if (status && typeof status === 'string') {
-      if (status === 'unread') {
-        supabaseQuery = supabaseQuery.eq('is_read', false)
-      } else if (status === 'read') {
-        supabaseQuery = supabaseQuery.eq('is_read', true)
+    if (search) {
+      queryBuilder = queryBuilder.or(`title.ilike.%${search}%,message.ilike.%${search}%`)
+    }
+    
+    if (status === 'read') {
+      queryBuilder = queryBuilder.eq('is_read', true)
+    } else if (status === 'unread') {
+      queryBuilder = queryBuilder.eq('is_read', false)
+    }
+    
+    if (type) {
+      queryBuilder = queryBuilder.eq('type', type)
+    }
+    
+    if (date) {
+      const now = new Date()
+      let startDate: Date
+      
+      switch (date) {
+        case 'today':
+          startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+          break
+        case 'week':
+          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+          break
+        case 'month':
+          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+          break
+        default:
+          startDate = new Date(0) // All time
       }
+      
+      queryBuilder = queryBuilder.gte('created_at', startDate.toISOString())
     }
-
-    if (type && typeof type === 'string') {
-      supabaseQuery = supabaseQuery.eq('type', type)
-    }
-
-    if (search && typeof search === 'string') {
-      const searchLower = search.toLowerCase()
-      supabaseQuery = supabaseQuery.or(`title.ilike.%${searchLower}%,message.ilike.%${searchLower}%`)
-    }
-
-    // Execute the query
-    const { data: notifications, error } = await supabaseQuery
-
+    
+    const { data: notifications, error } = await queryBuilder
+    
     if (error) {
-      console.error('Database error:', error)
+      console.error('Error fetching notifications:', error)
       throw createError({
         statusCode: 500,
-        statusMessage: `Database error: ${error.message}`
+        statusMessage: 'Failed to fetch notifications'
       })
     }
-
-    console.log('Notifications fetched successfully:', notifications?.length || 0)
-
-    // Transform data to match frontend expectations
-    const transformedNotifications = (notifications || []).map(notification => ({
-      id: notification.id,
-      title: notification.title,
-      message: notification.message,
-      type: notification.type,
-      status: notification.is_read ? 'read' : 'unread',
-      data: {},
-      created_at: notification.created_at,
-      updated_at: notification.created_at // notifications table doesn't have updated_at
-    }))
-
+    
     return {
       success: true,
-      data: transformedNotifications
+      notifications: notifications || []
     }
-
-  } catch (error: any) {
-    console.error('Notifications fetch error:', error)
     
-    if (error.statusCode) {
-      throw error
-    }
-
+  } catch (error) {
+    console.error('Error in notifications API:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: `Internal server error: ${error.message}`
+      statusMessage: 'Internal server error'
     })
   }
 })
