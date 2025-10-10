@@ -44,7 +44,7 @@
       <p 
         class="text-2xl text-white mb-10 max-w-4xl font-bold mx-auto tracking-wide leading-relaxed [text-wrap:balance]"
       >
-        {{ $t('home.hero.subtitle') }}
+        {{ heroSubtitle }}
       </p>
 
       <!-- Animated CTA Button -->
@@ -52,7 +52,7 @@
         @click="scrollToPackages"
         class="bg-primary-500 outline-none hover:bg-primary-900 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-[0_4px_30px_rgba(255,255,255,0.25)] active:scale-105"
       >
-        {{ $t('home.hero.cta') }}
+        {{ heroCta }}
       </button>
     </div>
   </section>
@@ -71,10 +71,34 @@ const emit = defineEmits<{
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 
+// Use site content composable
+const { getHeroContent, init: initContent } = useSiteContent()
+
+// Initialize content
+onMounted(() => {
+  initContent()
+})
+
+// Get hero content with fallback to translations
+const heroTitle = computed(() => {
+  const customTitle = getHeroContent('title', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customTitle || t('home.hero.title')
+})
+
+const heroSubtitle = computed(() => {
+  const customSubtitle = getHeroContent('subtitle', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customSubtitle || t('home.hero.subtitle')
+})
+
+const heroCta = computed(() => {
+  const customCta = getHeroContent('cta', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customCta || t('home.hero.cta')
+})
+
 // Create an array of phrases for the sliding text effect
 const heroTitlePhrases = computed(() => {
-  // Base title from i18n
-  const baseTitle = t('home.hero.title')
+  // Base title from custom content or i18n
+  const baseTitle = heroTitle.value
   
   // Additional phrases that will morph with the base title
   // These should be translated or dynamically generated based on your needs

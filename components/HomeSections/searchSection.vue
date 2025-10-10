@@ -10,10 +10,10 @@
         <!-- Search Header -->
         <div class="text-center mb-12">
           <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            {{ $t('search.find_perfect_package') }}
+            {{ searchTitle }}
           </h2>
           <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-            {{ $t('search.search_description') }}
+            {{ searchDescription }}
           </p>
         </div>
 
@@ -261,7 +261,7 @@
                 class="w-full h-12 px-8 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
               >
                 <Icon name="material-symbols:search" class="h-5 w-5" />
-                {{ $t('search.find_perfect_package') }}
+                {{ searchTitle }}
               </button>
             </div>
           </div>
@@ -337,6 +337,25 @@ import SaudiRyialSymbol from '~/components/ui/icons/SaudiRyialSymbol.vue'
 const router = useRouter()
 const localeRoute = useLocaleRoute()
 const { locale, t } = useI18n()
+
+// Use site content composable
+const { getSearchContent, init: initContent } = useSiteContent()
+
+// Initialize content
+onMounted(() => {
+  initContent()
+})
+
+// Get search content with fallback to translations
+const searchTitle = computed(() => {
+  const customTitle = getSearchContent('title', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customTitle || t('search.find_perfect_package')
+})
+
+const searchDescription = computed(() => {
+  const customDescription = getSearchContent('description', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customDescription || t('search.search_description')
+})
 
 // Confirm period selection
 function confirmPeriods() {

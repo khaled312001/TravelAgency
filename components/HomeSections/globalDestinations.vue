@@ -3,10 +3,10 @@
     <div class="container">
       <div class="text-center mb-12" data-aos="fade-down">
         <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-          {{ t('home.destinations.global.title') }}
+          {{ globalTitle }}
         </h2>
         <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          {{ t('home.destinations.global.subtitle') }}
+          {{ globalSubtitle }}
         </p>
       </div>
       
@@ -41,6 +41,26 @@ import Carousel from '~/components/ui/Carousel.vue'
 const { t, locale } = useI18n()
 const { globalDestinations } = useDestinations()
 const localePath = useLocalePath()
+
+// Use site content composable
+const { getDestinationsContent, init: initContent } = useSiteContent()
+
+// Initialize content
+onMounted(() => {
+  initContent()
+})
+
+// Get global destinations content with fallback to translations
+const globalTitle = computed(() => {
+  const customTitle = getDestinationsContent('global', 'title', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customTitle || t('home.destinations.global.title')
+})
+
+const globalSubtitle = computed(() => {
+  const customSubtitle = getDestinationsContent('global', 'subtitle', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customSubtitle || t('home.destinations.global.subtitle')
+})
+
 const handleSlideChange = (index: number) => {
   // Handle slide change if needed
 }

@@ -3,10 +3,10 @@
     <div class="container">
       <div class="text-center mb-12" data-aos="fade-down">
         <h2 class="text-4xl md:text-5xl font-bold  mb-6 leading-tight">
-          {{ t('home.destinations.saudi.title') }}
+          {{ saudiTitle }}
         </h2>
         <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          {{ t('home.destinations.saudi.subtitle') }}
+          {{ saudiSubtitle }}
         </p>
       </div>
       
@@ -41,6 +41,26 @@ import Carousel from '~/components/ui/Carousel.vue'
 const { t, locale } = useI18n()
 const { saudiDestinations } = useDestinations()
 const localePath = useLocalePath()
+
+// Use site content composable
+const { getDestinationsContent, init: initContent } = useSiteContent()
+
+// Initialize content
+onMounted(() => {
+  initContent()
+})
+
+// Get Saudi destinations content with fallback to translations
+const saudiTitle = computed(() => {
+  const customTitle = getDestinationsContent('saudi', 'title', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customTitle || t('home.destinations.saudi.title')
+})
+
+const saudiSubtitle = computed(() => {
+  const customSubtitle = getDestinationsContent('saudi', 'subtitle', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customSubtitle || t('home.destinations.saudi.subtitle')
+})
+
 const handleSlideChange = (index: number) => {
   // Handle slide change if needed
 }

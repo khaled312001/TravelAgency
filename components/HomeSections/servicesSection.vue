@@ -4,13 +4,13 @@
       <!-- Section Header -->
       <div class="text-center mb-20" data-aos="fade-down">
         <span class="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-          {{ $t('home.services.subtitle') }}
+          {{ servicesSubtitle }}
         </span>
         <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-          {{ $t('home.services.title') }}
+          {{ servicesTitle }}
         </h2>
         <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-          {{ $t('home.services.description') }}
+          {{ servicesDescription }}
         </p>
       </div>
 
@@ -64,6 +64,33 @@
 <script setup lang="ts">
 import { NuxtImg } from '#components';
 import FlightIcon from '~/components/ui/icons/FlightIcon.vue'
+import { useI18n } from 'vue-i18n'
+
+const { locale, t } = useI18n()
+
+// Use site content composable
+const { getServicesContent, init: initContent } = useSiteContent()
+
+// Initialize content
+onMounted(() => {
+  initContent()
+})
+
+// Get services content with fallback to translations
+const servicesTitle = computed(() => {
+  const customTitle = getServicesContent('title', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customTitle || t('home.services.title')
+})
+
+const servicesSubtitle = computed(() => {
+  const customSubtitle = getServicesContent('subtitle', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customSubtitle || t('home.services.subtitle')
+})
+
+const servicesDescription = computed(() => {
+  const customDescription = getServicesContent('description', locale.value === 'ar-SA' ? 'ar' : 'en')
+  return customDescription || t('home.services.description')
+})
 
 const services = [
   {

@@ -6,7 +6,7 @@
         مرحباً بك في لوحة التحكم
       </h1>
       <p class="text-gray-600 text-lg">
-        إدارة شاملة لموقع Wonder Land Traveling Agency
+        إدارة شاملة لموقع World Trip Agency
       </p>
     </div>
 
@@ -237,15 +237,7 @@
             <p class="text-lg font-semibold text-gray-900">45</p>
           </div>
           
-          <div class="bg-red-50 border border-red-200 rounded-lg p-3">
-            <div class="flex items-start">
-              <Icon name="lucide:alert-triangle" class="w-5 h-5 text-red-500 ml-2 mt-0.5" />
-              <div>
-                <p class="text-sm font-medium text-red-800">3 مشكلة SEO تحتاج انتباه</p>
-                <p class="text-xs text-red-600 mt-1">راجع صفحة إدارة SEO لحل هذه المشاكل</p>
-              </div>
-            </div>
-          </div>
+       
           
           <div class="space-y-2">
             <h4 class="text-sm font-medium text-gray-900">توصيات سريعة</h4>
@@ -331,6 +323,16 @@
           <Icon name="lucide:mail" class="w-6 h-6 text-green-600" />
         </div>
         <p class="text-sm font-medium text-gray-900">عرض الرسائل</p>
+      </NuxtLink>
+
+      <NuxtLink
+        to="/admin/content"
+        class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-center"
+      >
+        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+          <Icon name="lucide:edit-3" class="w-6 h-6 text-orange-600" />
+        </div>
+        <p class="text-sm font-medium text-gray-900">إدارة المحتوى</p>
       </NuxtLink>
 
       <NuxtLink
