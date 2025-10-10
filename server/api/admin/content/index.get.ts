@@ -1,37 +1,70 @@
-import { createClient } from '@supabase/supabase-js'
-
 export default defineEventHandler(async (event) => {
   try {
-    const supabaseUrl = process.env.SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Supabase configuration missing'
-      })
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
-
-    // Get content from database
-    const { data, error } = await supabase
-      .from('site_content')
-      .select('*')
-      .eq('page', 'homepage')
-      .single()
-
-    if (error && error.code !== 'PGRST116') { // PGRST116 is "not found" error
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Failed to fetch content'
-      })
-    }
-
-    // Return content or empty object if not found
+    // Return default content for now (until database is set up)
     return {
       success: true,
-      data: data?.content || null
+      data: {
+        hero: {
+          title: { 
+            ar: 'نحنُ نأخذك إلى أفضل الأماكن حول العالم',
+            en: 'We take you to the best places around the world'
+          },
+          subtitle: { 
+            ar: 'باقات سفر شاملة تناسب جميع الميزانيات. وجهتك المثالية تبدأ معنا!',
+            en: 'All-inclusive travel packages to suit every budget. Your perfect destination starts with us!'
+          },
+          cta: { 
+            ar: 'استكشف باقاتنا',
+            en: 'Explore Our Packages'
+          }
+        },
+        search: {
+          title: { 
+            ar: 'ابحث عن رحلتك المثالية',
+            en: 'Find Your Perfect Package'
+          },
+          description: { 
+            ar: 'اكتشف باقات سفر مذهلة مصممة حسب تفضيلاتك',
+            en: 'Discover amazing travel packages tailored to your preferences'
+          }
+        },
+        services: {
+          title: { 
+            ar: 'خدماتنا المميزة',
+            en: 'Our Premium Services'
+          },
+          subtitle: { 
+            ar: 'استمتع بتجربة سفر سلسة مع مجموعة خدماتنا المميزة المصممة لجعل رحلتك استثنائية',
+            en: 'Experience seamless travel with our comprehensive range of premium services designed to make your journey extraordinary'
+          },
+          description: { 
+            ar: 'رحلة أحلامك هي شغفنا. نبذل قصارى جهدنا لتصميم تجارب سفر لا تُنسى، ونهتم بكل التفاصيل حتى تتمكن من التركيز على صنع ذكريات جميلة.',
+            en: 'Your dream journey is our passion. We go above and beyond to craft unforgettable travel experiences, taking care of every detail so you can focus on creating beautiful memories.'
+          }
+        },
+        destinations: {
+          saudi: {
+            title: { 
+              ar: 'اكتشف روعة المملكة',
+              en: 'Discover Saudi Arabia'
+            },
+            subtitle: { 
+              ar: 'رحلة استثنائية عبر التراث العريق والحضارة المعاصرة والطبيعة الخلابة',
+              en: 'Embark on an extraordinary journey through ancient traditions, modern marvels, and breathtaking landscapes'
+            }
+          },
+          global: {
+            title: { 
+              ar: 'وجهات عالمية فاخرة',
+              en: 'World-Class Destinations'
+            },
+            subtitle: { 
+              ar: 'عش تجارب لا تُنسى في أروع الوجهات حول العالم',
+              en: 'Experience unforgettable adventures in the most spectacular places around the globe'
+            }
+          }
+        }
+      }
     }
   } catch (error) {
     console.error('Error fetching content:', error)

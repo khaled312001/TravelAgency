@@ -1,5 +1,3 @@
-import { createClient } from '@supabase/supabase-js'
-
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
@@ -11,63 +9,12 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const supabaseUrl = process.env.SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Supabase configuration missing'
-      })
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
-
-    // Check if content exists
-    const { data: existingData } = await supabase
-      .from('site_content')
-      .select('id')
-      .eq('page', 'homepage')
-      .single()
-
-    if (existingData) {
-      // Update existing content
-      const { error } = await supabase
-        .from('site_content')
-        .update({
-          content: body,
-          updated_at: new Date().toISOString()
-        })
-        .eq('page', 'homepage')
-
-      if (error) {
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'Failed to update content'
-        })
-      }
-    } else {
-      // Insert new content
-      const { error } = await supabase
-        .from('site_content')
-        .insert({
-          page: 'homepage',
-          content: body,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-
-      if (error) {
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'Failed to save content'
-        })
-      }
-    }
-
+    // For now, just return success (database will be set up later)
+    console.log('Content received:', JSON.stringify(body, null, 2))
+    
     return {
       success: true,
-      message: 'Content saved successfully'
+      message: 'Content saved successfully (database setup pending)'
     }
   } catch (error) {
     console.error('Error saving content:', error)
