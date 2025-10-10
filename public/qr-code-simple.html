@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code الموقع - أرض العجائب للسفر</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f3e8ff 0%, #dbeafe 50%, #e0e7ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .qr-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .controls {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .control-group input,
+        .control-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .control-group input:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+        
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .templates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .template-btn {
+            padding: 15px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .template-btn:hover {
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+        }
+        
+        .template-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 auto 5px;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+        
+        .qr-display {
+            text-align: center;
+        }
+        
+        .qr-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        .qr-placeholder {
+            width: 300px;
+            height: 300px;
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 16px;
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .download-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .download-btn.png {
+            background: #10b981;
+        }
+        
+        .download-btn.svg {
+            background: #3b82f6;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #374151;
+        }
+        
+        .feature p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .qr-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>QR Code الموقع</h1>
+            <p>إنشاء QR Code مخصص بتصميم رائع يحتوي على شعار الموقع</p>
+        </div>
+        
+        <div class="content">
+            <div class="qr-section">
+                <div class="controls">
+                    <div class="control-group">
+                        <label>رابط الموقع</label>
+                        <input type="url" id="websiteUrl" value="https://www.worldtripagency.com" placeholder="https://www.worldtripagency.com">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>حجم QR Code</label>
+                        <select id="qrSize">
+                            <option value="200">صغير (200px)</option>
+                            <option value="300">متوسط (300px)</option>
+                            <option value="400" selected>كبير (400px)</option>
+                            <option value="500">كبير جداً (500px)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>لون المقدمة</label>
+                        <input type="color" id="foregroundColor" value="#8b5cf6">
+                        <div class="color-picker">
+                            <div class="color-option" style="background: #8b5cf6" onclick="setForegroundColor('#8b5cf6')"></div>
+                            <div class="color-option" style="background: #3b82f6" onclick="setForegroundColor('#3b82f6')"></div>
+                            <div class="color-option" style="background: #059669" onclick="setForegroundColor('#059669')"></div>
+                            <div class="color-option" style="background: #dc2626" onclick="setForegroundColor('#dc2626')"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>لون الخلفية</label>
+                        <input type="color" id="backgroundColor" value="#ffffff">
+                        <div class="color-picker">
+                            <div class="color-option" style="background: #ffffff" onclick="setBackgroundColor('#ffffff')"></div>
+                            <div class="color-option" style="background: #f8fafc" onclick="setBackgroundColor('#f8fafc')"></div>
+                            <div class="color-option" style="background: #fef3c7" onclick="setBackgroundColor('#fef3c7')"></div>
+                            <div class="color-option" style="background: #dbeafe" onclick="setBackgroundColor('#dbeafe')"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>حجم الشعار</label>
+                        <select id="logoSize">
+                            <option value="0.1">صغير (10%)</option>
+                            <option value="0.15">متوسط (15%)</option>
+                            <option value="0.2" selected>كبير (20%)</option>
+                            <option value="0.25">كبير جداً (25%)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>قوالب سريعة</label>
+                        <div class="templates">
+                            <div class="template-btn" onclick="applyTemplate('classic')">
+                                <div class="template-color" style="background: #8b5cf6"></div>
+                                كلاسيكي
+                            </div>
+                            <div class="template-btn" onclick="applyTemplate('modern')">
+                                <div class="template-color" style="background: #3b82f6"></div>
+                                عصري
+                            </div>
+                            <div class="template-btn" onclick="applyTemplate('elegant')">
+                                <div class="template-color" style="background: #059669"></div>
+                                أنيق
+                            </div>
+                            <div class="template-btn" onclick="applyTemplate('vibrant')">
+                                <div class="template-color" style="background: #dc2626"></div>
+                                نابض بالحياة
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateQRCode()">
+                        إنشاء QR Code
+                    </button>
+                </div>
+                
+                <div class="qr-display">
+                    <div class="qr-container">
+                        <div id="qrCodeContainer" class="qr-placeholder">
+                            اضغط على "إنشاء QR Code" لعرض النتيجة
+                        </div>
+                    </div>
+                    
+                    <div id="downloadButtons" class="download-buttons" style="display: none;">
+                        <button class="download-btn png" onclick="downloadQRCode('png')">
+                            📥 تحميل PNG
+                        </button>
+                        <button class="download-btn svg" onclick="downloadQRCode('svg')">
+                            📥 تحميل SVG
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>سهل المسح</h3>
+                    <p>يمكن مسحه بسهولة من أي هاتف ذكي أو جهاز لوحي</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎨</div>
+                    <h3>تصميم مخصص</h3>
+                    <p>ألوان وتصميم يناسب هوية الموقع والعلامة التجارية</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏷️</div>
+                    <h3>شعار مدمج</h3>
+                    <p>يحتوي على شعار الموقع في المنتصف مع خلفية دائرية أنيقة</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCanvas = null;
+        
+        function setForegroundColor(color) {
+            document.getElementById('foregroundColor').value = color;
+        }
+        
+        function setBackgroundColor(color) {
+            document.getElementById('backgroundColor').value = color;
+        }
+        
+        function applyTemplate(template) {
+            const templates = {
+                classic: { fg: '#8b5cf6', bg: '#ffffff', size: 400, logo: 0.2 },
+                modern: { fg: '#3b82f6', bg: '#f8fafc', size: 400, logo: 0.18 },
+                elegant: { fg: '#059669', bg: '#fef3c7', size: 400, logo: 0.22 },
+                vibrant: { fg: '#dc2626', bg: '#dbeafe', size: 400, logo: 0.2 }
+            };
+            
+            const t = templates[template];
+            document.getElementById('foregroundColor').value = t.fg;
+            document.getElementById('backgroundColor').value = t.bg;
+            document.getElementById('qrSize').value = t.size;
+            document.getElementById('logoSize').value = t.logo;
+            
+            generateQRCode();
+        }
+        
+        async function generateQRCode() {
+            const websiteUrl = document.getElementById('websiteUrl').value;
+            const qrSize = parseInt(document.getElementById('qrSize').value);
+            const foregroundColor = document.getElementById('foregroundColor').value;
+            const backgroundColor = document.getElementById('backgroundColor').value;
+            const logoSize = parseFloat(document.getElementById('logoSize').value);
+            
+            if (!websiteUrl) {
+                alert('يرجى إدخال رابط الموقع');
+                return;
+            }
+            
+            try {
+                const container = document.getElementById('qrCodeContainer');
+                container.innerHTML = '';
+                
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size with padding
+                const padding = 20;
+                canvas.width = qrSize + (padding * 2);
+                canvas.height = qrSize + (padding * 2);
+                
+                // Draw background with gradient
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, '#f8fafc');
+                gradient.addColorStop(1, '#e2e8f0');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Generate QR code
+                const qrCanvas = document.createElement('canvas');
+                qrCanvas.width = qrSize;
+                qrCanvas.height = qrSize;
+                
+                await QRCode.toCanvas(qrCanvas, websiteUrl, {
+                    width: qrSize,
+                    margin: 2,
+                    color: {
+                        dark: foregroundColor,
+                        light: backgroundColor
+                    },
+                    errorCorrectionLevel: 'H'
+                });
+                
+                // Draw QR code on main canvas
+                ctx.drawImage(qrCanvas, padding, padding);
+                
+                // Add logo overlay
+                const logo = new Image();
+                logo.crossOrigin = 'anonymous';
+                logo.onload = () => {
+                    const logoSizePx = qrSize * logoSize;
+                    const logoX = padding + (qrSize - logoSizePx) / 2;
+                    const logoY = padding + (qrSize - logoSizePx) / 2;
+                    
+                    // Draw circular background for logo
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(logoX + logoSizePx/2, logoY + logoSizePx/2, logoSizePx/2 + 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = backgroundColor;
+                    ctx.fill();
+                    ctx.strokeStyle = foregroundColor;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    ctx.restore();
+                    
+                    // Draw logo
+                    ctx.drawImage(logo, logoX, logoY, logoSizePx, logoSizePx);
+                    
+                    // Add decorative border
+                    ctx.save();
+                    ctx.strokeStyle = foregroundColor;
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(padding - 2, padding - 2, qrSize + 4, qrSize + 4);
+                    ctx.restore();
+                    
+                    // Add to container
+                    container.appendChild(canvas);
+                    currentCanvas = canvas;
+                    
+                    // Show download buttons
+                    document.getElementById('downloadButtons').style.display = 'flex';
+                };
+                
+                logo.src = '/images/home/logo/WonderlandLogo.svg';
+                
+            } catch (error) {
+                console.error('Error generating QR code:', error);
+                alert('حدث خطأ في إنشاء QR Code. يرجى المحاولة مرة أخرى.');
+            }
+        }
+        
+        function downloadQRCode(format) {
+            if (!currentCanvas) return;
+            
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().slice(0, 10);
+            link.download = `worldtripagency-qrcode-${timestamp}.${format}`;
+            
+            if (format === 'png') {
+                link.href = currentCanvas.toDataURL('image/png', 1.0);
+            } else if (format === 'svg') {
+                const svgString = createSVGFromCanvas(currentCanvas);
+                const blob = new Blob([svgString], { type: 'image/svg+xml' });
+                link.href = URL.createObjectURL(blob);
+            }
+            
+            link.click();
+            
+            if (format === 'svg') {
+                setTimeout(() => URL.revokeObjectURL(link.href), 100);
+            }
+        }
+        
+        function createSVGFromCanvas(canvas) {
+            const dataURL = canvas.toDataURL('image/png');
+            return `
+                <svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
+                    <image href="${dataURL}" width="${canvas.width}" height="${canvas.height}"/>
+                </svg>
+            `;
+        }
+        
+        // Generate QR code on page load
+        window.onload = function() {
+            generateQRCode();
+        };
+    </script>
+</body>
+</html>

@@ -131,6 +131,12 @@ const menuItems = [
     badge: false
   },
   {
+    name: 'QR Code الموقع',
+    path: '/qr-code',
+    icon: 'lucide:qr-code',
+    badge: false
+  },
+  {
     name: 'الإعدادات',
     path: '/admin/settings',
     icon: 'lucide:settings',
