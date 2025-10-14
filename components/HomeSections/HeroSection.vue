@@ -5,15 +5,17 @@
       <!-- Desktop Video -->
       <video ref="videoRef" preload="auto" autoplay loop muted playsinline class="hidden md:block w-full h-full object-cover"
         :poster="heroPosterImage">
-        <source :src="heroVideoDesktop" type="video/webm">
-        <source :src="heroVideoDesktop.replace('.webm', '.mp4')" type="video/mp4">
+        <source v-if="isBase64Video(heroVideoDesktop)" :src="heroVideoDesktop" type="video/mp4">
+        <source v-else :src="heroVideoDesktop" type="video/webm">
+        <source v-else :src="heroVideoDesktop.replace('.webm', '.mp4')" type="video/mp4">
       </video>
 
       <!-- Mobile Video -->
       <video autoplay loop muted playsinline preload="auto" class="md:hidden w-full h-full object-cover"
         :poster="heroPosterImage">
-        <source :src="heroVideoMobile" type="video/webm">
-        <source :src="heroVideoMobile.replace('.webm', '.mp4')" type="video/mp4">
+        <source v-if="isBase64Video(heroVideoMobile)" :src="heroVideoMobile" type="video/mp4">
+        <source v-else :src="heroVideoMobile" type="video/webm">
+        <source v-else :src="heroVideoMobile.replace('.webm', '.mp4')" type="video/mp4">
       </video>
 
       <!-- Gradient Overlay -->
@@ -72,11 +74,16 @@ const emit = defineEmits<{
 const videoRef = ref<HTMLVideoElement | null>(null)
 
 // Use site content composable
-const { getHeroContent, init: initContent } = useSiteContent()
+const { getHeroContent, init: initContent, reload: reloadContent } = useSiteContent()
 
 // Initialize content
-onMounted(() => {
-  initContent()
+onMounted(async () => {
+  await initContent()
+})
+
+// Watch for locale changes and reload content
+watch(() => locale.value, async () => {
+  await reloadContent()
 })
 
 // Get hero content with fallback to translations
@@ -97,11 +104,13 @@ const heroCta = computed(() => {
 
 const heroVideoDesktop = computed(() => {
   const customVideo = getHeroContent('video_desktop', locale.value === 'ar-SA' ? 'ar' : 'en')
+  console.log('Hero Desktop Video:', customVideo)
   return customVideo || '/videos/hero/desktop/hero-desktop.webm'
 })
 
 const heroVideoMobile = computed(() => {
   const customVideo = getHeroContent('video_mobile', locale.value === 'ar-SA' ? 'ar' : 'en')
+  console.log('Hero Mobile Video:', customVideo)
   return customVideo || '/videos/hero/mobile/hero-mobile-center.webm'
 })
 
@@ -109,6 +118,11 @@ const heroPosterImage = computed(() => {
   const customPoster = getHeroContent('poster_image', locale.value === 'ar-SA' ? 'ar' : 'en')
   return customPoster || '/images/home/heroSection/hero-image.webp'
 })
+
+// Check if image is base64 encoded
+const isBase64Image = (imageSrc: string) => {
+  return imageSrc && imageSrc.startsWith('data:image/')
+}
 
 // Create an array of phrases for the sliding text effect
 const heroTitlePhrases = computed(() => {
@@ -156,6 +170,11 @@ onMounted(async () => {
 
 const scrollToPackages = () => {
   emit('scroll-to-packages')
+}
+
+// Check if video is base64 encoded
+const isBase64Video = (videoSrc: string) => {
+  return videoSrc && videoSrc.startsWith('data:video/')
 }
 </script>
 

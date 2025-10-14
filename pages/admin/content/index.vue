@@ -561,6 +561,10 @@ const saveAllContent = async () => {
     message.value = 'تم حفظ المحتوى بنجاح!'
     messageType.value = 'success'
     
+    // Force reload of site content in all components
+    const { reload: reloadSiteContent } = useSiteContent()
+    await reloadSiteContent()
+    
     // Clear message after 3 seconds
     setTimeout(() => {
       message.value = ''

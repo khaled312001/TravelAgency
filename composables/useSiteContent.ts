@@ -70,11 +70,18 @@ export const useSiteContent = () => {
     }
   }
 
+  // Force reload content
+  const reload = async () => {
+    content.value = null
+    await loadContent()
+  }
+
   return {
     content: readonly(content),
     isLoading: readonly(isLoading),
     error: readonly(error),
     loadContent,
+    reload,
     getContent,
     getHeroContent,
     getSearchContent,
