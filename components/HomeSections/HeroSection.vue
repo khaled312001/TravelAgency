@@ -2,12 +2,20 @@
   <section class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
     <!-- Video Background with fallback -->
     <div class="absolute inset-0 z-0">
+      <!-- Loading indicator -->
+      <div v-if="contentLoading" class="w-full h-full bg-gray-900 flex items-center justify-center">
+        <div class="text-white text-lg">جاري تحميل المحتوى...</div>
+      </div>
+      
       <!-- Background Video -->
-      <video ref="videoRef" preload="auto" autoplay loop muted playsinline class="w-full h-full object-cover">
+      <video v-else-if="heroVideo" ref="videoRef" preload="auto" autoplay loop muted playsinline class="w-full h-full object-cover">
         <source v-if="isBase64Video(heroVideo)" :src="heroVideo" type="video/mp4">
         <source v-else :src="heroVideo" type="video/webm">
         <source v-else :src="heroVideo.replace('.webm', '.mp4')" type="video/mp4">
       </video>
+      
+      <!-- Fallback background -->
+      <div v-else class="w-full h-full bg-gradient-to-br from-blue-900 to-purple-900"></div>
 
       <!-- Gradient Overlay -->
       <div 
@@ -65,7 +73,7 @@ const emit = defineEmits<{
 const videoRef = ref<HTMLVideoElement | null>(null)
 
 // Use site content composable
-const { getHeroContent, init: initContent, reload: reloadContent } = useSiteContent()
+const { getHeroContent, init: initContent, reload: reloadContent, isLoading: contentLoading } = useSiteContent()
 
 // Watch for locale changes and reload content
 watch(() => locale.value, async () => {
@@ -89,8 +97,15 @@ const heroCta = computed(() => {
 })
 
 const heroVideo = computed(() => {
+  // Don't show video until content is loaded to prevent flash
+  if (contentLoading.value) {
+    return ''
+  }
+  
   const customVideo = getHeroContent('video', locale.value === 'ar-SA' ? 'ar' : 'en')
   console.log('Hero Video:', customVideo)
+  
+  // Return custom video if exists, otherwise return default
   return customVideo || '/videos/hero/desktop/hero-desktop.webm'
 })
 
@@ -131,10 +146,10 @@ const heroTitlePhrases = computed(() => {
 
 // Initialize content loading and video optimization
 onMounted(async () => {
-  // Load content from database
+  // Load content from database first
   await initContent()
   
-  // Setup video optimization
+  // Setup video optimization after content is loaded
   if (videoRef.value) {
     const { stop } = useIntersectionObserver(
       videoRef,

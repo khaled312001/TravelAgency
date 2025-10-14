@@ -78,6 +78,11 @@ export const useSiteContent = () => {
       await loadContent()
     }
   }
+  
+  // Load content immediately on import (for SSR)
+  if (process.client) {
+    init()
+  }
 
   // Force reload content
   const reload = async () => {
