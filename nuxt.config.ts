@@ -359,8 +359,6 @@ export default defineNuxtConfig({
     experimental: {
       wasm: true
     },
-    // Increase body size limit to 50MB
-    bodySizeLimit: '50mb',
     // Improve static asset handling
     publicAssets: [
       {

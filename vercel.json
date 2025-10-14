@@ -2,11 +2,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".output",
   "framework": "nuxtjs",
-  "functions": {
-    "server/api/admin/content/index.post.ts": {
-      "maxDuration": 30
-    }
-  },
+  "regions": ["iad1"],
+  "maxDuration": 30,
   "redirects": [
     {
       "source": "/(.*)",
