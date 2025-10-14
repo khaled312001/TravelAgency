@@ -404,6 +404,6 @@ watch(() => props.modelValue, (newValue) => {
 }
 
 .hidden {
-  @apply hidden;
+  display: none;
 }
 </style>
