@@ -22,7 +22,7 @@
               <div class="space-y-6">
                 <div class="flex items-start space-x-4 space-x-reverse">
                   <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Icon name="material-symbols:phone" class="w-6 h-6 text-primary" />
+                    <Icon name="mdi:phone" class="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 mb-1">{{ t('contact.section.phone') }}</h4>
@@ -33,7 +33,7 @@
 
                 <div class="flex items-start space-x-4 space-x-reverse">
                   <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Icon name="material-symbols:email" class="w-6 h-6 text-primary" />
+                    <Icon name="mdi:email" class="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 mb-1">{{ t('contact.section.email') }}</h4>
@@ -44,7 +44,7 @@
 
                 <div class="flex items-start space-x-4 space-x-reverse">
                   <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Icon name="material-symbols:location-on" class="w-6 h-6 text-primary" />
+                    <Icon name="mdi:map-marker" class="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 mb-1">{{ t('contact.section.address') }}</h4>
@@ -54,7 +54,7 @@
 
                 <div class="flex items-start space-x-4 space-x-reverse">
                   <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Icon name="material-symbols:schedule" class="w-6 h-6 text-primary" />
+                    <Icon name="mdi:clock" class="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 mb-1">{{ t('contact.section.hours') }}</h4>
@@ -181,7 +181,7 @@
             <!-- Success Message -->
             <div v-if="showSuccess" class="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
               <div class="flex items-center gap-3">
-                <Icon name="material-symbols:check-circle" class="w-6 h-6 text-green-600" />
+                <Icon name="mdi:check-circle" class="w-6 h-6 text-green-600" />
                 <p class="text-green-800">{{ t('contact.section.success_message') }}</p>
               </div>
             </div>
@@ -189,7 +189,7 @@
             <!-- Error Message -->
             <div v-if="showError" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl">
               <div class="flex items-center gap-3">
-                <Icon name="material-symbols:error" class="w-6 h-6 text-red-600" />
+                <Icon name="mdi:alert-circle" class="w-6 h-6 text-red-600" />
                 <p class="text-red-800">{{ t('contact.section.error_message') }}</p>
               </div>
             </div>

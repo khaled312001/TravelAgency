@@ -47,7 +47,8 @@ export const useSettings = () => {
 
   const getLocalizedSetting = (category: string, key: string) => {
     const { locale } = useI18n()
-    return getSetting(category, key, locale.value.slice(0, 2))
+    const currentLocale = locale.value === 'ar-SA' ? 'ar' : 'en'
+    return getSetting(category, key, currentLocale)
   }
 
   return {

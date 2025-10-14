@@ -63,7 +63,9 @@ export default defineEventHandler(async (event) => {
         contactEmail2: generalSettings.contact_email2 || 'support@worldtripagency.com',
         contactPhone: generalSettings.contact_phone || '+966500982394',
         contactPhone2: generalSettings.contact_phone2 || '+966112345678',
-        contactAddress: generalSettings.contact_address || { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
+        contactAddress: typeof generalSettings.contact_address === 'string' 
+          ? { ar: generalSettings.contact_address, en: generalSettings.contact_address }
+          : generalSettings.contact_address || { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
         contactHours: generalSettings.contact_hours || 'السبت - الخميس: 8:00 ص - 6:00 م',
         contactHoursEn: generalSettings.contact_hours_en || 'Saturday - Thursday: 8:00 AM - 6:00 PM',
         whatsappUrl: generalSettings.whatsapp_url || 'https://wa.me/966500982394',
