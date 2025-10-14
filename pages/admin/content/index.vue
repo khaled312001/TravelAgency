@@ -435,7 +435,8 @@ const content = ref({
 // Load content from API
 const loadContent = async () => {
   try {
-    const { data } = await $fetch('/api/admin/content')
+    const response = await $fetch('/api/admin/content')
+    const data = response.data || response
     if (data) {
       content.value = { ...content.value, ...data }
     }
@@ -554,8 +555,8 @@ const compressContentIfNeeded = async (contentData: any) => {
   
   console.log('Content size:', sizeInMB.toFixed(2), 'MB')
   
-  // If content is larger than 10MB, compress videos
-  if (sizeInMB > 10) {
+  // If content is larger than 3MB, compress videos (Vercel limit is 4.5MB)
+  if (sizeInMB > 3) {
     console.log('Content is large, compressing videos...')
     
     // Compress video in hero section
@@ -575,9 +576,9 @@ const compressBase64Video = async (base64Video: string): Promise<string> => {
     const ctx = canvas.getContext('2d')
     
     video.onloadedmetadata = () => {
-      // Reduce dimensions by 30%
-      canvas.width = video.videoWidth * 0.7
-      canvas.height = video.videoHeight * 0.7
+      // Reduce dimensions by 50% for better compression
+      canvas.width = video.videoWidth * 0.5
+      canvas.height = video.videoHeight * 0.5
       
       video.currentTime = 0
     }
@@ -590,13 +591,19 @@ const compressBase64Video = async (base64Video: string): Promise<string> => {
           if (blob) {
             const reader = new FileReader()
             reader.onload = () => {
-              resolve(reader.result as string)
+              const compressedBase64 = reader.result as string
+              console.log('Video compressed:', {
+                original: base64Video.length,
+                compressed: compressedBase64.length,
+                reduction: ((base64Video.length - compressedBase64.length) / base64Video.length * 100).toFixed(1) + '%'
+              })
+              resolve(compressedBase64)
             }
             reader.readAsDataURL(blob)
           } else {
             resolve(base64Video) // Fallback to original
           }
-        }, 'video/mp4', 0.6) // 60% quality
+        }, 'video/mp4', 0.4) // 40% quality for better compression
       } else {
         resolve(base64Video) // Fallback to original
       }
