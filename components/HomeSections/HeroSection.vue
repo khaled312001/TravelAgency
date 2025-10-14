@@ -67,11 +67,6 @@ const videoRef = ref<HTMLVideoElement | null>(null)
 // Use site content composable
 const { getHeroContent, init: initContent, reload: reloadContent } = useSiteContent()
 
-// Initialize content
-onMounted(async () => {
-  await initContent()
-})
-
 // Watch for locale changes and reload content
 watch(() => locale.value, async () => {
   await reloadContent()
@@ -97,6 +92,14 @@ const heroVideo = computed(() => {
   const customVideo = getHeroContent('video', locale.value === 'ar-SA' ? 'ar' : 'en')
   console.log('Hero Video:', customVideo)
   return customVideo || '/videos/hero/desktop/hero-desktop.webm'
+})
+
+// Watch for video changes and reload video element
+watch(heroVideo, (newVideo) => {
+  console.log('Video changed:', newVideo)
+  if (videoRef.value) {
+    videoRef.value.load() // Reload the video element
+  }
 })
 
 // Check if image is base64 encoded

@@ -9,8 +9,10 @@ export const useSiteContent = () => {
     error.value = null
     
     try {
-      const { data } = await $fetch('/api/admin/content')
+      const response = await $fetch('/api/admin/content')
+      const data = response.data || response
       content.value = data
+      console.log('Content loaded:', data)
     } catch (err) {
       error.value = err
       console.error('Error loading site content:', err)
@@ -34,6 +36,13 @@ export const useSiteContent = () => {
 
   // Get hero content
   const getHeroContent = (field: 'title' | 'subtitle' | 'cta' | 'video', language: 'ar' | 'en' = 'ar') => {
+    if (field === 'video') {
+      // Video is stored directly, not in language object
+      if (!content.value) return ''
+      const sectionContent = content.value.hero
+      if (!sectionContent) return ''
+      return sectionContent.video || ''
+    }
     return getContent('hero', field, language)
   }
 
