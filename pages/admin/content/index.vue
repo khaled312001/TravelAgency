@@ -68,32 +68,26 @@
               </div>
               <div class="form-group">
                 <label class="form-label">فيديو سطح المكتب</label>
-                <FileUpload
+                <ClientFileUpload
                   v-model="content.hero.video_desktop"
                   accept="video/*"
                   :max-size="50"
-                  drag-text="اسحب فيديو سطح المكتب هنا"
-                  @uploaded="onVideoUploaded"
                 />
               </div>
               <div class="form-group">
                 <label class="form-label">فيديو الهاتف</label>
-                <FileUpload
+                <ClientFileUpload
                   v-model="content.hero.video_mobile"
                   accept="video/*"
                   :max-size="50"
-                  drag-text="اسحب فيديو الهاتف هنا"
-                  @uploaded="onVideoUploaded"
                 />
               </div>
               <div class="form-group">
                 <label class="form-label">صورة الخلفية</label>
-                <FileUpload
+                <ClientFileUpload
                   v-model="content.hero.poster_image"
                   accept="image/*"
                   :max-size="10"
-                  drag-text="اسحب صورة الخلفية هنا"
-                  @uploaded="onImageUploaded"
                 />
               </div>
             </div>
@@ -135,32 +129,26 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Desktop Video</label>
-                <FileUpload
+                <ClientFileUpload
                   v-model="content.hero.video_desktop"
                   accept="video/*"
                   :max-size="50"
-                  drag-text="Drag desktop video here"
-                  @uploaded="onVideoUploaded"
                 />
               </div>
               <div class="form-group">
                 <label class="form-label">Mobile Video</label>
-                <FileUpload
+                <ClientFileUpload
                   v-model="content.hero.video_mobile"
                   accept="video/*"
                   :max-size="50"
-                  drag-text="Drag mobile video here"
-                  @uploaded="onVideoUploaded"
                 />
               </div>
               <div class="form-group">
                 <label class="form-label">Poster Image</label>
-                <FileUpload
+                <ClientFileUpload
                   v-model="content.hero.poster_image"
                   accept="image/*"
                   :max-size="10"
-                  drag-text="Drag poster image here"
-                  @uploaded="onImageUploaded"
                 />
               </div>
             </div>
@@ -431,7 +419,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import FileUpload from '~/components/admin/FileUpload.vue'
+import ClientFileUpload from '~/components/admin/ClientFileUpload.vue'
 
 // Use admin layout
 definePageMeta({
@@ -586,60 +574,7 @@ const saveAllContent = async () => {
   }
 }
 
-// File upload handlers
-const onVideoUploaded = async (data: any) => {
-  console.log('Video uploaded:', data)
-  message.value = 'تم رفع الفيديو بنجاح! جاري الحفظ...'
-  messageType.value = 'success'
-  
-  // Auto-save after video upload (only if not already saving)
-  if (!isSaving.value && !isAutoSaving.value) {
-    isAutoSaving.value = true
-    try {
-      await saveAllContent()
-      message.value = 'تم رفع الفيديو وحفظ التغييرات بنجاح!'
-    } catch (error) {
-      console.error('Error auto-saving after video upload:', error)
-      message.value = 'تم رفع الفيديو ولكن فشل في الحفظ التلقائي'
-      messageType.value = 'error'
-    } finally {
-      isAutoSaving.value = false
-    }
-  } else {
-    message.value = 'تم رفع الفيديو بنجاح! سيتم الحفظ قريباً...'
-  }
-  
-  setTimeout(() => {
-    message.value = ''
-  }, 3000)
-}
-
-const onImageUploaded = async (data: any) => {
-  console.log('Image uploaded:', data)
-  message.value = 'تم رفع الصورة بنجاح! جاري الحفظ...'
-  messageType.value = 'success'
-  
-  // Auto-save after image upload (only if not already saving)
-  if (!isSaving.value && !isAutoSaving.value) {
-    isAutoSaving.value = true
-    try {
-      await saveAllContent()
-      message.value = 'تم رفع الصورة وحفظ التغييرات بنجاح!'
-    } catch (error) {
-      console.error('Error auto-saving after image upload:', error)
-      message.value = 'تم رفع الصورة ولكن فشل في الحفظ التلقائي'
-      messageType.value = 'error'
-    } finally {
-      isAutoSaving.value = false
-    }
-  } else {
-    message.value = 'تم رفع الصورة بنجاح! سيتم الحفظ قريباً...'
-  }
-  
-  setTimeout(() => {
-    message.value = ''
-  }, 3000)
-}
+// File upload handlers are now handled by ClientFileUpload component
 
 // Load content on mount
 onMounted(() => {
