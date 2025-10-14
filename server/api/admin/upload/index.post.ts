@@ -26,6 +26,23 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // Additional file validation
+    if (!Buffer.isBuffer(file.data)) {
+      console.log('File data is not a buffer')
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid file data format'
+      })
+    }
+
+    if (file.data.length === 0) {
+      console.log('File is empty')
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'File is empty'
+      })
+    }
+
     console.log('File details:', {
       filename: file.filename,
       type: file.type,
@@ -63,18 +80,61 @@ export default defineEventHandler(async (event) => {
     const subDir = file.type?.startsWith('video/') ? 'hero' : 'home/heroSection'
     const fullPath = join(process.cwd(), 'public', uploadDir, subDir)
 
-    console.log('Upload path:', fullPath)
+    console.log('Upload details:', {
+      uploadDir,
+      subDir,
+      fullPath,
+      cwd: process.cwd(),
+      fileType: file.type
+    })
+
+    // Validate path is within public directory for security
+    const publicPath = join(process.cwd(), 'public')
+    if (!fullPath.startsWith(publicPath)) {
+      console.error('Invalid upload path:', fullPath)
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid upload path'
+      })
+    }
+
+    // Ensure public directory exists
+    if (!existsSync(publicPath)) {
+      console.error('Public directory does not exist:', publicPath)
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Public directory not found. Please check server configuration.'
+      })
+    }
 
     // Create directory if it doesn't exist
     if (!existsSync(fullPath)) {
       console.log('Creating directory:', fullPath)
-      await mkdir(fullPath, { recursive: true })
+      try {
+        await mkdir(fullPath, { recursive: true })
+        console.log('Directory created successfully')
+      } catch (mkdirError) {
+        console.error('Error creating directory:', mkdirError)
+        throw createError({
+          statusCode: 500,
+          statusMessage: `Failed to create upload directory: ${mkdirError.message}`
+        })
+      }
     }
 
     // Save file
     const filePath = join(fullPath, newFilename)
     console.log('Saving file to:', filePath)
-    await writeFile(filePath, file.data)
+    try {
+      await writeFile(filePath, file.data)
+      console.log('File saved successfully')
+    } catch (writeError) {
+      console.error('Error writing file:', writeError)
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to save file: ${writeError.message}`
+      })
+    }
 
     // Return file URL
     const fileUrl = `/${uploadDir}/${subDir}/${newFilename}`
@@ -89,17 +149,44 @@ export default defineEventHandler(async (event) => {
       type: file.type
     }
   } catch (error: any) {
-    console.error('Upload error details:', error)
+    console.error('Upload error details:', {
+      message: error.message,
+      stack: error.stack,
+      statusCode: error.statusCode,
+      name: error.name
+    })
     
     // If it's already a createError, re-throw it
     if (error.statusCode) {
       throw error
     }
     
+    // Handle specific error types
+    if (error.code === 'ENOENT') {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Directory not found. Please check server configuration.'
+      })
+    }
+    
+    if (error.code === 'EACCES') {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Permission denied. Please check file permissions.'
+      })
+    }
+    
+    if (error.code === 'ENOSPC') {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'No space left on device.'
+      })
+    }
+    
     // Otherwise, wrap it in a generic error
     throw createError({
       statusCode: 500,
-      statusMessage: error.message || 'Upload failed'
+      statusMessage: error.message || 'Upload failed due to server error'
     })
   }
 })

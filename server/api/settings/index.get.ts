@@ -70,8 +70,12 @@ export default defineEventHandler(async (event) => {
     // Transform settings into organized structure (public only)
     const publicSettings = {
       general: {
-        siteName: generalSettings.site_name || { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' },
-        siteDescription: generalSettings.site_description || { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
+        siteName: typeof generalSettings.site_name === 'string' 
+          ? { ar: generalSettings.site_name, en: generalSettings.site_name }
+          : generalSettings.site_name || { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' },
+        siteDescription: typeof generalSettings.site_description === 'string' 
+          ? { ar: generalSettings.site_description, en: generalSettings.site_description }
+          : generalSettings.site_description || { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
         siteUrl: generalSettings.site_url || 'https://www.worldtripagency.com',
         contactEmail: generalSettings.contact_email || 'info@worldtripagency.com',
         contactEmail2: generalSettings.contact_email2 || 'support@worldtripagency.com',
@@ -80,7 +84,9 @@ export default defineEventHandler(async (event) => {
         contactAddress: typeof generalSettings.contact_address === 'string' 
           ? { ar: generalSettings.contact_address, en: generalSettings.contact_address }
           : generalSettings.contact_address || { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
-        contactHours: generalSettings.contact_hours || 'السبت - الخميس: 8:00 ص - 6:00 م',
+        contactHours: typeof generalSettings.contact_hours === 'string' 
+          ? { ar: generalSettings.contact_hours, en: generalSettings.contact_hours }
+          : generalSettings.contact_hours || { ar: 'السبت - الخميس: 8:00 ص - 6:00 م', en: 'Saturday - Thursday: 8:00 AM - 6:00 PM' },
         contactHoursEn: generalSettings.contact_hours_en || 'Saturday - Thursday: 8:00 AM - 6:00 PM',
         whatsappUrl: generalSettings.whatsapp_url || 'https://wa.me/966500982394',
         instagramUrl: generalSettings.instagram_url || 'https://instagram.com/worldtripagency',
@@ -101,8 +107,10 @@ export default defineEventHandler(async (event) => {
         footerLogo: logoSettings.footer_logo || '/images/home/logo/WonderlandLogoWhite.svg',
         favicon: logoSettings.favicon || '/favicon.ico',
         logoHeight: logoSettings.logo_height || 48,
-        showLogoText: logoSettings.show_logo_text || true,
-        logoText: logoSettings.logo_text || { ar: 'أرض العجائب', en: 'World Trip Agency' }
+        showLogoText: logoSettings.show_logo_text ?? true,
+        logoText: typeof logoSettings.logo_text === 'string' 
+          ? { ar: logoSettings.logo_text, en: logoSettings.logo_text }
+          : logoSettings.logo_text || { ar: 'أرض العجائب', en: 'World Trip Agency' }
       },
       seo: {
         metaTitle: { ar: 'أرض العجائب - وكالة سفر متخصصة', en: 'World Trip Agency - Specialized Travel Agency' },

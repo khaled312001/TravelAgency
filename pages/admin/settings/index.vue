@@ -204,7 +204,7 @@
               <div class="form-group">
                 <label class="form-label">ساعات العمل (بالعربية)</label>
                 <input 
-                  v-model="settings.general.contactHours" 
+                  v-model="settings.general.contactHours.ar" 
                   type="text" 
                   class="form-input"
                   placeholder="السبت - الخميس: 8:00 ص - 6:00 م"
@@ -213,7 +213,7 @@
               <div class="form-group">
                 <label class="form-label">ساعات العمل (بالإنجليزية)</label>
                 <input 
-                  v-model="settings.general.contactHoursEn" 
+                  v-model="settings.general.contactHours.en" 
                   type="text" 
                   class="form-input"
                   placeholder="Saturday - Thursday: 8:00 AM - 6:00 PM"
@@ -918,8 +918,7 @@ interface Settings {
     contactPhone2: string
     contactAddress: { ar: string; en: string }
     contactAddressEn: string
-    contactHours: string
-    contactHoursEn: string
+    contactHours: { ar: string; en: string }
     whatsappUrl: string
     instagramUrl: string
     facebookUrl: string
@@ -997,8 +996,7 @@ const settings = ref<Settings>({
     contactPhone2: '+966112345678',
     contactAddress: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
     contactAddressEn: 'Riyadh, Saudi Arabia',
-    contactHours: 'السبت - الخميس: 8:00 ص - 6:00 م',
-    contactHoursEn: 'Saturday - Thursday: 8:00 AM - 6:00 PM',
+    contactHours: { ar: 'السبت - الخميس: 8:00 ص - 6:00 م', en: 'Saturday - Thursday: 8:00 AM - 6:00 PM' },
     whatsappUrl: 'https://wa.me/966500982394',
     instagramUrl: 'https://instagram.com/worldtripagency',
     facebookUrl: 'https://facebook.com/worldtripagency',
@@ -1018,7 +1016,7 @@ const settings = ref<Settings>({
     footerLogo: '/images/home/logo/WonderlandLogoWhite.svg',
     favicon: '/favicon.ico',
     logoHeight: 48,
-    showLogoText: true,
+    showLogoText: false,
     logoText: { ar: 'أرض العجائب', en: 'World Trip Agency' }
   },
   email: {

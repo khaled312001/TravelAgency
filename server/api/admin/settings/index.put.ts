@@ -30,8 +30,7 @@ export default defineEventHandler(async (event) => {
         contact_phone: body.general?.contactPhone || '+966500982394',
         contact_phone2: body.general?.contactPhone2 || '+966112345678',
         contact_address: body.general?.contactAddress || { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
-        contact_hours: body.general?.contactHours || 'السبت - الخميس: 8:00 ص - 6:00 م',
-        contact_hours_en: body.general?.contactHoursEn || 'Saturday - Thursday: 8:00 AM - 6:00 PM',
+        contact_hours: body.general?.contactHours || { ar: 'السبت - الخميس: 8:00 ص - 6:00 م', en: 'Saturday - Thursday: 8:00 AM - 6:00 PM' },
         whatsapp_url: body.general?.whatsappUrl || 'https://wa.me/966500982394',
         instagram_url: body.general?.instagramUrl || 'https://instagram.com/worldtripagency',
         facebook_url: body.general?.facebookUrl || 'https://facebook.com/worldtripagency',
@@ -51,7 +50,7 @@ export default defineEventHandler(async (event) => {
         footer_logo: body.logo?.footerLogo || '/images/home/logo/WonderlandLogoWhite.svg',
         favicon: body.logo?.favicon || '/favicon.ico',
         logo_height: body.logo?.logoHeight || 48,
-        show_logo_text: body.logo?.showLogoText || true,
+        show_logo_text: body.logo?.showLogoText ?? true,
         logo_text: body.logo?.logoText || { ar: 'أرض العجائب', en: 'World Trip Agency' }
       }),
       keywords_ar: JSON.stringify({
