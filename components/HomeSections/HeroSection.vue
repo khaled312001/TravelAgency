@@ -2,20 +2,11 @@
   <section class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
     <!-- Video Background with fallback -->
     <div class="absolute inset-0 z-0">
-      <!-- Desktop Video -->
-      <video ref="videoRef" preload="auto" autoplay loop muted playsinline class="hidden md:block w-full h-full object-cover"
-        :poster="heroPosterImage">
-        <source v-if="isBase64Video(heroVideoDesktop)" :src="heroVideoDesktop" type="video/mp4">
-        <source v-else :src="heroVideoDesktop" type="video/webm">
-        <source v-else :src="heroVideoDesktop.replace('.webm', '.mp4')" type="video/mp4">
-      </video>
-
-      <!-- Mobile Video -->
-      <video autoplay loop muted playsinline preload="auto" class="md:hidden w-full h-full object-cover"
-        :poster="heroPosterImage">
-        <source v-if="isBase64Video(heroVideoMobile)" :src="heroVideoMobile" type="video/mp4">
-        <source v-else :src="heroVideoMobile" type="video/webm">
-        <source v-else :src="heroVideoMobile.replace('.webm', '.mp4')" type="video/mp4">
+      <!-- Background Video -->
+      <video ref="videoRef" preload="auto" autoplay loop muted playsinline class="w-full h-full object-cover">
+        <source v-if="isBase64Video(heroVideo)" :src="heroVideo" type="video/mp4">
+        <source v-else :src="heroVideo" type="video/webm">
+        <source v-else :src="heroVideo.replace('.webm', '.mp4')" type="video/mp4">
       </video>
 
       <!-- Gradient Overlay -->
@@ -102,21 +93,10 @@ const heroCta = computed(() => {
   return customCta || t('home.hero.cta')
 })
 
-const heroVideoDesktop = computed(() => {
-  const customVideo = getHeroContent('video_desktop', locale.value === 'ar-SA' ? 'ar' : 'en')
-  console.log('Hero Desktop Video:', customVideo)
+const heroVideo = computed(() => {
+  const customVideo = getHeroContent('video', locale.value === 'ar-SA' ? 'ar' : 'en')
+  console.log('Hero Video:', customVideo)
   return customVideo || '/videos/hero/desktop/hero-desktop.webm'
-})
-
-const heroVideoMobile = computed(() => {
-  const customVideo = getHeroContent('video_mobile', locale.value === 'ar-SA' ? 'ar' : 'en')
-  console.log('Hero Mobile Video:', customVideo)
-  return customVideo || '/videos/hero/mobile/hero-mobile-center.webm'
-})
-
-const heroPosterImage = computed(() => {
-  const customPoster = getHeroContent('poster_image', locale.value === 'ar-SA' ? 'ar' : 'en')
-  return customPoster || '/images/home/heroSection/hero-image.webp'
 })
 
 // Check if image is base64 encoded

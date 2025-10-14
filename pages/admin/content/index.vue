@@ -67,27 +67,11 @@
                 />
               </div>
               <div class="form-group">
-                <label class="form-label">فيديو سطح المكتب</label>
+                <label class="form-label">فيديو الخلفية</label>
                 <ClientFileUpload
-                  v-model="content.hero.video_desktop"
+                  v-model="content.hero.video"
                   accept="video/*"
                   :max-size="50"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">فيديو الهاتف</label>
-                <ClientFileUpload
-                  v-model="content.hero.video_mobile"
-                  accept="video/*"
-                  :max-size="50"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">صورة الخلفية</label>
-                <ClientFileUpload
-                  v-model="content.hero.poster_image"
-                  accept="image/*"
-                  :max-size="10"
                 />
               </div>
             </div>
@@ -128,27 +112,11 @@
                 />
               </div>
               <div class="form-group">
-                <label class="form-label">Desktop Video</label>
+                <label class="form-label">Background Video</label>
                 <ClientFileUpload
-                  v-model="content.hero.video_desktop"
+                  v-model="content.hero.video"
                   accept="video/*"
                   :max-size="50"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Mobile Video</label>
-                <ClientFileUpload
-                  v-model="content.hero.video_mobile"
-                  accept="video/*"
-                  :max-size="50"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Poster Image</label>
-                <ClientFileUpload
-                  v-model="content.hero.poster_image"
-                  accept="image/*"
-                  :max-size="10"
                 />
               </div>
             </div>
@@ -494,9 +462,7 @@ const loadDefaultContent = () => {
         ar: 'استكشف باقاتنا',
         en: 'Explore Our Packages'
       },
-      video_desktop: '/videos/hero/desktop/hero-desktop.webm',
-      video_mobile: '/videos/hero/mobile/hero-mobile-center.webm',
-      poster_image: '/images/home/heroSection/hero-image.webp'
+      video: '/videos/hero/desktop/hero-desktop.webm'
     },
     search: {
       title: { 
@@ -588,18 +554,13 @@ const compressContentIfNeeded = async (contentData: any) => {
   
   console.log('Content size:', sizeInMB.toFixed(2), 'MB')
   
-  // If content is larger than 20MB, compress videos
-  if (sizeInMB > 20) {
+  // If content is larger than 10MB, compress videos
+  if (sizeInMB > 10) {
     console.log('Content is large, compressing videos...')
     
-    // Compress videos in hero section
-    if (contentData.hero) {
-      if (contentData.hero.video_desktop && contentData.hero.video_desktop.startsWith('data:video/')) {
-        contentData.hero.video_desktop = await compressBase64Video(contentData.hero.video_desktop)
-      }
-      if (contentData.hero.video_mobile && contentData.hero.video_mobile.startsWith('data:video/')) {
-        contentData.hero.video_mobile = await compressBase64Video(contentData.hero.video_mobile)
-      }
+    // Compress video in hero section
+    if (contentData.hero && contentData.hero.video && contentData.hero.video.startsWith('data:video/')) {
+      contentData.hero.video = await compressBase64Video(contentData.hero.video)
     }
   }
   
