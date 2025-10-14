@@ -210,7 +210,7 @@ const invoiceContainer = ref<HTMLElement>()
 // Company information
 const companyName = 'أرض العجائب للسفر'
 const companyTagline = 'وكالة سفر متخصصة في تنظيم الرحلات السياحية'
-const companyAddress = 'الرياض، المملكة العربية السعودية'
+const companyAddress = 'مكة المكرمة  - شارع الستين '
 const companyPhone = '+966500982394'
 const companyEmail = 'info@worldtripagency.com'
 const companyLogo = '/images/home/logo/WonderlandLogo.svg'

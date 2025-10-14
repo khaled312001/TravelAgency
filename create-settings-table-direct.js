@@ -43,7 +43,7 @@ async function createSettingsTable() {
           site_url: 'https://www.worldtripagency.com',
           contact_email: 'info@worldtripagency.com',
           contact_phone: '+966500982394',
-          contact_address: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' }
+          contact_address: { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' }
         }),
         description_en: JSON.stringify({
           main_logo: '/images/home/logo/WonderlandLogo.svg',

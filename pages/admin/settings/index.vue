@@ -994,7 +994,7 @@ const settings = ref<Settings>({
     contactEmail2: 'support@worldtripagency.com',
     contactPhone: '+966501234567',
     contactPhone2: '+966112345678',
-    contactAddress: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
+    contactAddress: { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' },
     contactAddressEn: 'Riyadh, Saudi Arabia',
     contactHours: { ar: 'السبت - الخميس: 8:00 ص - 6:00 م', en: 'Saturday - Thursday: 8:00 AM - 6:00 PM' },
     whatsappUrl: 'https://wa.me/966500982394',

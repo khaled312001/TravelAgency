@@ -17,7 +17,7 @@ INSERT INTO settings (key, value, category, description) VALUES
 ('site_url', '"https://www.worldtripagency.com"', 'general', 'Website URL'),
 ('contact_email', '"info@worldtripagency.com"', 'general', 'Contact email'),
 ('contact_phone', '"+966500982394"', 'general', 'Contact phone number'),
-('contact_address', '{"en": "Riyadh, Saudi Arabia", "ar": "الرياض، المملكة العربية السعودية"}', 'general', 'Contact address'),
+('contact_address', '{"en": "Riyadh, Saudi Arabia", "ar": "مكة المكرمة  - شارع الستين "}', 'general', 'Contact address'),
 
 -- Logo Settings
 ('main_logo', '"/images/home/logo/WonderlandLogo.svg"', 'logo', 'Main website logo'),

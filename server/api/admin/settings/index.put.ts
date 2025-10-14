@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
         contact_email2: body.general?.contactEmail2 || 'support@worldtripagency.com',
         contact_phone: body.general?.contactPhone || '+966500982394',
         contact_phone2: body.general?.contactPhone2 || '+966112345678',
-        contact_address: body.general?.contactAddress || { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
+        contact_address: body.general?.contactAddress || { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' },
         contact_hours: body.general?.contactHours || { ar: 'السبت - الخميس: 8:00 ص - 6:00 م', en: 'Saturday - Thursday: 8:00 AM - 6:00 PM' },
         whatsapp_url: body.general?.whatsappUrl || 'https://wa.me/966500982394',
         instagram_url: body.general?.instagramUrl || 'https://instagram.com/worldtripagency',

@@ -20,7 +20,7 @@ export const useSettings = () => {
             siteUrl: 'https://www.worldtripagency.com',
             contactEmail: 'info@worldtripagency.com',
             contactPhone: '+966500982394',
-            contactAddress: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' }
+            contactAddress: { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' }
           },
           logo: {
             mainLogo: '/images/home/logo/WonderlandLogo.svg',
@@ -43,7 +43,7 @@ export const useSettings = () => {
           siteUrl: 'https://www.worldtripagency.com',
           contactEmail: 'info@worldtripagency.com',
           contactPhone: '+966500982394',
-          contactAddress: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' }
+          contactAddress: { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' }
         },
         logo: {
           mainLogo: '/images/home/logo/WonderlandLogo.svg',

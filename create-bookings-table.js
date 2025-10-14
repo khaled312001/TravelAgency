@@ -147,7 +147,7 @@ async function createBookingsTable() {
         keywords_ar: JSON.stringify({
           invoice_settings: {
             company_name: 'وكالة أرض العجائب للسفر',
-            company_address: 'الرياض، المملكة العربية السعودية',
+            company_address: 'مكة المكرمة  - شارع الستين ',
             company_phone: '+966500982394',
             company_email: 'info@worldtripagency.com',
             tax_number: '1234567890',

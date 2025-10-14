@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
           siteUrl: 'https://www.worldtripagency.com',
           contactEmail: 'info@worldtripagency.com',
           contactPhone: '+966500982394',
-          contactAddress: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' }
+          contactAddress: { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' }
         },
         logo: {
           mainLogo: '/images/home/logo/WonderlandLogo.svg',
@@ -83,7 +83,7 @@ export default defineEventHandler(async (event) => {
         contactPhone2: generalSettings.contact_phone2 || '+966112345678',
         contactAddress: typeof generalSettings.contact_address === 'string' 
           ? { ar: generalSettings.contact_address, en: generalSettings.contact_address }
-          : generalSettings.contact_address || { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
+          : generalSettings.contact_address || { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' },
         contactHours: typeof generalSettings.contact_hours === 'string' 
           ? { ar: generalSettings.contact_hours, en: generalSettings.contact_hours }
           : generalSettings.contact_hours || { ar: 'السبت - الخميس: 8:00 ص - 6:00 م', en: 'Saturday - Thursday: 8:00 AM - 6:00 PM' },

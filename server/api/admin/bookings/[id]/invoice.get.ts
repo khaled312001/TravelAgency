@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
         name: invoiceSettings.company_name || 'Wonderland Travel Agency',
         name_ar: invoiceSettings.company_name || 'وكالة أرض العجائب للسفر',
         address: invoiceSettings.company_address || 'Riyadh, Saudi Arabia',
-        address_ar: invoiceSettings.company_address || 'الرياض، المملكة العربية السعودية',
+        address_ar: invoiceSettings.company_address || 'مكة المكرمة  - شارع الستين ',
         phone: invoiceSettings.company_phone || '+966500982394',
         email: invoiceSettings.company_email || 'info@worldtripagency.com',
         tax_number: invoiceSettings.tax_number || '1234567890',

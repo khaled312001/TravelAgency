@@ -114,7 +114,7 @@ interface InvoiceData {
 ```javascript
 // في InvoiceTemplate.vue
 const companyName = 'أرض العجائب للسفر'
-const companyAddress = 'الرياض، المملكة العربية السعودية'
+const companyAddress = 'مكة المكرمة  - شارع الستين '
 const companyPhone = '+966500982394'
 const companyEmail = 'info@worldtripagency.com'
 ```

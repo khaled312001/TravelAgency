@@ -18,7 +18,7 @@ async function setupSettings() {
       { key: 'site_url', value: JSON.stringify("https://www.worldtripagency.com"), category: 'general', description: 'Website URL' },
       { key: 'contact_email', value: JSON.stringify("info@worldtripagency.com"), category: 'general', description: 'Contact email' },
       { key: 'contact_phone', value: JSON.stringify("+966500982394"), category: 'general', description: 'Contact phone number' },
-      { key: 'contact_address', value: JSON.stringify({en: "Riyadh, Saudi Arabia", ar: "الرياض، المملكة العربية السعودية"}), category: 'general', description: 'Contact address' },
+      { key: 'contact_address', value: JSON.stringify({en: "Riyadh, Saudi Arabia", ar: "مكة المكرمة  - شارع الستين "}), category: 'general', description: 'Contact address' },
       
       // Logo Settings
       { key: 'main_logo', value: JSON.stringify("/images/home/logo/WonderlandLogo.svg"), category: 'logo', description: 'Main website logo' },
