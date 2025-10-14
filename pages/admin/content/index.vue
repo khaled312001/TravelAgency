@@ -539,10 +539,24 @@ const saveAllContent = async () => {
     setTimeout(() => {
       message.value = ''
     }, 3000)
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error saving content:', error)
-    message.value = 'حدث خطأ أثناء حفظ المحتوى'
+    
+    // Check if it's a size limit error
+    if (error.message && error.message.includes('Content too large')) {
+      message.value = error.message
+    } else if (error.status === 413) {
+      message.value = 'الملف كبير جداً! يرجى استخدام فيديو أصغر (أقل من 4.5 ميجابايت)'
+    } else {
+      message.value = 'حدث خطأ أثناء حفظ المحتوى'
+    }
+    
     messageType.value = 'error'
+    
+    // Clear message after 5 seconds
+    setTimeout(() => {
+      message.value = ''
+    }, 5000)
   } finally {
     isSaving.value = false
   }
@@ -555,8 +569,13 @@ const compressContentIfNeeded = async (contentData: any) => {
   
   console.log('Content size:', sizeInMB.toFixed(2), 'MB')
   
-  // Skip compression for now - it converts video to image
-  console.log('Content size:', sizeInMB.toFixed(2), 'MB - compression skipped')
+  // Check if content is too large for Vercel (4.5MB limit)
+  if (sizeInMB > 4) {
+    console.log('Content too large for Vercel, please use smaller videos')
+    throw new Error(`Content too large: ${sizeInMB.toFixed(2)}MB. Vercel limit is 4.5MB. Please use smaller videos.`)
+  }
+  
+  console.log('Content size:', sizeInMB.toFixed(2), 'MB - within limits')
   
   return contentData
 }

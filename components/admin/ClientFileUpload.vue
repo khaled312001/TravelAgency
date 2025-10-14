@@ -213,8 +213,20 @@ const uploadFile = async (file: File) => {
   }, 200)
 
   try {
+    // Check file size and compress if needed (Vercel limit is 4.5MB)
+    let processedFile = file
+    const maxSize = 4 * 1024 * 1024 // 4MB limit for safety
+    
+    if (file.size > maxSize) {
+      console.log('File too large, compressing...', {
+        original: file.size,
+        limit: maxSize
+      })
+      processedFile = await compressVideo(file)
+    }
+    
     // Convert file to base64 for client-side storage
-    const base64 = await fileToBase64(file)
+    const base64 = await fileToBase64(processedFile)
     
     // Complete progress
     uploadProgress.value = 100
@@ -246,10 +258,64 @@ const uploadFile = async (file: File) => {
 }
 
 const compressVideo = async (file: File): Promise<File> => {
-  // For now, just return the original file without compression
-  // Canvas compression converts video to image, which is not what we want
-  console.log('Video compression skipped - using original file')
-  return file
+  // Use MediaRecorder API for proper video compression
+  return new Promise((resolve) => {
+    const video = document.createElement('video')
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    
+    video.onloadedmetadata = () => {
+      // Reduce dimensions by 50% for better compression
+      canvas.width = video.videoWidth * 0.5
+      canvas.height = video.videoHeight * 0.5
+      
+      video.currentTime = 0
+    }
+    
+    video.onseeked = () => {
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+        
+        // Use MediaRecorder for proper video compression
+        canvas.captureStream(30).getTracks().forEach(track => {
+          const mediaRecorder = new MediaRecorder(track, {
+            mimeType: 'video/webm;codecs=vp8'
+          })
+          
+          const chunks: Blob[] = []
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              chunks.push(event.data)
+            }
+          }
+          
+          mediaRecorder.onstop = () => {
+            const compressedBlob = new Blob(chunks, { type: 'video/webm' })
+            const compressedFile = new File([compressedBlob], file.name.replace(/\.[^/.]+$/, '.webm'), {
+              type: 'video/webm',
+              lastModified: Date.now()
+            })
+            
+            console.log('Video compressed:', {
+              original: file.size,
+              compressed: compressedFile.size,
+              reduction: ((file.size - compressedFile.size) / file.size * 100).toFixed(1) + '%'
+            })
+            
+            resolve(compressedFile)
+          }
+          
+          mediaRecorder.start()
+          setTimeout(() => mediaRecorder.stop(), 1000) // Record for 1 second
+        })
+      } else {
+        resolve(file) // Fallback to original file
+      }
+    }
+    
+    video.src = URL.createObjectURL(file)
+    video.load()
+  })
 }
 
 const fileToBase64 = (file: File): Promise<string> => {
