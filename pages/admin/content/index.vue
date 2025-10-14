@@ -555,63 +555,18 @@ const compressContentIfNeeded = async (contentData: any) => {
   
   console.log('Content size:', sizeInMB.toFixed(2), 'MB')
   
-  // If content is larger than 3MB, compress videos (Vercel limit is 4.5MB)
-  if (sizeInMB > 3) {
-    console.log('Content is large, compressing videos...')
-    
-    // Compress video in hero section
-    if (contentData.hero && contentData.hero.video && contentData.hero.video.startsWith('data:video/')) {
-      contentData.hero.video = await compressBase64Video(contentData.hero.video)
-    }
-  }
+  // Skip compression for now - it converts video to image
+  console.log('Content size:', sizeInMB.toFixed(2), 'MB - compression skipped')
   
   return contentData
 }
 
 // Compress base64 video by reducing quality
 const compressBase64Video = async (base64Video: string): Promise<string> => {
-  return new Promise((resolve) => {
-    const video = document.createElement('video')
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    
-    video.onloadedmetadata = () => {
-      // Reduce dimensions by 50% for better compression
-      canvas.width = video.videoWidth * 0.5
-      canvas.height = video.videoHeight * 0.5
-      
-      video.currentTime = 0
-    }
-    
-    video.onseeked = () => {
-      if (ctx) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-        
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const reader = new FileReader()
-            reader.onload = () => {
-              const compressedBase64 = reader.result as string
-              console.log('Video compressed:', {
-                original: base64Video.length,
-                compressed: compressedBase64.length,
-                reduction: ((base64Video.length - compressedBase64.length) / base64Video.length * 100).toFixed(1) + '%'
-              })
-              resolve(compressedBase64)
-            }
-            reader.readAsDataURL(blob)
-          } else {
-            resolve(base64Video) // Fallback to original
-          }
-        }, 'video/mp4', 0.4) // 40% quality for better compression
-      } else {
-        resolve(base64Video) // Fallback to original
-      }
-    }
-    
-    video.src = base64Video
-    video.load()
-  })
+  // For now, just return the original video without compression
+  // Canvas compression converts video to image, which is not what we want
+  console.log('Video compression skipped - using original video')
+  return base64Video
 }
 
 // File upload handlers are now handled by ClientFileUpload component

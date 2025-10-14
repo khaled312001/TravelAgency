@@ -213,15 +213,8 @@ const uploadFile = async (file: File) => {
   }, 200)
 
   try {
-    // Compress video if it's large (> 2MB)
-    let processedFile = file
-    if (file.type.startsWith('video/') && file.size > 2 * 1024 * 1024) {
-      console.log('Compressing large video file...')
-      processedFile = await compressVideo(file)
-    }
-    
     // Convert file to base64 for client-side storage
-    const base64 = await fileToBase64(processedFile)
+    const base64 = await fileToBase64(file)
     
     // Complete progress
     uploadProgress.value = 100
@@ -253,48 +246,10 @@ const uploadFile = async (file: File) => {
 }
 
 const compressVideo = async (file: File): Promise<File> => {
-  // Simple video compression by reducing quality
-  return new Promise((resolve) => {
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    const video = document.createElement('video')
-    
-    video.onloadedmetadata = () => {
-      // Reduce dimensions by 60% for better compression
-      canvas.width = video.videoWidth * 0.4
-      canvas.height = video.videoHeight * 0.4
-      
-      video.currentTime = 0
-    }
-    
-    video.onseeked = () => {
-      if (ctx) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-        
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const compressedFile = new File([blob], file.name, {
-              type: file.type,
-              lastModified: Date.now()
-            })
-            console.log('Video compressed:', {
-              original: file.size,
-              compressed: compressedFile.size,
-              reduction: ((file.size - compressedFile.size) / file.size * 100).toFixed(1) + '%'
-            })
-            resolve(compressedFile)
-          } else {
-            resolve(file) // Fallback to original file
-          }
-        }, file.type, 0.3) // 30% quality for better compression
-      } else {
-        resolve(file) // Fallback to original file
-      }
-    }
-    
-    video.src = URL.createObjectURL(file)
-    video.load()
-  })
+  // For now, just return the original file without compression
+  // Canvas compression converts video to image, which is not what we want
+  console.log('Video compression skipped - using original file')
+  return file
 }
 
 const fileToBase64 = (file: File): Promise<string> => {
