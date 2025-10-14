@@ -31,6 +31,13 @@
       <div v-else class="upload-content">
         <Icon name="lucide:loader-2" class="w-8 h-8 text-primary-600 mb-2 animate-spin" />
         <p class="text-sm text-primary-600">جاري الرفع...</p>
+        <div v-if="uploadProgress > 0" class="w-full bg-gray-200 rounded-full h-2 mt-2">
+          <div 
+            class="bg-primary-600 h-2 rounded-full transition-all duration-300" 
+            :style="{ width: uploadProgress + '%' }"
+          ></div>
+        </div>
+        <p v-if="uploadProgress > 0" class="text-xs text-gray-500 mt-1">{{ uploadProgress }}%</p>
       </div>
     </div>
 
@@ -75,8 +82,19 @@
 
     <!-- Error Message -->
     <div v-if="errorMessage" class="error-message mt-2">
-      <Icon name="lucide:alert-circle" class="w-4 h-4 text-red-500" />
-      <span class="text-sm text-red-600">{{ errorMessage }}</span>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <Icon name="lucide:alert-circle" class="w-4 h-4 text-red-500" />
+          <span class="text-sm text-red-600">{{ errorMessage }}</span>
+        </div>
+        <button
+          v-if="lastUploadedFile"
+          @click="retryUpload"
+          class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200 transition-colors"
+        >
+          إعادة المحاولة
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -109,6 +127,8 @@ const isDragOver = ref(false)
 const isUploading = ref(false)
 const errorMessage = ref('')
 const uploadedFile = ref<any>(null)
+const uploadProgress = ref(0)
+const lastUploadedFile = ref<File | null>(null)
 
 // Computed
 const acceptTypes = computed(() => {
@@ -186,6 +206,9 @@ const handleDragLeave = () => {
 }
 
 const uploadFile = async (file: File) => {
+  // Store file for potential retry
+  lastUploadedFile.value = file
+  
   // Validate file size
   const maxSizeBytes = props.maxSize * 1024 * 1024
   if (file.size > maxSizeBytes) {
@@ -209,33 +232,78 @@ const uploadFile = async (file: File) => {
 
   isUploading.value = true
   errorMessage.value = ''
+  uploadProgress.value = 0
+
+  // Simulate progress for better UX
+  const progressInterval = setInterval(() => {
+    if (uploadProgress.value < 90) {
+      uploadProgress.value += Math.random() * 10
+    }
+  }, 200)
 
   try {
     const formData = new FormData()
     formData.append('file', file)
+
+    console.log('Uploading file:', {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      maxSize: maxSizeBytes
+    })
 
     const response = await $fetch('/api/admin/upload', {
       method: 'POST',
       body: formData
     })
 
-    if (response.success) {
+    console.log('Upload response:', response)
+
+    // Complete progress
+    uploadProgress.value = 100
+    clearInterval(progressInterval)
+
+    if (response && response.success) {
       uploadedFile.value = response
       emit('update:modelValue', response.url)
       emit('uploaded', response)
+      console.log('File uploaded successfully:', response.url)
+      // Clear error on success
+      errorMessage.value = ''
     } else {
-      errorMessage.value = 'فشل في رفع الملف'
+      errorMessage.value = response?.message || 'فشل في رفع الملف'
+      console.error('Upload failed:', response)
     }
   } catch (error: any) {
-    console.error('Upload error:', error)
-    errorMessage.value = error.data?.statusMessage || 'حدث خطأ أثناء رفع الملف'
+    console.error('Upload error details:', error)
+    clearInterval(progressInterval)
+    
+    // Better error handling
+    if (error.statusCode === 400) {
+      errorMessage.value = error.data?.statusMessage || 'نوع الملف غير مدعوم أو حجم الملف كبير جداً'
+    } else if (error.statusCode === 413) {
+      errorMessage.value = 'الملف كبير جداً. الحد الأقصى: ' + props.maxSize + ' ميجابايت'
+    } else if (error.statusCode === 500) {
+      errorMessage.value = 'خطأ في الخادم. يرجى المحاولة مرة أخرى'
+    } else {
+      errorMessage.value = error.data?.statusMessage || error.message || 'حدث خطأ أثناء رفع الملف'
+    }
   } finally {
     isUploading.value = false
+    uploadProgress.value = 0
+  }
+}
+
+const retryUpload = () => {
+  if (lastUploadedFile.value) {
+    uploadFile(lastUploadedFile.value)
   }
 }
 
 const removeFile = () => {
   uploadedFile.value = null
+  lastUploadedFile.value = null
+  errorMessage.value = ''
   emit('update:modelValue', '')
   if (fileInput.value) {
     fileInput.value.value = ''

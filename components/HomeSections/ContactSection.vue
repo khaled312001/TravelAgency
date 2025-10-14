@@ -26,8 +26,8 @@
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 mb-1">{{ t('contact.section.phone') }}</h4>
-                    <p class="text-gray-600">+966 50 123 4567</p>
-                    <p class="text-gray-600">+966 11 234 5678</p>
+                    <p class="text-gray-600">{{ contactInfo.phone || '+966 50 123 4567' }}</p>
+                    <p class="text-gray-600">{{ contactInfo.phone2 || '+966 11 234 5678' }}</p>
                   </div>
                 </div>
 
@@ -37,8 +37,8 @@
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 mb-1">{{ t('contact.section.email') }}</h4>
-                    <p class="text-gray-600">info@wonderland.com</p>
-                    <p class="text-gray-600">support@wonderland.com</p>
+                    <p class="text-gray-600">{{ contactInfo.email || 'info@worldtripagency.com' }}</p>
+                    <p class="text-gray-600">{{ contactInfo.email2 || 'support@worldtripagency.com' }}</p>
                   </div>
                 </div>
 
@@ -48,7 +48,7 @@
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 mb-1">{{ t('contact.section.address') }}</h4>
-                    <p class="text-gray-600">{{ t('contact.section.address_text') }}</p>
+                    <p class="text-gray-600">{{ contactInfo.address || t('contact.section.address_text') }}</p>
                   </div>
                 </div>
 
@@ -58,7 +58,7 @@
                   </div>
                   <div>
                     <h4 class="font-medium text-gray-900 mb-1">{{ t('contact.section.hours') }}</h4>
-                    <p class="text-gray-600">{{ t('contact.section.hours_text') }}</p>
+                    <p class="text-gray-600">{{ contactInfo.hours || t('contact.section.hours_text') }}</p>
                   </div>
                 </div>
               </div>
@@ -201,16 +201,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useWhatsApp } from '~/composables/useWhatsApp'
+import { useSettings } from '~/composables/useSettings'
 
 const { t } = useI18n()
 const { getWhatsAppUrl } = useWhatsApp()
+const { settings, loadSettings, getLocalizedSetting } = useSettings()
 
 const isSubmitting = ref(false)
 const showSuccess = ref(false)
 const showError = ref(false)
+
+// Load settings on component mount
+onMounted(async () => {
+  await loadSettings()
+})
+
+// Computed contact information from settings
+const contactInfo = computed(() => {
+  if (!settings.value) {
+    return {
+      phone: '+966 50 123 4567',
+      phone2: '+966 11 234 5678',
+      email: 'info@worldtripagency.com',
+      email2: 'support@worldtripagency.com',
+      address: t('contact.section.address_text'),
+      hours: t('contact.section.hours_text')
+    }
+  }
+
+  return {
+    phone: getLocalizedSetting('general', 'contactPhone') || '+966 50 123 4567',
+    phone2: getLocalizedSetting('general', 'contactPhone2') || '+966 11 234 5678',
+    email: getLocalizedSetting('general', 'contactEmail') || 'info@worldtripagency.com',
+    email2: getLocalizedSetting('general', 'contactEmail2') || 'support@worldtripagency.com',
+    address: getLocalizedSetting('general', 'contactAddress') || t('contact.section.address_text'),
+    hours: getLocalizedSetting('general', 'contactHours') || t('contact.section.hours_text')
+  }
+})
 
 const countries = [
   { code: '+966', flag: '', example: '5X XXX XXXX', key: 'sa' },

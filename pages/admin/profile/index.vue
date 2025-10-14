@@ -518,12 +518,79 @@ const formatDateTime = (dateString: string) => {
   return new Date(dateString).toLocaleString('ar-SA')
 }
 
+const loadProfileData = async () => {
+  try {
+    const response = await $fetch('/api/admin/settings')
+    if (response.success && response.data.general) {
+      const generalSettings = response.data.general
+      profile.value.email = generalSettings.contactEmail || profile.value.email
+      profile.value.phone = generalSettings.contactPhone || profile.value.phone
+      
+      // Parse address to extract position and department if available
+      if (generalSettings.contactAddress && typeof generalSettings.contactAddress === 'string') {
+        const addressParts = generalSettings.contactAddress.split(' - ')
+        if (addressParts.length >= 2) {
+          profile.value.position = addressParts[0]
+          profile.value.department = addressParts[1]
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error loading profile data:', error)
+  }
+}
+
 const changeAvatar = () => {
   console.log('Change avatar...')
 }
 
-const saveProfile = () => {
-  console.log('Saving profile...', profile.value)
+const saveProfile = async () => {
+  try {
+    // Show loading state
+    const saveBtn = document.querySelector('.save-btn') as HTMLButtonElement
+    if (saveBtn) {
+      saveBtn.disabled = true
+      saveBtn.innerHTML = '<Icon name="lucide:loader-2" class="btn-icon animate-spin" /> جاري الحفظ...'
+    }
+
+    // Save profile data to admin settings
+    const response = await $fetch('/api/admin/settings', {
+      method: 'PUT',
+      body: {
+        general: {
+          contactEmail: profile.value.email,
+          contactPhone: profile.value.phone,
+          contactAddress: profile.value.position + ' - ' + profile.value.department
+        }
+      }
+    })
+
+    if (response.success) {
+      // Show success message
+      alert('تم حفظ معلومات الملف الشخصي بنجاح!')
+      
+      // Add activity log entry
+      activities.value.unshift({
+        id: Date.now().toString(),
+        type: 'update',
+        description: 'تحديث الملف الشخصي',
+        details: 'تم تحديث معلومات الملف الشخصي بنجاح',
+        timestamp: new Date().toISOString()
+      })
+    } else {
+      throw new Error('Failed to save profile')
+    }
+  } catch (error) {
+    console.error('Error saving profile:', error)
+    alert('حدث خطأ أثناء حفظ الملف الشخصي')
+  } finally {
+    // Reset button state
+    const saveBtn = document.querySelector('.save-btn') as HTMLButtonElement
+    if (saveBtn) {
+      saveBtn.disabled = false
+      saveBtn.innerHTML = '<Icon name="lucide:save" class="btn-icon" /> حفظ التغييرات'
+    }
+  }
 }
 
 const changePassword = () => {
@@ -539,6 +606,11 @@ const logoutAllDevices = () => {
     console.log('Logging out from all devices...')
   }
 }
+
+// Load profile data on mount
+onMounted(() => {
+  loadProfileData()
+})
 
 // Set page title
 useHead({

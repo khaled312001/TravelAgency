@@ -50,18 +50,35 @@
             </div>
             <div class="setting-content">
               <div class="form-group">
-                <label class="form-label">اسم الموقع *</label>
+                <label class="form-label">اسم الموقع (بالعربية) *</label>
                 <input 
-                  v-model="settings.general.siteName" 
+                  v-model="settings.general.siteName.ar" 
                   type="text" 
                   class="form-input"
                   required
                 />
               </div>
               <div class="form-group">
-                <label class="form-label">وصف الموقع</label>
+                <label class="form-label">اسم الموقع (بالإنجليزية) *</label>
+                <input 
+                  v-model="settings.general.siteName.en" 
+                  type="text" 
+                  class="form-input"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">وصف الموقع (بالعربية)</label>
                 <textarea 
-                  v-model="settings.general.siteDescription" 
+                  v-model="settings.general.siteDescription.ar" 
+                  class="form-textarea"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">وصف الموقع (بالإنجليزية)</label>
+                <textarea 
+                  v-model="settings.general.siteDescription.en" 
                   class="form-textarea"
                   rows="3"
                 ></textarea>
@@ -100,12 +117,251 @@
                 />
               </div>
               <div class="form-group">
-                <label class="form-label">العنوان</label>
+                <label class="form-label">العنوان (بالعربية)</label>
                 <textarea 
-                  v-model="settings.general.contactAddress" 
+                  v-model="settings.general.contactAddress.ar" 
                   class="form-textarea"
                   rows="3"
                 ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">العنوان (بالإنجليزية)</label>
+                <textarea 
+                  v-model="settings.general.contactAddress.en" 
+                  class="form-textarea"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information Settings -->
+      <div v-if="activeTab === 'contact'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">معلومات التواصل</h2>
+          <p class="section-description">إدارة معلومات التواصل المعروضة في الموقع</p>
+        </div>
+
+        <div class="settings-grid">
+          <div class="setting-card">
+            <div class="setting-header">
+              <h3 class="setting-title">معلومات التواصل الأساسية</h3>
+              <p class="setting-description">المعلومات المعروضة في قسم التواصل</p>
+            </div>
+            <div class="setting-content">
+              <div class="form-group">
+                <label class="form-label">البريد الإلكتروني الرئيسي *</label>
+                <input 
+                  v-model="settings.general.contactEmail" 
+                  type="email" 
+                  class="form-input"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">البريد الإلكتروني الثانوي</label>
+                <input 
+                  v-model="settings.general.contactEmail2" 
+                  type="email" 
+                  class="form-input"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رقم الهاتف الرئيسي *</label>
+                <input 
+                  v-model="settings.general.contactPhone" 
+                  type="tel" 
+                  class="form-input"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رقم الهاتف الثانوي</label>
+                <input 
+                  v-model="settings.general.contactPhone2" 
+                  type="tel" 
+                  class="form-input"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">العنوان (بالعربية)</label>
+                <textarea 
+                  v-model="settings.general.contactAddress.ar" 
+                  class="form-textarea"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">العنوان (بالإنجليزية)</label>
+                <textarea 
+                  v-model="settings.general.contactAddress.en" 
+                  class="form-textarea"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">ساعات العمل (بالعربية)</label>
+                <input 
+                  v-model="settings.general.contactHours" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="السبت - الخميس: 8:00 ص - 6:00 م"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">ساعات العمل (بالإنجليزية)</label>
+                <input 
+                  v-model="settings.general.contactHoursEn" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="Saturday - Thursday: 8:00 AM - 6:00 PM"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <div class="setting-header">
+              <h3 class="setting-title">روابط التواصل الاجتماعي</h3>
+              <p class="setting-description">روابط منصات التواصل الاجتماعي</p>
+            </div>
+            <div class="setting-content">
+              <div class="form-group">
+                <label class="form-label">رابط الواتساب</label>
+                <input 
+                  v-model="settings.general.whatsappUrl" 
+                  type="url" 
+                  class="form-input"
+                  placeholder="https://wa.me/966500982394"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رابط الإنستغرام</label>
+                <input 
+                  v-model="settings.general.instagramUrl" 
+                  type="url" 
+                  class="form-input"
+                  placeholder="https://instagram.com/worldtripagency"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رابط الفيسبوك</label>
+                <input 
+                  v-model="settings.general.facebookUrl" 
+                  type="url" 
+                  class="form-input"
+                  placeholder="https://facebook.com/worldtripagency"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رابط تويتر</label>
+                <input 
+                  v-model="settings.general.twitterUrl" 
+                  type="url" 
+                  class="form-input"
+                  placeholder="https://twitter.com/worldtripagency"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رابط سناب شات</label>
+                <input 
+                  v-model="settings.general.snapchatUrl" 
+                  type="url" 
+                  class="form-input"
+                  placeholder="https://www.snapchat.com/add/username"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رابط تيك توك</label>
+                <input 
+                  v-model="settings.general.tiktokUrl" 
+                  type="url" 
+                  class="form-input"
+                  placeholder="https://www.tiktok.com/@username"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <div class="setting-header">
+              <h3 class="setting-title">معلومات الشهادات والتراخيص</h3>
+              <p class="setting-description">الشهادات المعروضة في الفوتر</p>
+            </div>
+            <div class="setting-content">
+              <div class="form-group">
+                <label class="form-label">رقم الترخيص</label>
+                <input 
+                  v-model="settings.general.licenseNumber" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="73105863"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رقم التسجيل</label>
+                <input 
+                  v-model="settings.general.registrationNumber" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="7043491153"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">رقم IATA (اختياري)</label>
+                <input 
+                  v-model="settings.general.iataNumber" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="XXX12345"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">معلومات التأمين (اختياري)</label>
+                <input 
+                  v-model="settings.general.insuranceInfo" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="Provided by ZZZ Insurers"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <div class="setting-header">
+              <h3 class="setting-title">الوجهات المميزة</h3>
+              <p class="setting-description">الوجهات المعروضة في الفوتر</p>
+            </div>
+            <div class="setting-content">
+              <div class="form-group">
+                <label class="form-label">الوجهة الأولى</label>
+                <input 
+                  v-model="settings.general.destination1" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="الرياض"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">الوجهة الثانية</label>
+                <input 
+                  v-model="settings.general.destination2" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="البحر الأحمر"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">الوجهة الثالثة</label>
+                <input 
+                  v-model="settings.general.destination3" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="العلا"
+                />
               </div>
             </div>
           </div>
@@ -148,7 +404,12 @@
                     <Icon name="lucide:upload" class="upload-icon" />
                     رفع لوجو جديد
                   </label>
-                  <p class="upload-hint">PNG, JPG, SVG - الحد الأقصى 2MB</p>
+                  <p class="upload-hint">
+                    <strong>الصيغ المدعومة:</strong> PNG, JPG, JPEG, SVG, WebP<br>
+                    <strong>الحجم المفضل:</strong> 200x60 بكسل<br>
+                    <strong>الحد الأقصى:</strong> 2 ميجابايت<br>
+                    <strong>الخلفية:</strong> شفافة (PNG/SVG) أو بيضاء
+                  </p>
                 </div>
               </div>
             </div>
@@ -182,7 +443,12 @@
                     <Icon name="lucide:upload" class="upload-icon" />
                     رفع لوجو جديد
                   </label>
-                  <p class="upload-hint">PNG, JPG, SVG - الحد الأقصى 2MB</p>
+                  <p class="upload-hint">
+                    <strong>الصيغ المدعومة:</strong> PNG, JPG, JPEG, SVG, WebP<br>
+                    <strong>الحجم المفضل:</strong> 200x60 بكسل<br>
+                    <strong>الحد الأقصى:</strong> 2 ميجابايت<br>
+                    <strong>الخلفية:</strong> شفافة (PNG/SVG) أو بيضاء
+                  </p>
                 </div>
               </div>
             </div>
@@ -216,7 +482,12 @@
                     <Icon name="lucide:upload" class="upload-icon" />
                     رفع أيقونة جديدة
                   </label>
-                  <p class="upload-hint">ICO, PNG - 32x32 أو 16x16 بكسل</p>
+                  <p class="upload-hint">
+                    <strong>الصيغ المدعومة:</strong> ICO, PNG, SVG<br>
+                    <strong>الحجم المفضل:</strong> 32x32 أو 16x16 بكسل<br>
+                    <strong>الحد الأقصى:</strong> 1 ميجابايت<br>
+                    <strong>الخلفية:</strong> شفافة أو بيضاء
+                  </p>
                 </div>
               </div>
             </div>
@@ -270,12 +541,64 @@
                 </label>
               </div>
               <div v-if="settings.logo.showLogoText" class="form-group">
-                <label class="form-label">نص اللوجو</label>
+                <label class="form-label">نص اللوجو (بالعربية)</label>
                 <input 
-                  v-model="settings.logo.logoText" 
+                  v-model="settings.logo.logoText.ar" 
                   type="text" 
                   class="form-input"
+                  placeholder="أرض العجائب"
                 />
+              </div>
+              <div v-if="settings.logo.showLogoText" class="form-group">
+                <label class="form-label">نص اللوجو (بالإنجليزية)</label>
+                <input 
+                  v-model="settings.logo.logoText.en" 
+                  type="text" 
+                  class="form-input"
+                  placeholder="World Trip Agency"
+                />
+              </div>
+              <div v-if="settings.logo.showLogoText" class="form-group">
+                <label class="form-label">معاينة اللوجو مع النص</label>
+                <div class="mt-2 p-3 bg-gray-50 rounded-lg border">
+                  <div class="flex items-center space-x-3 space-x-reverse">
+                    <img 
+                      :src="settings.logo.mainLogo || '/images/home/logo/WonderlandLogo.svg'" 
+                      :style="`height: ${settings.logo.logoHeight}px; width: auto;`"
+                      alt="معاينة اللوجو" 
+                      class="transition-all duration-300"
+                    />
+                    <span class="text-lg font-semibold text-gray-900">
+                      {{ settings.logo.logoText.ar || 'أرض العجائب' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- معاينة مباشرة للوجو في الهيدر -->
+              <div class="form-group">
+                <label class="form-label">معاينة اللوجو في الهيدر</label>
+                <div class="mt-2 p-4 bg-white border-2 border-gray-200 rounded-lg">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center group transition-all duration-300 hover:scale-105">
+                      <div class="relative">
+                        <img 
+                          :src="settings.logo.mainLogo || '/images/home/logo/WonderlandLogo.svg'" 
+                          :style="`height: ${settings.logo.logoHeight}px; width: auto;`"
+                          :alt="settings.general?.siteName?.ar || 'World Trip Agency Agency Logo'" 
+                          loading="eager"
+                          class="transition-all duration-300 group-hover:brightness-110"
+                        />
+                      </div>
+                      <span v-if="settings.logo.showLogoText" class="font-bold text-xl font-italic text-primary-900 ml-3 transition-colors duration-300 group-hover:text-primary-700">
+                        {{ settings.logo.logoText.ar || 'أرض العجائب' }}
+                      </span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      الارتفاع: {{ settings.logo.logoHeight }}px
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -586,12 +909,30 @@
 <script setup lang="ts">
 interface Settings {
   general: {
-    siteName: string
-    siteDescription: string
+    siteName: { ar: string; en: string }
+    siteDescription: { ar: string; en: string }
     siteUrl: string
     contactEmail: string
+    contactEmail2: string
     contactPhone: string
-    contactAddress: string
+    contactPhone2: string
+    contactAddress: { ar: string; en: string }
+    contactAddressEn: string
+    contactHours: string
+    contactHoursEn: string
+    whatsappUrl: string
+    instagramUrl: string
+    facebookUrl: string
+    twitterUrl: string
+    snapchatUrl: string
+    tiktokUrl: string
+    licenseNumber: string
+    registrationNumber: string
+    iataNumber: string
+    insuranceInfo: string
+    destination1: string
+    destination2: string
+    destination3: string
   }
   logo: {
     mainLogo: string
@@ -599,7 +940,7 @@ interface Settings {
     favicon: string
     logoHeight: number
     showLogoText: boolean
-    logoText: string
+    logoText: { ar: string; en: string }
   }
   email: {
     smtpHost: string
@@ -637,6 +978,7 @@ const saving = ref(false)
 
 const tabs = [
   { id: 'general', name: 'عام', icon: 'lucide:settings' },
+  { id: 'contact', name: 'معلومات التواصل', icon: 'lucide:phone' },
   { id: 'logo', name: 'اللوجو', icon: 'lucide:image' },
   { id: 'email', name: 'البريد الإلكتروني', icon: 'lucide:mail' },
   { id: 'payment', name: 'الدفع', icon: 'lucide:credit-card' },
@@ -646,12 +988,30 @@ const tabs = [
 
 const settings = ref<Settings>({
   general: {
-    siteName: 'World Trip Agency Traveling Agency',
-    siteDescription: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية',
+    siteName: { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' },
+    siteDescription: { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
     siteUrl: 'https://worldtripagency.com',
     contactEmail: 'info@worldtripagency.com',
+    contactEmail2: 'support@worldtripagency.com',
     contactPhone: '+966501234567',
-    contactAddress: 'الرياض، المملكة العربية السعودية'
+    contactPhone2: '+966112345678',
+    contactAddress: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
+    contactAddressEn: 'Riyadh, Saudi Arabia',
+    contactHours: 'السبت - الخميس: 8:00 ص - 6:00 م',
+    contactHoursEn: 'Saturday - Thursday: 8:00 AM - 6:00 PM',
+    whatsappUrl: 'https://wa.me/966500982394',
+    instagramUrl: 'https://instagram.com/worldtripagency',
+    facebookUrl: 'https://facebook.com/worldtripagency',
+    twitterUrl: 'https://twitter.com/worldtripagency',
+    snapchatUrl: 'https://www.snapchat.com/add/ahmed18311',
+    tiktokUrl: 'https://www.tiktok.com/@wonder.land.sa',
+    licenseNumber: '73105863',
+    registrationNumber: '7043491153',
+    iataNumber: '',
+    insuranceInfo: '',
+    destination1: 'الرياض',
+    destination2: 'البحر الأحمر',
+    destination3: 'العلا'
   },
   logo: {
     mainLogo: '/images/home/logo/WonderlandLogo.svg',
@@ -659,7 +1019,7 @@ const settings = ref<Settings>({
     favicon: '/favicon.ico',
     logoHeight: 48,
     showLogoText: true,
-    logoText: 'World Trip Agency'
+    logoText: { ar: 'أرض العجائب', en: 'World Trip Agency' }
   },
   email: {
     smtpHost: '',

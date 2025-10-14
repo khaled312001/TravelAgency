@@ -15,32 +15,34 @@ const { getLocalizedSetting } = useSettings()
 // Get current year for copyright
 const currentYear = computed(() => new Date().getFullYear());
 
-// Placeholder data (Replace with actual links/info)
-const socialLinks = [
-  { name: 'mdi:whatsapp', href: getWhatsAppUrl(), label: 'WhatsApp' },
-  { name: 'ic:outline-snapchat', href: 'https://www.snapchat.com/add/ahmed18311', label: 'Snapchat' }, // Assuming 'X' is Twitter
-  { name: 'mdi:instagram', href: 'https://www.instagram.com/wonderland.sa.jed?igsh=Nnk3cmV6NDdibTJ2&utm_source=qr', label: 'Instagram' },
-  { name: 'ic:outline-tiktok', href: 'https://www.tiktok.com/@wonder.land.sa?_t=ZS-8uH9ccxyZlN&_r=1', label: 'TikTok' },
-];
+// Dynamic social links from settings
+const socialLinks = computed(() => [
+  { name: 'mdi:whatsapp', href: getLocalizedSetting('general', 'whatsappUrl') || getWhatsAppUrl(), label: 'WhatsApp' },
+  { name: 'ic:outline-snapchat', href: getLocalizedSetting('general', 'snapchatUrl') || 'https://www.snapchat.com/add/ahmed18311', label: 'Snapchat' },
+  { name: 'mdi:instagram', href: getLocalizedSetting('general', 'instagramUrl') || 'https://www.instagram.com/wonderland.sa.jed', label: 'Instagram' },
+  { name: 'ic:outline-tiktok', href: getLocalizedSetting('general', 'tiktokUrl') || 'https://www.tiktok.com/@wonder.land.sa', label: 'TikTok' },
+  { name: 'mdi:facebook', href: getLocalizedSetting('general', 'facebookUrl') || 'https://facebook.com/worldtripagency', label: 'Facebook' },
+  { name: 'mdi:twitter', href: getLocalizedSetting('general', 'twitterUrl') || 'https://twitter.com/worldtripagency', label: 'Twitter' },
+].filter(link => link.href && link.href !== ''));
 
 const contactInfo = computed(() => [
   { icon: 'mdi:phone', textKey: 'footer.phone', detail: getLocalizedSetting('general', 'contactPhone') || whatsappNumber },
-  { icon: 'mdi:email', textKey: 'footer.email', detail: getLocalizedSetting('general', 'contactEmail') || 'ahmed@wonderland1.com' },
+  { icon: 'mdi:email', textKey: 'footer.email', detail: getLocalizedSetting('general', 'contactEmail') || 'info@worldtripagency.com' },
   { icon: 'mdi:whatsapp', textKey: 'footer.whatsapp', detail: whatsappNumber }
 ])
 
-const certifications = [
-  // { key: 'footer.iata', value: 'XXX12345' },
-  { key: 'footer.license', value: '73105863' },
-  // { key: 'footer.insurance', value: 'Provided by ZZZ Insurers' },
-  { key: 'footer.registration', value: '7043491153' },
-];
+const certifications = computed(() => [
+  ...(getLocalizedSetting('general', 'iataNumber') ? [{ key: 'footer.iata', value: getLocalizedSetting('general', 'iataNumber') }] : []),
+  { key: 'footer.license', value: getLocalizedSetting('general', 'licenseNumber') || '73105863' },
+  ...(getLocalizedSetting('general', 'insuranceInfo') ? [{ key: 'footer.insurance', value: getLocalizedSetting('general', 'insuranceInfo') }] : []),
+  { key: 'footer.registration', value: getLocalizedSetting('general', 'registrationNumber') || '7043491153' },
+]);
 
-// Featured Destinations Data (Text Links Only)
-const featuredDestinations = ref([
-  { nameKey: 'footer.destinations.riyadh', link: '/destinations/riyadh' }, // Placeholder link
-  { nameKey: 'footer.destinations.red_sea', link: '/destinations/red-sea' }, // Placeholder link
-  { nameKey: 'footer.destinations.alula', link: '/destinations/alula/' },    // Placeholder link
+// Featured Destinations Data (Dynamic from settings)
+const featuredDestinations = computed(() => [
+  ...(getLocalizedSetting('general', 'destination1') ? [{ nameKey: 'footer.destinations.riyadh', link: '/destinations/riyadh', name: getLocalizedSetting('general', 'destination1') }] : []),
+  ...(getLocalizedSetting('general', 'destination2') ? [{ nameKey: 'footer.destinations.red_sea', link: '/destinations/red-sea', name: getLocalizedSetting('general', 'destination2') }] : []),
+  ...(getLocalizedSetting('general', 'destination3') ? [{ nameKey: 'footer.destinations.alula', link: '/destinations/alula', name: getLocalizedSetting('general', 'destination3') }] : []),
 ]);
 
 </script>
@@ -121,7 +123,7 @@ const featuredDestinations = ref([
                 <Icon name="mdi:map-marker"
                   class="text-primary-500 group-hover:text-primary-400 transition-colors flex-shrink-0" />
                 <span>
-                  {{ $t(dest.nameKey) }}
+                  {{ dest.name || $t(dest.nameKey) }}
                 </span>
               </NuxtLink>
             </li>
