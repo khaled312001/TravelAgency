@@ -2,8 +2,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".output",
   "framework": "nuxtjs",
-  "regions": ["iad1"],
-  "maxDuration": 30,
   "redirects": [
     {
       "source": "/(.*)",

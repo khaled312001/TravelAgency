@@ -359,6 +359,14 @@ export default defineNuxtConfig({
     experimental: {
       wasm: true
     },
+    // Vercel specific settings
+    vercel: {
+      functions: {
+        'server/api/admin/content/index.post.ts': {
+          maxDuration: 30
+        }
+      }
+    },
     // Improve static asset handling
     publicAssets: [
       {
