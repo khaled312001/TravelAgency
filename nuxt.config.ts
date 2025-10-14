@@ -355,6 +355,12 @@ export default defineNuxtConfig({
       brotli: true
     },
     minify: true,
+    // Increase payload size limit for large content
+    experimental: {
+      wasm: true
+    },
+    // Increase body size limit to 50MB
+    bodySizeLimit: '50mb',
     // Improve static asset handling
     publicAssets: [
       {

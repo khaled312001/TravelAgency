@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
 export default defineEventHandler(async (event) => {
+  // Set body size limit to 50MB
+  setHeader(event, 'content-length', '0')
+  
   try {
     const body = await readBody(event)
     

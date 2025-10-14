@@ -553,9 +553,12 @@ const saveAllContent = async () => {
   message.value = ''
   
   try {
+    // Check if content is too large and compress if needed
+    const contentToSave = await compressContentIfNeeded(content.value)
+    
     await $fetch('/api/admin/content', {
       method: 'POST',
-      body: content.value
+      body: contentToSave
     })
     
     message.value = 'تم حفظ المحتوى بنجاح!'
@@ -576,6 +579,71 @@ const saveAllContent = async () => {
   } finally {
     isSaving.value = false
   }
+}
+
+// Compress content if it's too large
+const compressContentIfNeeded = async (contentData: any) => {
+  const contentString = JSON.stringify(contentData)
+  const sizeInMB = new Blob([contentString]).size / (1024 * 1024)
+  
+  console.log('Content size:', sizeInMB.toFixed(2), 'MB')
+  
+  // If content is larger than 20MB, compress videos
+  if (sizeInMB > 20) {
+    console.log('Content is large, compressing videos...')
+    
+    // Compress videos in hero section
+    if (contentData.hero) {
+      if (contentData.hero.video_desktop && contentData.hero.video_desktop.startsWith('data:video/')) {
+        contentData.hero.video_desktop = await compressBase64Video(contentData.hero.video_desktop)
+      }
+      if (contentData.hero.video_mobile && contentData.hero.video_mobile.startsWith('data:video/')) {
+        contentData.hero.video_mobile = await compressBase64Video(contentData.hero.video_mobile)
+      }
+    }
+  }
+  
+  return contentData
+}
+
+// Compress base64 video by reducing quality
+const compressBase64Video = async (base64Video: string): Promise<string> => {
+  return new Promise((resolve) => {
+    const video = document.createElement('video')
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    
+    video.onloadedmetadata = () => {
+      // Reduce dimensions by 30%
+      canvas.width = video.videoWidth * 0.7
+      canvas.height = video.videoHeight * 0.7
+      
+      video.currentTime = 0
+    }
+    
+    video.onseeked = () => {
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const reader = new FileReader()
+            reader.onload = () => {
+              resolve(reader.result as string)
+            }
+            reader.readAsDataURL(blob)
+          } else {
+            resolve(base64Video) // Fallback to original
+          }
+        }, 'video/mp4', 0.6) // 60% quality
+      } else {
+        resolve(base64Video) // Fallback to original
+      }
+    }
+    
+    video.src = base64Video
+    video.load()
+  })
 }
 
 // File upload handlers are now handled by ClientFileUpload component
