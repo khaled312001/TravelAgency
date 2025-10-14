@@ -10,11 +10,13 @@
         <div class="header-actions">
           <button
             @click="saveAllContent"
-            :disabled="isSaving"
+            :disabled="isSaving || isAutoSaving"
             class="btn-primary"
           >
-            <Icon name="lucide:save" class="w-4 h-4" />
-            {{ isSaving ? 'جاري الحفظ...' : 'حفظ جميع التغييرات' }}
+            <Icon :name="isSaving || isAutoSaving ? 'lucide:loader-2' : 'lucide:save'" 
+                  :class="isSaving || isAutoSaving ? 'animate-spin' : ''" 
+                  class="w-4 h-4" />
+            {{ isSaving ? 'جاري الحفظ...' : isAutoSaving ? 'حفظ تلقائي...' : 'حفظ جميع التغييرات' }}
           </button>
         </div>
       </div>
@@ -439,6 +441,7 @@ definePageMeta({
 
 // Reactive data
 const isSaving = ref(false)
+const isAutoSaving = ref(false)
 const message = ref('')
 const messageType = ref<'success' | 'error'>('success')
 
@@ -584,19 +587,55 @@ const saveAllContent = async () => {
 }
 
 // File upload handlers
-const onVideoUploaded = (data: any) => {
+const onVideoUploaded = async (data: any) => {
   console.log('Video uploaded:', data)
-  message.value = 'تم رفع الفيديو بنجاح!'
+  message.value = 'تم رفع الفيديو بنجاح! جاري الحفظ...'
   messageType.value = 'success'
+  
+  // Auto-save after video upload (only if not already saving)
+  if (!isSaving.value && !isAutoSaving.value) {
+    isAutoSaving.value = true
+    try {
+      await saveAllContent()
+      message.value = 'تم رفع الفيديو وحفظ التغييرات بنجاح!'
+    } catch (error) {
+      console.error('Error auto-saving after video upload:', error)
+      message.value = 'تم رفع الفيديو ولكن فشل في الحفظ التلقائي'
+      messageType.value = 'error'
+    } finally {
+      isAutoSaving.value = false
+    }
+  } else {
+    message.value = 'تم رفع الفيديو بنجاح! سيتم الحفظ قريباً...'
+  }
+  
   setTimeout(() => {
     message.value = ''
   }, 3000)
 }
 
-const onImageUploaded = (data: any) => {
+const onImageUploaded = async (data: any) => {
   console.log('Image uploaded:', data)
-  message.value = 'تم رفع الصورة بنجاح!'
+  message.value = 'تم رفع الصورة بنجاح! جاري الحفظ...'
   messageType.value = 'success'
+  
+  // Auto-save after image upload (only if not already saving)
+  if (!isSaving.value && !isAutoSaving.value) {
+    isAutoSaving.value = true
+    try {
+      await saveAllContent()
+      message.value = 'تم رفع الصورة وحفظ التغييرات بنجاح!'
+    } catch (error) {
+      console.error('Error auto-saving after image upload:', error)
+      message.value = 'تم رفع الصورة ولكن فشل في الحفظ التلقائي'
+      messageType.value = 'error'
+    } finally {
+      isAutoSaving.value = false
+    }
+  } else {
+    message.value = 'تم رفع الصورة بنجاح! سيتم الحفظ قريباً...'
+  }
+  
   setTimeout(() => {
     message.value = ''
   }, 3000)

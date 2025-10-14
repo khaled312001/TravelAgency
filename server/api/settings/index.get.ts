@@ -49,9 +49,23 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Parse JSON data from the settings record
-    const generalSettings = JSON.parse(settings.description_ar || '{}')
-    const logoSettings = JSON.parse(settings.description_en || '{}')
+    // Parse JSON data from the settings record with error handling
+    let generalSettings = {}
+    let logoSettings = {}
+    
+    try {
+      generalSettings = JSON.parse(settings.description_ar || '{}')
+    } catch (error) {
+      console.error('Error parsing general settings:', error)
+      generalSettings = {}
+    }
+    
+    try {
+      logoSettings = JSON.parse(settings.description_en || '{}')
+    } catch (error) {
+      console.error('Error parsing logo settings:', error)
+      logoSettings = {}
+    }
 
     // Transform settings into organized structure (public only)
     const publicSettings = {

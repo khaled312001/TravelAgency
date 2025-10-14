@@ -71,11 +71,39 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Parse JSON data from the settings record
-    const generalSettings = JSON.parse(settings.description_ar || '{}')
-    const logoSettings = JSON.parse(settings.description_en || '{}')
-    const emailSettings = JSON.parse(settings.keywords_ar || '{}')
-    const paymentSettings = JSON.parse(settings.keywords_en || '{}')
+    // Parse JSON data from the settings record with error handling
+    let generalSettings = {}
+    let logoSettings = {}
+    let emailSettings = {}
+    let paymentSettings = {}
+    
+    try {
+      generalSettings = JSON.parse(settings.description_ar || '{}')
+    } catch (error) {
+      console.error('Error parsing general settings:', error)
+      generalSettings = {}
+    }
+    
+    try {
+      logoSettings = JSON.parse(settings.description_en || '{}')
+    } catch (error) {
+      console.error('Error parsing logo settings:', error)
+      logoSettings = {}
+    }
+    
+    try {
+      emailSettings = JSON.parse(settings.keywords_ar || '{}')
+    } catch (error) {
+      console.error('Error parsing email settings:', error)
+      emailSettings = {}
+    }
+    
+    try {
+      paymentSettings = JSON.parse(settings.keywords_en || '{}')
+    } catch (error) {
+      console.error('Error parsing payment settings:', error)
+      paymentSettings = {}
+    }
 
     // Transform settings into organized structure
     const organizedSettings = {
