@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
 // إعدادات Supabase
-const supabaseUrl = 'https://jjhdknguyooesyafsacf.supabase.co'
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqaGRrbmd1eW9vZXN5YWZzYWNmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MjA1MTcyMiwiZXhwIjoyMDU3NjI3NzIyfQ.06x17zwOvDfHy-Hl1zlV3jY3JdLXZx17Y_-Ql2VoBKQ'
+const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
+const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTkyMzE3NiwiZXhwIjoyMDc1NDk5MTc2fQ.8x1bRWz6UgyRgkMQf5c32qABhgRNnY-p8Q2Sz9S-jn0'
 
 // إنشاء عميل Supabase
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
