@@ -75,6 +75,11 @@ const videoRef = ref<HTMLVideoElement | null>(null)
 // Use site content composable
 const { getHeroContent, init: initContent, reload: reloadContent, isLoading: contentLoading } = useSiteContent()
 
+// Initialize content on mount
+onMounted(async () => {
+  await initContent()
+})
+
 // Watch for locale changes and reload content
 watch(() => locale.value, async () => {
   await reloadContent()

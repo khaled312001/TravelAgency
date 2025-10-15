@@ -1,10 +1,19 @@
+// Global singleton state
+let globalContent = ref(null)
+let globalIsLoading = ref(false)
+let globalError = ref(null)
+let isInitialized = false
+let initPromise: Promise<void> | null = null
+
 export const useSiteContent = () => {
-  const content = ref(null)
-  const isLoading = ref(false)
-  const error = ref(null)
+  const content = globalContent
+  const isLoading = globalIsLoading
+  const error = globalError
 
   // Load content from API
   const loadContent = async () => {
+    if (isLoading.value) return // Prevent concurrent loads
+    
     isLoading.value = true
     error.value = null
     
@@ -72,22 +81,26 @@ export const useSiteContent = () => {
     return fieldContent[language] || ''
   }
 
-  // Initialize content loading
+  // Initialize content loading (singleton)
   const init = async () => {
-    if (!content.value) {
-      await loadContent()
+    if (isInitialized) return
+    
+    if (initPromise) {
+      return initPromise
     }
-  }
-  
-  // Load content immediately on import (for SSR)
-  if (process.client) {
-    init()
+    
+    initPromise = loadContent()
+    await initPromise
+    isInitialized = true
   }
 
   // Force reload content
   const reload = async () => {
     content.value = null
+    isInitialized = false
+    initPromise = null
     await loadContent()
+    isInitialized = true
   }
 
   return {

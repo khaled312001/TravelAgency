@@ -114,7 +114,8 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      navigateFallback: '/',
+      navigateFallback: '/index.html',
+      navigateFallbackDenylist: [/^\/api\//, /^\/admin\//],
       cleanupOutdatedCaches: true,
       skipWaiting: true,
       clientsClaim: true,
@@ -123,6 +124,9 @@ export default defineNuxtConfig({
         '**/*.{js,css,html}',
         'images/**/*.{png,jpg,jpeg,svg,webp}',
         'icons/**/*.{ico,png,svg}'
+      ],
+      additionalManifestEntries: [
+        { url: '/', revision: null }
       ],
       runtimeCaching: [
         {
@@ -428,6 +432,13 @@ export default defineNuxtConfig({
 
   experimental: {
     viewTransition: true
+  },
+
+  // Ensure proper hydration
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.includes('-')
+    }
   },
 
   app: {
