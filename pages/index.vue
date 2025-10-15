@@ -17,6 +17,8 @@
     <!-- Global Destinations -->
     <LazyGlobalDestinations data-aos="fade-up" />
 
+    <!-- Contact Section -->
+    <LazyContactSection data-aos="fade-up" />
 
   </div>
 </template>
@@ -28,6 +30,7 @@ import LazyFeaturedPackages from '~/components/HomeSections/featuredPackages.vue
 import LazySaudiDestinations from '~/components/HomeSections/saudiDestinations.vue'
 import LazyGlobalDestinations from '~/components/HomeSections/globalDestinations.vue'
 import LazyServicesSection from '~/components/HomeSections/servicesSection.vue'
+import LazyContactSection from '~/components/HomeSections/ContactSection.vue'
 
 import { useHead } from '#imports'
 import { useI18n } from 'vue-i18n'
