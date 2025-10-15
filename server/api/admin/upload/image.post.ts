@@ -10,8 +10,23 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 export default defineEventHandler(async (event) => {
   try {
     console.log('Admin upload image API called')
+    console.log('Request method:', event.method)
+    console.log('Request headers:', getHeaders(event))
+    
+    // Check content type
+    const contentType = getHeader(event, 'content-type')
+    console.log('Content-Type:', contentType)
+    
+    if (!contentType || !contentType.includes('multipart/form-data')) {
+      console.log('Invalid content type:', contentType)
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Content-Type must be multipart/form-data'
+      })
+    }
     
     const formData = await readMultipartFormData(event)
+    console.log('Form data received:', formData ? formData.length : 'null')
     
     if (!formData || formData.length === 0) {
       console.log('No file uploaded')

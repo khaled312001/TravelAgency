@@ -1063,10 +1063,10 @@ const handleMainLogoUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await $fetch('/api/admin/upload/image', {
+      const response = await fetch('/api/admin/upload/image', {
         method: 'POST',
         body: formData
-      })
+      }).then(res => res.json())
       
       if (response.success) {
         settings.value.logo.mainLogo = response.data.url
@@ -1093,10 +1093,10 @@ const handleFooterLogoUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await $fetch('/api/admin/upload/image', {
+      const response = await fetch('/api/admin/upload/image', {
         method: 'POST',
         body: formData
-      })
+      }).then(res => res.json())
       
       if (response.success) {
         settings.value.logo.footerLogo = response.data.url
@@ -1123,10 +1123,10 @@ const handleFaviconUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await $fetch('/api/admin/upload/image', {
+      const response = await fetch('/api/admin/upload/image', {
         method: 'POST',
         body: formData
-      })
+      }).then(res => res.json())
       
       if (response.success) {
         settings.value.logo.favicon = response.data.url
