@@ -1068,7 +1068,7 @@ const handleMainLogoUpload = async (event: Event) => {
         reader.readAsDataURL(file)
       })
       
-      const response = await fetch('/api/admin/upload', {
+      const response = await fetch('/api/admin/upload/logo-simple', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -1111,7 +1111,7 @@ const handleFooterLogoUpload = async (event: Event) => {
         reader.readAsDataURL(file)
       })
       
-      const response = await fetch('/api/admin/upload', {
+      const response = await fetch('/api/admin/upload/logo-simple', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -1154,7 +1154,7 @@ const handleFaviconUpload = async (event: Event) => {
         reader.readAsDataURL(file)
       })
       
-      const response = await fetch('/api/admin/upload', {
+      const response = await fetch('/api/admin/upload/logo-simple', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
