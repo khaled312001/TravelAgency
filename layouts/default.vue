@@ -7,7 +7,7 @@
           <NuxtLink :to="localpath('/')" class="flex items-center group transition-all duration-300 hover:scale-105">
             <div class="relative">
               <img 
-                :src="getLocalizedSetting('logo', 'mainLogo') || '/images/home/logo/WonderlandLogo.svg'" 
+                :src="`${getLocalizedSetting('logo', 'mainLogo') || '/images/home/logo/WonderlandLogo.svg'}?t=${Date.now()}`" 
                 :style="`height: ${getSetting('logo', 'logoHeight') || 48}px; width: auto;`"
                 :alt="getLocalizedSetting('general', 'siteName') || 'World Trip Agency Agency Logo'" 
                 loading="eager"
@@ -112,9 +112,14 @@ const isTransitioning = ref(false)
 const { startLocaleTransition } = useViewTransition()
 
 // Load settings
-const { settings, loadSettings, getSetting, getLocalizedSetting } = useSettings()
-onMounted(() => {
-  loadSettings()
+const { settings, loadSettings, getSetting, getLocalizedSetting, addSettingsUpdateListener } = useSettings()
+onMounted(async () => {
+  await loadSettings()
+  
+  // Listen for settings updates
+  addSettingsUpdateListener(async () => {
+    await loadSettings()
+  })
 })
 
 const navItems = [

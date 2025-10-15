@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار رفع اللوجو</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .upload-section:hover {
+            border-color: #007bff;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .preview {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .preview img {
+            max-width: 200px;
+            max-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار رفع اللوجو</h1>
+        <p>هذه الصفحة لاختبار رفع الصور في نظام الإعدادات</p>
+        
+        <div class="upload-section">
+            <h3>رفع لوجو رئيسي</h3>
+            <input type="file" id="mainLogo" accept="image/*">
+            <button onclick="uploadLogo('mainLogo')">رفع اللوجو</button>
+            <div class="preview" id="mainPreview"></div>
+            <div class="result" id="mainResult"></div>
+        </div>
+        
+        <div class="upload-section">
+            <h3>رفع لوجو الفوتر</h3>
+            <input type="file" id="footerLogo" accept="image/*">
+            <button onclick="uploadLogo('footerLogo')">رفع لوجو الفوتر</button>
+            <div class="preview" id="footerPreview"></div>
+            <div class="result" id="footerResult"></div>
+        </div>
+        
+        <div class="upload-section">
+            <h3>رفع الأيقونة</h3>
+            <input type="file" id="favicon" accept="image/*">
+            <button onclick="uploadLogo('favicon')">رفع الأيقونة</button>
+            <div class="preview" id="faviconPreview"></div>
+            <div class="result" id="faviconResult"></div>
+        </div>
+    </div>
+
+    <script>
+        async function uploadLogo(type) {
+            const fileInput = document.getElementById(type);
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('يرجى اختيار ملف أولاً');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch('/api/admin/upload/image', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show preview
+                    const preview = document.getElementById(type + 'Preview');
+                    preview.innerHTML = `<img src="${result.data.url}" alt="معاينة">`;
+                    
+                    // Show result
+                    const resultDiv = document.getElementById(type + 'Result');
+                    resultDiv.innerHTML = `
+                        <strong>تم الرفع بنجاح!</strong><br>
+                        <strong>الرابط:</strong> ${result.data.url}<br>
+                        <strong>اسم الملف:</strong> ${result.data.filename}<br>
+                        <strong>الحجم:</strong> ${(result.data.size / 1024).toFixed(2)} KB
+                    `;
+                } else {
+                    throw new Error('فشل في الرفع');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const resultDiv = document.getElementById(type + 'Result');
+                resultDiv.innerHTML = `<strong style="color: red;">خطأ في الرفع:</strong> ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

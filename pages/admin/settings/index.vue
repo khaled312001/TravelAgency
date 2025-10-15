@@ -1051,7 +1051,7 @@ const settings = ref<Settings>({
 })
 
 // Logo upload functions
-const handleMainLogoUpload = (event: Event) => {
+const handleMainLogoUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
     if (file.size > 2 * 1024 * 1024) {
@@ -1059,15 +1059,29 @@ const handleMainLogoUpload = (event: Event) => {
       return
     }
     
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      settings.value.logo.mainLogo = e.target?.result as string
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const response = await $fetch('/api/admin/upload/image', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (response.success) {
+        settings.value.logo.mainLogo = response.data.url
+        alert('تم رفع اللوجو بنجاح!')
+      } else {
+        throw new Error('Upload failed')
+      }
+    } catch (error) {
+      console.error('Error uploading main logo:', error)
+      alert('حدث خطأ أثناء رفع اللوجو')
     }
-    reader.readAsDataURL(file)
   }
 }
 
-const handleFooterLogoUpload = (event: Event) => {
+const handleFooterLogoUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
     if (file.size > 2 * 1024 * 1024) {
@@ -1075,15 +1089,29 @@ const handleFooterLogoUpload = (event: Event) => {
       return
     }
     
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      settings.value.logo.footerLogo = e.target?.result as string
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const response = await $fetch('/api/admin/upload/image', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (response.success) {
+        settings.value.logo.footerLogo = response.data.url
+        alert('تم رفع لوجو الفوتر بنجاح!')
+      } else {
+        throw new Error('Upload failed')
+      }
+    } catch (error) {
+      console.error('Error uploading footer logo:', error)
+      alert('حدث خطأ أثناء رفع لوجو الفوتر')
     }
-    reader.readAsDataURL(file)
   }
 }
 
-const handleFaviconUpload = (event: Event) => {
+const handleFaviconUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
     if (file.size > 500 * 1024) {
@@ -1091,11 +1119,25 @@ const handleFaviconUpload = (event: Event) => {
       return
     }
     
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      settings.value.logo.favicon = e.target?.result as string
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const response = await $fetch('/api/admin/upload/image', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (response.success) {
+        settings.value.logo.favicon = response.data.url
+        alert('تم رفع الأيقونة بنجاح!')
+      } else {
+        throw new Error('Upload failed')
+      }
+    } catch (error) {
+      console.error('Error uploading favicon:', error)
+      alert('حدث خطأ أثناء رفع الأيقونة')
     }
-    reader.readAsDataURL(file)
   }
 }
 
@@ -1121,8 +1163,28 @@ const saveAllSettings = async () => {
     })
     
     if (response.success) {
+      // Update global settings state
+      const { updateSettings } = useSettings()
+      console.log('Updating settings:', settings.value)
+      updateSettings(settings.value)
+      
+      // Force refresh of all components
+      await nextTick()
+      
+      // Dispatch custom event to notify all components
+      if (process.client) {
+        window.dispatchEvent(new CustomEvent('settings-updated', { 
+          detail: { settings: settings.value } 
+        }))
+        
+        // Force page refresh to ensure all components update
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
+      }
+      
       // Show success message
-      alert('تم حفظ الإعدادات بنجاح!')
+      alert('تم حفظ الإعدادات بنجاح! سيتم تحديث الصفحة تلقائياً...')
     } else {
       throw new Error('Failed to save settings')
     }
@@ -1135,8 +1197,12 @@ const saveAllSettings = async () => {
 }
 
 // Load settings on mount
-onMounted(() => {
-  loadSettings()
+onMounted(async () => {
+  await loadSettings()
+  
+  // Also refresh global settings
+  const { refreshSettings } = useSettings()
+  await refreshSettings()
 })
 
 // Set page title

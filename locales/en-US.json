@@ -210,14 +210,14 @@
   "about": {
     "hero": {
       "title": "Your Trusted Partner for Exceptional Travel Experiences Since 2019",
-      "subtitle": "Discover the travel experience with Wonderland – where every journey transforms into an unforgettable adventure",
+      "subtitle": "Discover the travel experience with World Trip Agency – where every journey transforms into an unforgettable adventure",
       "cta_title": "Are you interested in learning more about our packages?",
       "cta": "Explore Our Packages"
     },
     "overview": {
-      "title": "Wonderland Travel & Tourism",
-      "intro": "Are you looking for an unforgettable travel experience at irresistible prices? Wonderland is your gateway to a world filled with adventures and luxury, where we offer the best deals and the highest level of service!",
-      "why_choose_us": "Why Choose Wonderland?",
+      "title": "World Trip Agency Travel & Tourism",
+      "intro": "Are you looking for an unforgettable travel experience at irresistible prices? World Trip Agency is your gateway to a world filled with adventures and luxury, where we offer the best deals and the highest level of service!",
+      "why_choose_us": "Why Choose World Trip Agency?",
       "benefits": {
         "0": "Irresistible Prices: We offer the best deals on flight tickets and hotels at the lowest prices without compromising on quality.",
         "1": "Customized Booking Options: Whether you prefer luxury or economical options, we have the perfect choices to meet your needs.",
@@ -226,8 +226,8 @@
         "4": "International Driving License: Gain the freedom to drive abroad with confidence with our internationally recognized driving license.",
         "5": "24/7 Customer Service: Our dedicated team is always available to help you, anytime and anywhere."
       },
-      "about_title": "About Wonderland Travel & Tourism",
-      "about_text": "Wonderland Travel & Tourism was established in 2019 as your gateway to unique trips and exceptional travel experiences. We specialize in offering comprehensive travel services that ensure a seamless and comfortable experience for every traveler – whether it’s family vacations, luxury tours, or adventurous explorations.",
+      "about_title": "About World Trip Agency Travel & Tourism",
+      "about_text": "World Trip Agency Travel & Tourism was established in 2019 as your gateway to unique trips and exceptional travel experiences. We specialize in offering comprehensive travel services that ensure a seamless and comfortable experience for every traveler – whether it's family vacations, luxury tours, or adventurous explorations.",
       "why_us": "Why Us?",
       "reasons": {
         "0": "Extensive experience in the travel industry",
@@ -288,7 +288,7 @@
         "0": {
           "year": "2019",
           "title": "Establishment",
-          "description": "Wonderland Travel & Tourism was founded with a vision to transform the travel industry through exceptional service and innovative packages."
+          "description": "World Trip Agency Travel & Tourism was founded with a vision to transform the travel industry through exceptional service and innovative packages."
         },
         "1": {
           "year": "2020",
@@ -460,7 +460,7 @@
       "red_sea": "Red Sea",
       "alula": "Al Ula"
     },
-    "copyright": "© {year} Wonderland Travel Agency. All rights reserved."
+    "copyright": "© {year} World Trip Agency. All rights reserved."
   },
   "contact": {
     "title": "Contact Us",

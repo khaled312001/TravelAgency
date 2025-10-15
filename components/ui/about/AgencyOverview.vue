@@ -1,5 +1,13 @@
 <script setup lang="ts">
 const localePath = useLocalePath();
+const { aboutContent, loadAboutContent } = useAboutContent();
+
+// Load about content on component mount (only if not already loaded)
+onMounted(async () => {
+  if (!aboutContent.value) {
+    await loadAboutContent();
+  }
+});
 </script>
 
 <template>
@@ -8,21 +16,21 @@ const localePath = useLocalePath();
       <!-- About Us Section - Moved to top for better flow -->
       <div class="max-w-4xl mx-auto mb-16">
         <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-6 text-center">
-          {{ $t('about.overview.title') }}
+          {{ aboutContent?.overview?.title?.[$i18n.locale.value] || $t('about.overview.title') }}
         </h2>
         
         <div class="bg-gradient-to-r from-primary-50 to-primary-100 dark:from-gray-200 dark:to-gray-300 p-6 md:p-8 rounded-xl shadow-sm mb-8">
           <p class="text-gray-700 text-lg leading-relaxed">
-            {{ $t('about.overview.intro') }}
+            {{ aboutContent?.overview?.intro?.[$i18n.locale.value] || $t('about.overview.intro') }}
           </p>
         </div>
         
         <div class="bg-white dark:bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm border border-gray-100">
           <h3 class="text-xl font-semibold mb-4 text-primary-600">
-            {{ $t('about.overview.about_title') }}
+            {{ aboutContent?.overview?.about_title?.[$i18n.locale.value] || $t('about.overview.about_title') }}
           </h3>
           <p class="text-gray-700 leading-relaxed">
-            {{ $t('about.overview.about_text') }}
+            {{ aboutContent?.overview?.about_text?.[$i18n.locale.value] || $t('about.overview.about_text') }}
           </p>
         </div>
       </div>

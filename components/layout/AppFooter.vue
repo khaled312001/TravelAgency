@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useLocalePath } from '#i18n';
 import { useWhatsApp } from '~/composables/useWhatsApp';
@@ -10,7 +10,50 @@ const localePath = useLocalePath();
 const { getWhatsAppUrl, whatsappNumber } = useWhatsApp();
 
 // Load settings
-const { getLocalizedSetting } = useSettings()
+const { getLocalizedSetting, loadSettings, addSettingsUpdateListener, settings } = useSettings()
+
+// Reactive key for forcing re-render
+const footerLogoKey = ref(0)
+
+// Watch for settings changes
+watch(settings, () => {
+  footerLogoKey.value++
+}, { deep: true })
+
+// Computed property for footer logo
+const footerLogo = computed(() => {
+  const logo = getLocalizedSetting('logo', 'footerLogo') || '/images/home/logo/WonderlandLogoWhite.svg'
+  const finalLogo = `${logo}?t=${Date.now()}&k=${footerLogoKey.value}`
+  console.log('Footer logo updated:', finalLogo)
+  return finalLogo
+})
+
+// Load settings when component mounts
+onMounted(async () => {
+  await loadSettings()
+  
+  // Listen for settings updates
+  addSettingsUpdateListener(async () => {
+    await loadSettings()
+    // Force re-render of footer logo
+    footerLogoKey.value++
+  })
+  
+  // Listen for custom settings update event
+  if (process.client) {
+    const handleSettingsUpdate = async () => {
+      await loadSettings()
+      footerLogoKey.value++
+    }
+    
+    window.addEventListener('settings-updated', handleSettingsUpdate)
+    
+    // Cleanup on unmount
+    onUnmounted(() => {
+      window.removeEventListener('settings-updated', handleSettingsUpdate)
+    })
+  }
+})
 
 // Get current year for copyright
 const currentYear = computed(() => new Date().getFullYear());
@@ -56,8 +99,9 @@ const featuredDestinations = computed(() => [
         <div class="space-y-6">
           <NuxtLink :to="localePath('/')" class="inline-flex items-center space-x-3 rtl:space-x-reverse">
             <img 
-              :src="getLocalizedSetting('logo', 'footerLogo') || '/images/home/logo/WonderlandLogoWhite.svg'" 
-              alt="Wonderland Logo" 
+              :key="footerLogoKey"
+              :src="footerLogo" 
+              alt="World Trip Agency Logo" 
               class="h-10"
               loading="eager" 
             />
@@ -103,12 +147,13 @@ const featuredDestinations = computed(() => [
         <!-- 3. Connect With Us -->
         <div class="space-y-4">
           <h4 class="text-lg font-semibold text-white mb-4">{{ $t('footer.connect') }}</h4>
-          <div class="flex space-x-4 rtl:space-x-reverse">
+          <div class="grid grid-cols-2 gap-3">
             <a v-for="social in socialLinks" :key="social.name" :href="social.href" target="_blank"
               rel="noopener noreferrer"
-              class="text-gray-400 hover:text-primary-400 transition-colors flex items-center justify-center"
+              class="flex items-center space-x-3 space-x-reverse text-gray-400 hover:text-primary-400 transition-colors p-2 rounded-lg hover:bg-gray-800"
               :aria-label="social.label">
-              <Icon :name="social.name" class="text-2xl flex-shrink-0" />
+              <Icon :name="social.name" class="text-xl flex-shrink-0" />
+              <span class="text-sm">{{ social.label }}</span>
             </a>
           </div>
         </div>

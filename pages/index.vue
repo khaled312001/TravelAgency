@@ -17,8 +17,6 @@
     <!-- Global Destinations -->
     <LazyGlobalDestinations data-aos="fade-up" />
 
-    <!-- Contact Section -->
-    <ContactSection data-aos="fade-up" />
 
   </div>
 </template>
@@ -30,10 +28,17 @@ import LazyFeaturedPackages from '~/components/HomeSections/featuredPackages.vue
 import LazySaudiDestinations from '~/components/HomeSections/saudiDestinations.vue'
 import LazyGlobalDestinations from '~/components/HomeSections/globalDestinations.vue'
 import LazyServicesSection from '~/components/HomeSections/servicesSection.vue'
-import ContactSection from '~/components/HomeSections/ContactSection.vue'
 
 import { useHead } from '#imports'
 import { useI18n } from 'vue-i18n'
+
+// Load settings on page load
+const { loadSettings } = useSettings()
+
+// Load settings when page mounts
+onMounted(async () => {
+  await loadSettings()
+})
 
 // OG image path (using hero section image as requested)
 const ogImage = '/images/home/heroSection/hero-image.webp'
@@ -53,7 +58,7 @@ const keywords = [
 ].join(', ')
 
 useHead({
-  title: 'أرض العجائب للسفر - أفضل وكالة سفر في السعودية | رحلات عمرة وحج وسياحة',
+  title: 'World Trip Agency - أفضل وكالة سفر في السعودية | رحلات عمرة وحج وسياحة',
   meta: [
     { 
       name: 'description', 
@@ -61,10 +66,10 @@ useHead({
     },
     { 
       name: 'keywords', 
-      content: 'وكالة سفر السعودية, رحلات عمرة, رحلات حج, سياحة السعودية, رحلات دبي, رحلات تركيا, رحلات ماليزيا, رحلات تايلاند, باقات سفر, وكالة سفر الرياض, سفر وسياحة, رحلات خارجية, رحلات داخلية, أرض العجائب للسفر, وكالة سفر مكة, وكالة سفر المدينة, رحلات عمرة من الرياض, رحلات عمرة من جدة, رحلات عمرة من الدمام, رحلات عمرة من القصيم, رحلات عمرة من تبوك, رحلات عمرة من حائل, رحلات عمرة من الباحة, رحلات عمرة من نجران, رحلات عمرة من جازان, رحلات عمرة من الحدود الشمالية, رحلات عمرة من عسير, رحلات عمرة من الجوف, ' + keywords 
+      content: 'وكالة سفر السعودية, رحلات عمرة, رحلات حج, سياحة السعودية, رحلات دبي, رحلات تركيا, رحلات ماليزيا, رحلات تايلاند, باقات سفر, وكالة سفر الرياض, سفر وسياحة, رحلات خارجية, رحلات داخلية, World Trip Agency, وكالة سفر مكة, وكالة سفر المدينة, رحلات عمرة من الرياض, رحلات عمرة من جدة, رحلات عمرة من الدمام, رحلات عمرة من القصيم, رحلات عمرة من تبوك, رحلات عمرة من حائل, رحلات عمرة من الباحة, رحلات عمرة من نجران, رحلات عمرة من جازان, رحلات عمرة من الحدود الشمالية, رحلات عمرة من عسير, رحلات عمرة من الجوف, ' + keywords 
     },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'أرض العجائب للسفر - أفضل وكالة سفر في السعودية' },
+    { property: 'og:title', content: 'World Trip Agency - أفضل وكالة سفر في السعودية' },
     { property: 'og:description', content: 'أفضل وكالة سفر في المملكة العربية السعودية. رحلات عمرة وحج متميزة، سياحة داخلية وخارجية، باقات سفر متميزة.' },
     { property: 'og:image', content: 'https://www.worldtripagency.com' + ogImage },
     { property: 'og:url', content: 'https://www.worldtripagency.com/' },

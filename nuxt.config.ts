@@ -114,7 +114,7 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      navigateFallback: null, // Disable global fallback
+      navigateFallback: '/',
       cleanupOutdatedCaches: true,
       skipWaiting: true,
       clientsClaim: true,
@@ -430,8 +430,8 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'أرض العجائب للسفر - أفضل وكالة سفر في السعودية | رحلات عمرة وحج وسياحة',
-      titleTemplate: '%s | أرض العجائب للسفر',
+      title: 'World Trip Agency - أفضل وكالة سفر في السعودية | رحلات عمرة وحج وسياحة',
+      titleTemplate: '%s | World Trip Agency',
       htmlAttrs: {
         lang: 'ar-SA',
         dir: 'rtl'
@@ -447,7 +447,7 @@ export default defineNuxtConfig({
           name: 'keywords',
           content: 'وكالة سفر السعودية, رحلات عمرة, رحلات حج, سياحة السعودية, رحلات دبي, رحلات تركيا, رحلات ماليزيا, رحلات تايلاند, باقات سفر, وكالة سفر الرياض, سفر وسياحة, رحلات خارجية, رحلات داخلية, أرض العجائب للسفر'
         },
-        { name: 'author', content: 'أرض العجائب للسفر' },
+        { name: 'author', content: 'World Trip Agency' },
         { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
         { name: 'googlebot', content: 'index, follow' },
         { name: 'bingbot', content: 'index, follow' },
@@ -461,7 +461,7 @@ export default defineNuxtConfig({
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
         { property: 'og:locale', content: 'ar_SA' },
-        { property: 'og:site_name', content: 'أرض العجائب للسفر' },
+        { property: 'og:site_name', content: 'World Trip Agency' },
         
         // Twitter
         { name: 'twitter:card', content: 'summary_large_image' },
@@ -475,7 +475,7 @@ export default defineNuxtConfig({
         { name: 'msapplication-TileColor', content: '#8b5cf6' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        { name: 'apple-mobile-web-app-title', content: 'أرض العجائب للسفر' },
+        { name: 'apple-mobile-web-app-title', content: 'World Trip Agency' },
         
         // Geographic targeting
         { name: 'geo.region', content: 'SA' },
@@ -506,7 +506,7 @@ export default defineNuxtConfig({
           innerHTML: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TravelAgency",
-            "name": "أرض العجائب للسفر",
+            "name": "World Trip Agency",
             "alternateName": "World Trip Agency Traveling Agency",
             "url": "https://www.worldtripagency.com",
             "logo": "https://www.worldtripagency.com/images/home/logo/WonderlandLogo.svg",

@@ -2,6 +2,9 @@ import { createClient } from '@supabase/supabase-js'
 
 export default defineEventHandler(async (event) => {
   try {
+    // Set proper headers for UTF-8 encoding
+    setHeader(event, 'Content-Type', 'application/json; charset=utf-8')
+    
     const body = await readBody(event)
     
     if (!body) {

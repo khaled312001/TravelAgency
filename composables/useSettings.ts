@@ -1,7 +1,26 @@
+// Global settings state
+const globalSettings = ref(null)
+const globalLoading = ref(false)
+const globalError = ref(null)
+
+// Event listeners for settings updates
+const settingsUpdateListeners = new Set<() => void>()
+
+// Add listener for settings updates
+const addSettingsUpdateListener = (callback: () => void) => {
+  settingsUpdateListeners.add(callback)
+  return () => settingsUpdateListeners.delete(callback)
+}
+
+// Notify all listeners of settings update
+const notifySettingsUpdate = () => {
+  settingsUpdateListeners.forEach(callback => callback())
+}
+
 export const useSettings = () => {
-  const settings = ref(null)
-  const loading = ref(false)
-  const error = ref(null)
+  const settings = globalSettings
+  const loading = globalLoading
+  const error = globalError
 
   const loadSettings = async () => {
     try {
@@ -91,13 +110,24 @@ export const useSettings = () => {
 
   const getLocalizedSetting = (category: string, key: string) => {
     try {
-      const { locale } = useI18n()
-      const currentLocale = locale.value === 'ar-SA' ? 'ar' : 'en'
+      // Get current locale from i18n context
+      const currentLocale = process.client ? 
+        (document.documentElement.lang === 'ar-SA' ? 'ar' : 'en') : 'ar'
       return getSetting(category, key, currentLocale)
     } catch (error) {
       console.error('Error in getLocalizedSetting:', error, { category, key })
       return null
     }
+  }
+
+  const updateSettings = (newSettings: any) => {
+    console.log('Settings updated globally:', newSettings)
+    settings.value = newSettings
+    notifySettingsUpdate()
+  }
+
+  const refreshSettings = async () => {
+    await loadSettings()
   }
 
   return {
@@ -106,6 +136,9 @@ export const useSettings = () => {
     error: readonly(error),
     loadSettings,
     getSetting,
-    getLocalizedSetting
+    getLocalizedSetting,
+    updateSettings,
+    refreshSettings,
+    addSettingsUpdateListener
   }
 }

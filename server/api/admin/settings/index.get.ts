@@ -23,8 +23,24 @@ export default defineEventHandler(async (event) => {
           siteDescription: { ar: 'وكالة سفر متخصصة في تنظيم الرحلات السياحية', en: 'Specialized travel agency for organizing tourist trips' },
           siteUrl: 'https://www.worldtripagency.com',
           contactEmail: 'info@worldtripagency.com',
+          contactEmail2: 'support@worldtripagency.com',
           contactPhone: '+966500982394',
-          contactAddress: { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' }
+          contactPhone2: '+966112345678',
+          contactAddress: { ar: 'مكة المكرمة  - شارع الستين ', en: 'Riyadh, Saudi Arabia' },
+          contactHours: { ar: 'السبت - الخميس: 8:00 ص - 6:00 م', en: 'Saturday - Thursday: 8:00 AM - 6:00 PM' },
+          whatsappUrl: 'https://wa.me/966500982394',
+          instagramUrl: 'https://instagram.com/worldtripagency',
+          facebookUrl: 'https://facebook.com/worldtripagency',
+          twitterUrl: 'https://twitter.com/worldtripagency',
+          snapchatUrl: 'https://www.snapchat.com/add/ahmed18311',
+          tiktokUrl: 'https://www.tiktok.com/@wonder.land.sa',
+          licenseNumber: '73105863',
+          registrationNumber: '7043491153',
+          iataNumber: '',
+          insuranceInfo: '',
+          destination1: 'الرياض',
+          destination2: 'البحر الأحمر',
+          destination3: 'العلا'
         },
         logo: {
           mainLogo: '/images/home/logo/WonderlandLogo.svg',
@@ -90,14 +106,14 @@ export default defineEventHandler(async (event) => {
       console.error('Error parsing logo settings:', error)
       logoSettings = {}
     }
-    
+
     try {
       emailSettings = JSON.parse(settings.keywords_ar || '{}')
     } catch (error) {
       console.error('Error parsing email settings:', error)
       emailSettings = {}
     }
-    
+
     try {
       paymentSettings = JSON.parse(settings.keywords_en || '{}')
     } catch (error) {
@@ -106,7 +122,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Transform settings into organized structure
-    const organizedSettings = {
+    const adminSettings = {
       general: {
         siteName: typeof generalSettings.site_name === 'string' 
           ? { ar: generalSettings.site_name, en: generalSettings.site_name }
@@ -125,7 +141,6 @@ export default defineEventHandler(async (event) => {
         contactHours: typeof generalSettings.contact_hours === 'string' 
           ? { ar: generalSettings.contact_hours, en: generalSettings.contact_hours }
           : generalSettings.contact_hours || { ar: 'السبت - الخميس: 8:00 ص - 6:00 م', en: 'Saturday - Thursday: 8:00 AM - 6:00 PM' },
-        contactHoursEn: generalSettings.contact_hours_en || 'Saturday - Thursday: 8:00 AM - 6:00 PM',
         whatsappUrl: generalSettings.whatsapp_url || 'https://wa.me/966500982394',
         instagramUrl: generalSettings.instagram_url || 'https://instagram.com/worldtripagency',
         facebookUrl: generalSettings.facebook_url || 'https://facebook.com/worldtripagency',
@@ -156,15 +171,17 @@ export default defineEventHandler(async (event) => {
         smtpUsername: emailSettings.smtp_username || '',
         smtpPassword: emailSettings.smtp_password || '',
         fromEmail: emailSettings.from_email || 'noreply@worldtripagency.com',
-        fromName: emailSettings.from_name || { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' }
+        fromName: typeof emailSettings.from_name === 'string' 
+          ? { ar: emailSettings.from_name, en: emailSettings.from_name }
+          : emailSettings.from_name || { ar: 'وكالة أرض العجائب للسفر', en: 'World Trip Agency Traveling Agency' }
       },
       payment: {
         stripeEnabled: paymentSettings.stripe_enabled || false,
         stripePublicKey: paymentSettings.stripe_public_key || '',
         stripeSecretKey: paymentSettings.stripe_secret_key || '',
-        madaEnabled: paymentSettings.mada_enabled || true,
-        visaEnabled: paymentSettings.visa_enabled || true,
-        mastercardEnabled: paymentSettings.mastercard_enabled || true
+        madaEnabled: paymentSettings.mada_enabled ?? true,
+        visaEnabled: paymentSettings.visa_enabled ?? true,
+        mastercardEnabled: paymentSettings.mastercard_enabled ?? true
       },
       seo: {
         metaTitle: { ar: 'أرض العجائب - وكالة سفر متخصصة', en: 'World Trip Agency - Specialized Travel Agency' },
@@ -183,7 +200,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      data: organizedSettings
+      data: adminSettings
     }
   } catch (error) {
     console.error('Error fetching settings:', error)
@@ -193,4 +210,3 @@ export default defineEventHandler(async (event) => {
     })
   }
 })
-

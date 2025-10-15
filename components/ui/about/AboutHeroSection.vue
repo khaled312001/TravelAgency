@@ -14,10 +14,10 @@
     
     <div class="relative container mx-auto px-4 md:px-8 lg:px-12 text-center z-10">
       <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-        {{ $t('about.hero.title') }}
+        {{ aboutContent?.hero?.title?.[$i18n.locale.value] || $t('about.hero.title') }}
       </h1>
       <p class="text-base md:text-lg lg:text-xl text-white opacity-100 max-w-3xl mx-auto drop-shadow-md">
-        {{ $t('about.hero.subtitle') }}
+        {{ aboutContent?.hero?.subtitle?.[$i18n.locale.value] || $t('about.hero.subtitle') }}
       </p>
       <NuxtLink 
         :to="localePath('packages')" 
@@ -30,4 +30,12 @@
 </template>
 <script setup lang="ts">
 const localePath = useLocalePath();
+const { aboutContent, loadAboutContent } = useAboutContent();
+
+// Load about content on component mount (only if not already loaded)
+onMounted(async () => {
+  if (!aboutContent.value) {
+    await loadAboutContent();
+  }
+});
 </script>

@@ -375,6 +375,162 @@
           </div>
         </div>
       </div>
+
+      <!-- About Page Section -->
+      <div class="content-section">
+        <div class="section-header">
+          <h2 class="section-title">صفحة عن الشركة</h2>
+          <p class="section-description">تعديل محتوى صفحة عن الشركة</p>
+        </div>
+        
+        <div class="content-grid">
+          <!-- Arabic Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">المحتوى العربي</h3>
+              <div class="language-badge arabic">العربية</div>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label class="form-label">عنوان البطل الرئيسي</label>
+                <input
+                  v-model="content.about.hero.title.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="عنوان البطل الرئيسي"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">النص الفرعي للبطل</label>
+                <textarea
+                  v-model="content.about.hero.subtitle.ar"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="النص الفرعي للبطل"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">عنوان نظرة عامة</label>
+                <input
+                  v-model="content.about.overview.title.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="عنوان نظرة عامة"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">مقدمة نظرة عامة</label>
+                <textarea
+                  v-model="content.about.overview.intro.ar"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="مقدمة نظرة عامة"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">لماذا تختارنا</label>
+                <input
+                  v-model="content.about.overview.why_choose_us.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="لماذا تختارنا"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">عنوان عن الشركة</label>
+                <input
+                  v-model="content.about.overview.about_title.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="عنوان عن الشركة"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">نص عن الشركة</label>
+                <textarea
+                  v-model="content.about.overview.about_text.ar"
+                  class="form-textarea"
+                  rows="4"
+                  placeholder="نص عن الشركة"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- English Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">English Content</h3>
+              <div class="language-badge english">English</div>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label class="form-label">Hero Title</label>
+                <input
+                  v-model="content.about.hero.title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Hero title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hero Subtitle</label>
+                <textarea
+                  v-model="content.about.hero.subtitle.en"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="Hero subtitle"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Overview Title</label>
+                <input
+                  v-model="content.about.overview.title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Overview title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Overview Intro</label>
+                <textarea
+                  v-model="content.about.overview.intro.en"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="Overview intro"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Why Choose Us</label>
+                <input
+                  v-model="content.about.overview.why_choose_us.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Why choose us"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">About Title</label>
+                <input
+                  v-model="content.about.overview.about_title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="About title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">About Text</label>
+                <textarea
+                  v-model="content.about.overview.about_text.en"
+                  class="form-textarea"
+                  rows="4"
+                  placeholder="About text"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Success/Error Messages -->
@@ -429,16 +585,44 @@ const content = ref({
       title: { ar: '', en: '' },
       subtitle: { ar: '', en: '' }
     }
+  },
+  about: {
+    hero: {
+      title: { ar: '', en: '' },
+      subtitle: { ar: '', en: '' }
+    },
+    overview: {
+      title: { ar: '', en: '' },
+      intro: { ar: '', en: '' },
+      why_choose_us: { ar: '', en: '' },
+      about_title: { ar: '', en: '' },
+      about_text: { ar: '', en: '' }
+    }
   }
 })
 
 // Load content from API
 const loadContent = async () => {
   try {
+    // Load main content
     const response = await $fetch('/api/admin/content')
     const data = response.data || response
     if (data) {
       content.value = { ...content.value, ...data }
+    }
+    
+    // Load about page content
+    try {
+      const aboutResponse = await $fetch('/api/admin/content/about')
+      console.log('About content loaded from API:', aboutResponse.data)
+      if (aboutResponse.data) {
+        content.value.about = aboutResponse.data
+        console.log('About content set in form:', content.value.about)
+      }
+    } catch (aboutError) {
+      console.error('Error loading about content:', aboutError)
+      // Use default about content
+      content.value.about = loadDefaultContent().about
     }
   } catch (error) {
     console.error('Error loading content:', error)
@@ -449,7 +633,7 @@ const loadContent = async () => {
 
 // Load default content from translations
 const loadDefaultContent = () => {
-  content.value = {
+  const defaultContent = {
     hero: {
       title: { 
         ar: 'نحنُ نأخذك إلى أفضل الأماكن حول العالم',
@@ -510,8 +694,45 @@ const loadDefaultContent = () => {
           en: 'Experience unforgettable adventures in the most spectacular places around the globe'
         }
       }
+    },
+    about: {
+      hero: {
+        title: { 
+          ar: 'شريكك الموثوق به لتجارب سفر استثنائية منذ عام 2019',
+          en: 'Your Trusted Partner for Exceptional Travel Experiences Since 2019'
+        },
+        subtitle: { 
+          ar: 'اكتشف تجربة السفر مع World Trip Agency - حيث تتحول كل رحلة إلى مغامرة لا تُنسى',
+          en: 'Discover the travel experience with World Trip Agency – where every journey transforms into an unforgettable adventure'
+        }
+      },
+      overview: {
+        title: { 
+          ar: 'World Trip Agency للسفر والسياحة',
+          en: 'World Trip Agency Travel & Tourism'
+        },
+        intro: { 
+          ar: 'هل تبحث عن تجربة سفر لا تُنسى بأسعار لا تُقاوم؟ World Trip Agency هي بوابتك إلى عالم مليء بالمغامرات والرفاهية، حيث نقدم أفضل العروض وأعلى مستويات الخدمة!',
+          en: 'Are you looking for an unforgettable travel experience at irresistible prices? World Trip Agency is your gateway to a world filled with adventures and luxury, where we offer the best deals and the highest level of service!'
+        },
+        why_choose_us: { 
+          ar: 'لماذا تختار World Trip Agency؟',
+          en: 'Why Choose World Trip Agency?'
+        },
+        about_title: { 
+          ar: 'عن World Trip Agency للسفر والسياحة',
+          en: 'About World Trip Agency Travel & Tourism'
+        },
+        about_text: { 
+          ar: 'تأسست World Trip Agency للسفر والسياحة في عام 2019، لتكون بوابتك إلى رحلات فريدة وتجارب سفر استثنائية. نحن متخصصون في تقديم خدمات سفر شاملة تضمن تجربة سلسة ومريحة لكل مسافر - سواء كانت إجازات عائلية، أو جولات فاخرة، أو استكشافات مغامرة.',
+          en: 'World Trip Agency Travel & Tourism was established in 2019 as your gateway to unique trips and exceptional travel experiences. We specialize in offering comprehensive travel services that ensure a seamless and comfortable experience for every traveler – whether it\'s family vacations, luxury tours, or adventurous explorations.'
+        }
+      }
     }
   }
+  
+  content.value = defaultContent
+  return defaultContent
 }
 
 // Save content to API
@@ -523,10 +744,21 @@ const saveAllContent = async () => {
     // Check if content is too large and compress if needed
     const contentToSave = await compressContentIfNeeded(content.value)
     
+    // Save main content
     await $fetch('/api/admin/content', {
       method: 'POST',
       body: contentToSave
     })
+    
+    // Save about page content separately
+    if (content.value.about) {
+      await $fetch('/api/admin/content/about', {
+        method: 'POST',
+        body: {
+          about: content.value.about
+        }
+      })
+    }
     
     message.value = 'تم حفظ المحتوى بنجاح!'
     messageType.value = 'success'
@@ -534,6 +766,17 @@ const saveAllContent = async () => {
     // Force reload of site content in all components
     const { reload: reloadSiteContent } = useSiteContent()
     await reloadSiteContent()
+    
+    // Force reload of about content
+    console.log('Reloading about content after save...')
+    const { reloadAboutContent } = useAboutContent()
+    await reloadAboutContent()
+    console.log('About content reload completed')
+    
+    // Dispatch event to notify other pages
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('contentUpdated'))
+    }
     
     // Clear message after 3 seconds
     setTimeout(() => {
