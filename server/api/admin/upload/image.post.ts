@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
+import { existsSync } from 'fs'
 
 const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
@@ -27,9 +28,12 @@ export default defineEventHandler(async (event) => {
     
     const formData = await readMultipartFormData(event)
     console.log('Form data received:', formData ? formData.length : 'null')
+    console.log('Form data details:', formData)
     
     if (!formData || formData.length === 0) {
-      console.log('No file uploaded')
+      console.log('No file uploaded - formData is null or empty')
+      console.log('Request body type:', typeof event.body)
+      console.log('Request body:', event.body)
       throw createError({
         statusCode: 400,
         statusMessage: 'No file uploaded'
@@ -98,8 +102,25 @@ export default defineEventHandler(async (event) => {
     const uniqueFileName = `logo-${timestamp}.${fileExtension}`
     
     // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'logos')
+    // Try multiple possible paths for different deployment environments
+    const possiblePaths = [
+      join(process.cwd(), 'public', 'uploads', 'logos'),
+      join(process.cwd(), 'dist', 'public', 'uploads', 'logos'),
+      join(process.cwd(), '.output', 'public', 'uploads', 'logos'),
+      join(process.cwd(), 'uploads', 'logos')
+    ]
+    
+    let uploadsDir = possiblePaths[0]
+    for (const path of possiblePaths) {
+      if (existsSync(join(path, '..'))) {
+        uploadsDir = path
+        break
+      }
+    }
+    
     console.log('Creating directory:', uploadsDir)
+    console.log('Current working directory:', process.cwd())
+    console.log('Directory exists:', existsSync(uploadsDir))
     
     try {
       await mkdir(uploadsDir, { recursive: true })
@@ -130,6 +151,8 @@ export default defineEventHandler(async (event) => {
     // Return the public URL
     const publicUrl = `/uploads/logos/${uniqueFileName}`
     console.log('File uploaded successfully:', publicUrl)
+    console.log('Full file path:', filePath)
+    console.log('File exists after write:', existsSync(filePath))
     
     return {
       success: true,

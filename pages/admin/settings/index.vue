@@ -1063,7 +1063,7 @@ const handleMainLogoUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await fetch('/api/admin/upload/image', {
+      const response = await fetch('/api/admin/upload/simple', {
         method: 'POST',
         body: formData
       }).then(res => res.json())
@@ -1076,7 +1076,7 @@ const handleMainLogoUpload = async (event: Event) => {
       }
     } catch (error) {
       console.error('Error uploading main logo:', error)
-      alert('حدث خطأ أثناء رفع اللوجو')
+      alert('حدث خطأ أثناء رفع اللوجو: ' + (error.message || 'خطأ غير معروف'))
     }
   }
 }
@@ -1093,7 +1093,7 @@ const handleFooterLogoUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await fetch('/api/admin/upload/image', {
+      const response = await fetch('/api/admin/upload/simple', {
         method: 'POST',
         body: formData
       }).then(res => res.json())
@@ -1106,7 +1106,7 @@ const handleFooterLogoUpload = async (event: Event) => {
       }
     } catch (error) {
       console.error('Error uploading footer logo:', error)
-      alert('حدث خطأ أثناء رفع لوجو الفوتر')
+      alert('حدث خطأ أثناء رفع لوجو الفوتر: ' + (error.message || 'خطأ غير معروف'))
     }
   }
 }
@@ -1123,7 +1123,7 @@ const handleFaviconUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await fetch('/api/admin/upload/image', {
+      const response = await fetch('/api/admin/upload/simple', {
         method: 'POST',
         body: formData
       }).then(res => res.json())

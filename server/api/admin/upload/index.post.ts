@@ -6,11 +6,20 @@ import { existsSync } from 'fs'
 export default defineEventHandler(async (event) => {
   try {
     console.log('Admin upload API called')
+    console.log('Request method:', event.method)
+    console.log('Request headers:', getHeaders(event))
+    
+    // Check content type
+    const contentType = getHeader(event, 'content-type')
+    console.log('Content-Type:', contentType)
     
     const formData = await readMultipartFormData(event)
+    console.log('Form data received:', formData ? formData.length : 'null')
+    console.log('Form data details:', formData)
     
     if (!formData || formData.length === 0) {
-      console.log('No files uploaded')
+      console.log('No files uploaded - formData is null or empty')
+      console.log('Request body type:', typeof event.body)
       throw createError({
         statusCode: 400,
         statusMessage: 'No files uploaded'
