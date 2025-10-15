@@ -359,6 +359,8 @@ export default defineNuxtConfig({
     experimental: {
       wasm: true
     },
+    // Configure body size limits for file uploads
+    bodySizeLimit: '10mb',
     // Vercel specific settings
     vercel: {
       functions: {
