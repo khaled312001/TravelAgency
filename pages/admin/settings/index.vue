@@ -1063,13 +1063,18 @@ const handleMainLogoUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await fetch('/api/admin/upload/simple', {
+      const response = await fetch('/api/admin/upload', {
         method: 'POST',
+        headers: {
+          'x-upload-type': 'logo'
+        },
         body: formData
       }).then(res => res.json())
       
       if (response.success) {
         settings.value.logo.mainLogo = response.data.url
+        // Save settings to database
+        await saveSettings()
         alert('تم رفع اللوجو بنجاح!')
       } else {
         throw new Error('Upload failed')
@@ -1093,13 +1098,18 @@ const handleFooterLogoUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await fetch('/api/admin/upload/simple', {
+      const response = await fetch('/api/admin/upload', {
         method: 'POST',
+        headers: {
+          'x-upload-type': 'logo'
+        },
         body: formData
       }).then(res => res.json())
       
       if (response.success) {
         settings.value.logo.footerLogo = response.data.url
+        // Save settings to database
+        await saveSettings()
         alert('تم رفع لوجو الفوتر بنجاح!')
       } else {
         throw new Error('Upload failed')
@@ -1123,8 +1133,11 @@ const handleFaviconUpload = async (event: Event) => {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await fetch('/api/admin/upload/simple', {
+      const response = await fetch('/api/admin/upload', {
         method: 'POST',
+        headers: {
+          'x-upload-type': 'logo'
+        },
         body: formData
       }).then(res => res.json())
       
@@ -1153,10 +1166,8 @@ const loadSettings = async () => {
   }
 }
 
-const saveAllSettings = async () => {
+const saveSettings = async () => {
   try {
-    saving.value = true
-    
     const response = await $fetch('/api/admin/settings', {
       method: 'PUT',
       body: settings.value
@@ -1176,12 +1187,29 @@ const saveAllSettings = async () => {
         window.dispatchEvent(new CustomEvent('settings-updated', { 
           detail: { settings: settings.value } 
         }))
-        
-        // Force page refresh to ensure all components update
-        setTimeout(() => {
-          window.location.reload()
-        }, 2000)
       }
+      
+      return true
+    } else {
+      throw new Error('Failed to save settings')
+    }
+  } catch (error) {
+    console.error('Error saving settings:', error)
+    return false
+  }
+}
+
+const saveAllSettings = async () => {
+  try {
+    saving.value = true
+    
+    const success = await saveSettings()
+    
+    if (success) {
+      // Force page refresh to ensure all components update
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
       
       // Show success message
       alert('تم حفظ الإعدادات بنجاح! سيتم تحديث الصفحة تلقائياً...')

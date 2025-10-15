@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Image Access</title>
+</head>
+<body>
+    <h1>Test Image Access</h1>
+    
+    <h2>Test 1: Direct image access</h2>
+    <img src="/uploads/logos/test-logo.png" alt="Test Logo" style="max-width: 200px; border: 1px solid #ccc;">
+    
+    <h2>Test 2: Check if uploads directory is accessible</h2>
+    <div id="test-result">Testing...</div>
+    
+    <script>
+        // Test if we can access the uploads directory
+        fetch('/uploads/logos/test-logo.png')
+            .then(response => {
+                document.getElementById('test-result').innerHTML = 
+                    `Status: ${response.status} - ${response.ok ? 'OK' : 'Error'}`;
+            })
+            .catch(error => {
+                document.getElementById('test-result').innerHTML = 
+                    `Error: ${error.message}`;
+            });
+    </script>
+</body>
+</html>

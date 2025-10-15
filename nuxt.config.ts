@@ -123,7 +123,8 @@ export default defineNuxtConfig({
       globPatterns: [
         '**/*.{js,css,html}',
         'images/**/*.{png,jpg,jpeg,svg,webp}',
-        'icons/**/*.{ico,png,svg}'
+        'icons/**/*.{ico,png,svg}',
+        'uploads/**/*.{png,jpg,jpeg,svg,webp,gif}'
       ],
       additionalManifestEntries: [
         { url: '/', revision: null }
@@ -250,6 +251,7 @@ export default defineNuxtConfig({
     dir: 'public',
     domains: ['images.unsplash.com', 'images.pexels.com', 'worldtripagency.com', 'www.worldtripagency.com'],
     format: ['webp', 'jpeg', 'png'],
+    // Enable serving of uploaded images
     screens: {
       xs: 320,
       sm: 640,
@@ -379,6 +381,11 @@ export default defineNuxtConfig({
         dir: 'public',
         maxAge: 60 * 60 * 24 * 365, // Cache for 1 year
         baseURL: '/'
+      },
+      {
+        dir: 'public/uploads',
+        maxAge: 60 * 60 * 24 * 30, // Cache for 30 days
+        baseURL: '/uploads'
       }
     ],
     // Handle image processing and domain redirects
@@ -394,6 +401,13 @@ export default defineNuxtConfig({
       },
       '/icons/**': { 
         headers: { 'cache-control': 's-maxage=31536000' }
+      },
+      '/uploads/**': { 
+        headers: { 
+          'cache-control': 's-maxage=2592000',
+          'access-control-allow-origin': '*',
+          'access-control-allow-methods': 'GET, HEAD, OPTIONS'
+        }
       },
       '/_nuxt/*.js': { 
         headers: { 

@@ -85,8 +85,27 @@ export default defineEventHandler(async (event) => {
     const newFilename = `${timestamp}_${randomString}.${extension}`
 
     // Determine upload directory based on file type
-    const uploadDir = file.type?.startsWith('video/') ? 'videos' : 'images'
-    const subDir = file.type?.startsWith('video/') ? 'hero' : 'home/heroSection'
+    let uploadDir, subDir
+    if (file.type?.startsWith('video/')) {
+      uploadDir = 'videos'
+      subDir = 'hero'
+    } else if (file.type?.startsWith('image/')) {
+      // Check if this is a logo upload by checking the request context
+      const isLogoUpload = getHeader(event, 'x-upload-type') === 'logo' || 
+                          getHeader(event, 'referer')?.includes('/admin/settings')
+      
+      if (isLogoUpload) {
+        uploadDir = 'uploads'
+        subDir = 'logos'
+      } else {
+        uploadDir = 'images'
+        subDir = 'home/heroSection'
+      }
+    } else {
+      uploadDir = 'uploads'
+      subDir = 'files'
+    }
+    
     const fullPath = join(process.cwd(), 'public', uploadDir, subDir)
 
     console.log('Upload details:', {
