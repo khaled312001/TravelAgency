@@ -1,6 +1,11 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
 export default defineEventHandler(async (event) => {
   try {
-    const supabase = serverSupabaseServiceRole(event)
     const body = await readBody(event)
     
     const { title, message, type = 'info', data } = body
@@ -11,6 +16,8 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Title and message are required'
       })
     }
+    
+    console.log('Creating notification:', { title, message, type })
     
     const { data: notification, error } = await supabase
       .from('notifications')
@@ -25,12 +32,14 @@ export default defineEventHandler(async (event) => {
       .single()
     
     if (error) {
-      console.error('Error creating notification:', error)
+      console.error('Database error:', error)
       throw createError({
         statusCode: 500,
-        statusMessage: 'Failed to create notification'
+        statusMessage: `Database error: ${error.message}`
       })
     }
+    
+    console.log('Notification created successfully:', notification.id)
     
     return {
       success: true,
@@ -38,11 +47,16 @@ export default defineEventHandler(async (event) => {
       message: 'Notification created successfully'
     }
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in create notification API:', error)
+    
+    if (error.statusCode) {
+      throw error
+    }
+    
     throw createError({
       statusCode: 500,
-      statusMessage: 'Internal server error'
+      statusMessage: `Internal server error: ${error.message}`
     })
   }
 })

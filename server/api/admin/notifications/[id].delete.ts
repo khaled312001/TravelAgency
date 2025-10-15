@@ -1,6 +1,11 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
 export default defineEventHandler(async (event) => {
   try {
-    const supabase = serverSupabaseServiceRole(event)
     const id = getRouterParam(event, 'id')
     
     if (!id) {
@@ -10,29 +15,38 @@ export default defineEventHandler(async (event) => {
       })
     }
     
+    console.log('Deleting notification:', id)
+    
     const { error } = await supabase
       .from('notifications')
       .delete()
       .eq('id', id)
     
     if (error) {
-      console.error('Error deleting notification:', error)
+      console.error('Database error:', error)
       throw createError({
         statusCode: 500,
-        statusMessage: 'Failed to delete notification'
+        statusMessage: `Database error: ${error.message}`
       })
     }
+    
+    console.log('Notification deleted successfully:', id)
     
     return {
       success: true,
       message: 'Notification deleted successfully'
     }
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in delete notification API:', error)
+    
+    if (error.statusCode) {
+      throw error
+    }
+    
     throw createError({
       statusCode: 500,
-      statusMessage: 'Internal server error'
+      statusMessage: `Internal server error: ${error.message}`
     })
   }
 })
