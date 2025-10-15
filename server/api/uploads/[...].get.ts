@@ -4,7 +4,8 @@ import { existsSync } from 'fs'
 
 export default defineEventHandler(async (event) => {
   try {
-    const path = getRouterParam(event, 'path')
+    const url = getRequestURL(event)
+    const path = url.pathname.replace('/api/uploads/', '')
     
     if (!path) {
       throw createError({
@@ -13,11 +14,17 @@ export default defineEventHandler(async (event) => {
       })
     }
     
+    console.log('Requested file path:', path)
+    
     // Construct file path
     const filePath = join(process.cwd(), 'public', 'uploads', path)
+    console.log('Constructed file path:', filePath)
     
     // Security check - ensure file is within uploads directory
     const uploadsDir = join(process.cwd(), 'public', 'uploads')
+    console.log('Uploads directory:', uploadsDir)
+    console.log('File path starts with uploads dir:', filePath.startsWith(uploadsDir))
+    
     if (!filePath.startsWith(uploadsDir)) {
       throw createError({
         statusCode: 403,
@@ -26,6 +33,7 @@ export default defineEventHandler(async (event) => {
     }
     
     // Check if file exists
+    console.log('File exists:', existsSync(filePath))
     if (!existsSync(filePath)) {
       throw createError({
         statusCode: 404,

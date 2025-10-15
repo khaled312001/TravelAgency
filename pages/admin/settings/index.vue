@@ -1060,12 +1060,23 @@ const handleMainLogoUpload = async (event: Event) => {
     }
     
     try {
-      const formData = new FormData()
-      formData.append('file', file)
+      // Convert file to base64
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
       
-      const response = await fetch('/api/admin/upload/logo', {
+      const response = await fetch('/api/admin/upload', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          image: base64,
+          filename: file.name
+        })
       }).then(res => res.json())
       
       if (response.success) {
@@ -1092,12 +1103,23 @@ const handleFooterLogoUpload = async (event: Event) => {
     }
     
     try {
-      const formData = new FormData()
-      formData.append('file', file)
+      // Convert file to base64
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
       
-      const response = await fetch('/api/admin/upload/logo', {
+      const response = await fetch('/api/admin/upload', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          image: base64,
+          filename: file.name
+        })
       }).then(res => res.json())
       
       if (response.success) {
@@ -1124,12 +1146,23 @@ const handleFaviconUpload = async (event: Event) => {
     }
     
     try {
-      const formData = new FormData()
-      formData.append('file', file)
+      // Convert file to base64
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
       
-      const response = await fetch('/api/admin/upload/logo', {
+      const response = await fetch('/api/admin/upload', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          image: base64,
+          filename: file.name
+        })
       }).then(res => res.json())
       
       if (response.success) {
