@@ -1,7 +1,7 @@
 <template>
   <div ref="invoiceContainer" class="invoice-container" :style="{ display: show ? 'block' : 'none' }">
     <!-- Invoice HTML Template -->
-    <div class="invoice-template" id="invoice-content" :style="{ display: show ? 'block' : 'none' }">
+    <div class="invoice-template" id="invoice-content">
       <!-- Header -->
       <div class="invoice-header">
         <div class="company-info">

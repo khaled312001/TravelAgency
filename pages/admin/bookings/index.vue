@@ -861,54 +861,45 @@ const downloadInvoicePDF = async () => {
       return
     }
 
+    console.log('Starting PDF generation...')
+    console.log('Modal visible:', showInvoiceModal.value)
+    console.log('Invoice data available:', !!currentInvoiceData.value)
+
     // Wait for DOM to be ready
     await nextTick()
     
     // Wait a bit more to ensure the invoice is fully rendered
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 2000))
     
     const html2pdf = (await import('html2pdf.js')).default
     
-    // Find the invoice content element
-    const element = document.querySelector('#invoice-content')
+    // Try to find the invoice content element
+    let element = document.querySelector('#invoice-content')
     
     if (!element) {
       // Try alternative selectors
-      const altElement = document.querySelector('.invoice-template') || 
-                       document.querySelector('.invoice-container') ||
-                       document.querySelector('[id*="invoice"]')
+      element = document.querySelector('.invoice-template') || 
+                document.querySelector('.invoice-container') ||
+                document.querySelector('[id*="invoice"]')
       
-      if (!altElement) {
-        throw new Error('لم يتم العثور على محتوى الفاتورة')
-      }
-      
-      // Use the alternative element
-      const opt = {
-        margin: 0.5,
-        filename: `فاتورة-${currentInvoiceData.value.invoiceNumber || 'invoice'}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-          scale: 2,
-          useCORS: true,
-          letterRendering: true,
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-          logging: false,
-          width: 800,
-          height: 1000
-        },
-        jsPDF: { 
-          unit: 'in', 
-          format: 'a4', 
-          orientation: 'portrait',
-          compress: true
-        },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-      }
-      
-      await html2pdf().set(opt).from(altElement).save()
-      return
+      console.log('Using alternative element:', element)
     }
+    
+    if (!element) {
+      // Create a fallback HTML content directly
+      console.log('Creating fallback HTML content...')
+      const fallbackHTML = createInvoiceHTML(currentInvoiceData.value)
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = fallbackHTML
+      element = tempDiv
+    }
+    
+    if (!element) {
+      throw new Error('لم يتم العثور على محتوى الفاتورة')
+    }
+    
+    console.log('Using element for PDF:', element)
+    console.log('Element innerHTML length:', element.innerHTML.length)
     
     // Ensure element is visible
     element.style.display = 'block'
@@ -952,11 +943,15 @@ const downloadInvoicePDF = async () => {
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       }
       
+      console.log('Generating PDF with options:', opt)
       await html2pdf().set(opt).from(tempContainer).save()
+      console.log('PDF generated successfully')
       
     } finally {
       // Clean up temporary container
-      document.body.removeChild(tempContainer)
+      if (document.body.contains(tempContainer)) {
+        document.body.removeChild(tempContainer)
+      }
     }
     
     // Close modal after successful download
@@ -966,6 +961,107 @@ const downloadInvoicePDF = async () => {
     console.error('Error generating PDF:', error)
     alert('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message)
   }
+}
+
+// Fallback function to create invoice HTML directly
+const createInvoiceHTML = (invoiceData: any) => {
+  return `
+    <div style="font-family: 'Cairo', Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; background: white; color: #333;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #8b5cf6;">
+        <div style="display: flex; align-items: flex-start; gap: 20px;">
+          <div>
+            <h1 style="font-size: 28px; font-weight: 700; color: #8b5cf6; margin: 0 0 5px 0;">أرض العجائب للسفر</h1>
+            <p style="font-size: 14px; color: #666; margin: 0 0 15px 0;">وكالة سفر متخصصة في تنظيم الرحلات السياحية</p>
+            <div style="font-size: 12px; color: #555;">
+              <p style="margin: 5px 0;"><strong>العنوان:</strong> مكة المكرمة - شارع الستين</p>
+              <p style="margin: 5px 0;"><strong>الهاتف:</strong> +966500982394</p>
+              <p style="margin: 5px 0;"><strong>البريد الإلكتروني:</strong> info@worldtripagency.com</p>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: left; min-width: 200px;">
+          <h2 style="font-size: 24px; font-weight: 700; color: #8b5cf6; margin: 0 0 15px 0;">فاتورة</h2>
+          <div style="font-size: 14px; color: #555;">
+            <p style="margin: 5px 0;"><strong>رقم الفاتورة:</strong> ${invoiceData.invoiceNumber}</p>
+            <p style="margin: 5px 0;"><strong>تاريخ الإصدار:</strong> ${invoiceData.issueDate}</p>
+            <p style="margin: 5px 0;"><strong>تاريخ السفر:</strong> ${invoiceData.travelDate}</p>
+            <p style="margin: 5px 0;"><strong>حالة الدفع:</strong> ${invoiceData.paymentStatus}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 30px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #8b5cf6; margin: 0 0 15px 0;">معلومات العميل</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
+          <div><strong>الاسم:</strong> ${invoiceData.customerName}</div>
+          <div><strong>البريد الإلكتروني:</strong> ${invoiceData.customerEmail}</div>
+          <div><strong>رقم الهاتف:</strong> ${invoiceData.customerPhone}</div>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 30px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #8b5cf6; margin: 0 0 15px 0;">تفاصيل الباقة</h3>
+        <div style="font-size: 14px;">
+          <p><strong>عنوان الباقة:</strong> ${invoiceData.packageTitle}</p>
+          <p><strong>الوجهة:</strong> ${invoiceData.destination}</p>
+          <p><strong>الوصف:</strong> ${invoiceData.packageDescription}</p>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 30px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #8b5cf6; margin: 0 0 15px 0;">تفاصيل التسعير</h3>
+        <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; background: #f8f9fa; font-weight: 600; padding: 15px; border-bottom: 1px solid #ddd;">
+            <div>الوصف</div>
+            <div>الكمية</div>
+            <div>سعر الوحدة</div>
+            <div>المجموع</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid #ddd;">
+            <div>${invoiceData.packageTitle}</div>
+            <div>${invoiceData.participantsCount}</div>
+            <div>${new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(invoiceData.unitPrice)}</div>
+            <div>${new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(invoiceData.subtotal)}</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid #ddd; background: #f8f9fa;">
+            <div><strong>المجموع الفرعي</strong></div>
+            <div>-</div>
+            <div>-</div>
+            <div><strong>${new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(invoiceData.subtotal)}</strong></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid #ddd;">
+            <div>ضريبة القيمة المضافة (${invoiceData.taxRate}%)</div>
+            <div>-</div>
+            <div>-</div>
+            <div>${new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(invoiceData.tax)}</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid #ddd; background: #f8f9fa;">
+            <div><strong>المجموع الإجمالي</strong></div>
+            <div>-</div>
+            <div>-</div>
+            <div><strong>${new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(invoiceData.totalAmount)}</strong></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid #ddd;">
+            <div><strong>المبلغ المدفوع</strong></div>
+            <div>-</div>
+            <div>-</div>
+            <div><strong>${new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(invoiceData.paidAmount)}</strong></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 15px; background: #e8f5e8;">
+            <div><strong>المبلغ المتبقي</strong></div>
+            <div>-</div>
+            <div>-</div>
+            <div><strong>${new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(invoiceData.remainingAmount)}</strong></div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #8b5cf6;">
+        <p style="font-size: 16px; font-weight: 600; color: #8b5cf6; margin: 0 0 10px 0;">شكراً لاختياركم أرض العجائب للسفر</p>
+        <p style="font-size: 14px; color: #666; margin: 0;">نتمنى لكم رحلة سعيدة وممتعة</p>
+      </div>
+    </div>
+  `
 }
 
 const deleteBooking = async (booking: Booking) => {
