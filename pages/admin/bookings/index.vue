@@ -551,6 +551,21 @@
         </div>
         
         <div class="modal-body">
+          <!-- Invoice Preview -->
+          <div class="invoice-preview">
+            <div v-if="!currentInvoiceData" class="loading-invoice">
+              <div class="loading-spinner"></div>
+              <p>جاري تحميل الفاتورة...</p>
+            </div>
+            <div v-else>
+              <InvoiceTemplate 
+                :invoice-data="currentInvoiceData" 
+                :show="true"
+              />
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
           <div class="invoice-actions">
             <button @click="downloadInvoicePDF" class="btn-primary">
               <Icon name="lucide:download" class="btn-icon" />
@@ -560,26 +575,6 @@
               <Icon name="lucide:x" class="btn-icon" />
               إغلاق
             </button>
-          </div>
-          
-          <!-- Invoice Preview -->
-          <div class="invoice-preview">
-            <div v-if="!currentInvoiceData" class="loading-invoice">
-              <div class="loading-spinner"></div>
-              <p>جاري تحميل الفاتورة...</p>
-            </div>
-            <div v-else>
-              <div class="invoice-actions mb-4">
-                <button @click="downloadInvoicePDF" class="btn-primary">
-                  <Icon name="lucide:download" class="btn-icon" />
-                  تحميل PDF
-                </button>
-              </div>
-              <InvoiceTemplate 
-                :invoice-data="currentInvoiceData" 
-                :show="true"
-              />
-            </div>
           </div>
         </div>
       </div>
@@ -810,10 +805,7 @@ const generateInvoice = async (booking: Booking) => {
   try {
     console.log('Generating invoice for booking:', booking)
     
-    // Reset current invoice data first
-    currentInvoiceData.value = null
-    
-    // Prepare invoice data
+    // Prepare invoice data first
     const invoiceData = {
       invoiceNumber: `INV-${booking.id.slice(-8).toUpperCase()}`,
       issueDate: new Date().toLocaleDateString('ar-SA'),
@@ -840,16 +832,18 @@ const generateInvoice = async (booking: Booking) => {
     
     console.log('Invoice data prepared:', invoiceData)
     
-    // Show invoice template
+    // Set invoice data first
+    currentInvoiceData.value = invoiceData
     selectedBooking.value = booking
+    
+    // Show modal
     showInvoiceModal.value = true
     
-    // Set invoice data after ensuring modal is open
+    // Wait for DOM to update
     await nextTick()
-    currentInvoiceData.value = invoiceData
     
-    // Wait a bit more to ensure the invoice content is rendered
-    await new Promise(resolve => setTimeout(resolve, 500))
+    // Wait a bit more to ensure the invoice content is fully rendered
+    await new Promise(resolve => setTimeout(resolve, 1000))
     
     console.log('Invoice modal should be visible now')
     
@@ -861,75 +855,37 @@ const generateInvoice = async (booking: Booking) => {
 
 const downloadInvoicePDF = async () => {
   try {
+    // Check if invoice data is available
+    if (!currentInvoiceData.value) {
+      alert('لا توجد بيانات فاتورة للتحميل')
+      return
+    }
+
     // Wait for DOM to be ready
     await nextTick()
     
+    // Wait a bit more to ensure the invoice is fully rendered
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
     const html2pdf = (await import('html2pdf.js')).default
     
-    // Function to wait for element to be available and visible
-    const waitForElement = (selector: string, timeout = 10000) => {
-      return new Promise((resolve, reject) => {
-        const startTime = Date.now()
-        
-        const checkElement = () => {
-          const element = document.querySelector(selector)
-          if (element && element.offsetParent !== null) {
-            // Element exists and is visible
-            resolve(element)
-          } else if (Date.now() - startTime > timeout) {
-            reject(new Error(`Element ${selector} not found or not visible within ${timeout}ms`))
-          } else {
-            setTimeout(checkElement, 200)
-          }
-        }
-        
-        checkElement()
-      })
-    }
+    // Find the invoice content element
+    const element = document.querySelector('#invoice-content')
     
-    try {
-      // Ensure the modal is visible first
-      if (!showInvoiceModal.value) {
-        alert('يرجى عرض الفاتورة أولاً قبل تحميلها')
-        return
+    if (!element) {
+      // Try alternative selectors
+      const altElement = document.querySelector('.invoice-template') || 
+                       document.querySelector('.invoice-container') ||
+                       document.querySelector('[id*="invoice"]')
+      
+      if (!altElement) {
+        throw new Error('لم يتم العثور على محتوى الفاتورة')
       }
       
-      console.log('Starting PDF generation...')
-      console.log('Modal visible:', showInvoiceModal.value)
-      console.log('Invoice data available:', !!currentInvoiceData.value)
-      
-      // Wait for the invoice content to be available and visible
-      console.log('Waiting for #invoice-content element...')
-      const element = await waitForElement('#invoice-content')
-      console.log('Element found:', element)
-      
-      // Additional check to ensure element has content
-      if (!element.innerHTML.trim()) {
-        throw new Error('Invoice content is empty')
-      }
-      
-      // Force element to be visible for PDF generation
-      element.style.display = 'block'
-      element.style.visibility = 'visible'
-      element.style.position = 'static'
-      element.style.left = 'auto'
-      element.style.top = 'auto'
-      element.style.width = '100%'
-      element.style.height = 'auto'
-      
-      // Also ensure parent container is visible
-      const container = element.closest('.invoice-container')
-      if (container) {
-        container.style.display = 'block'
-        container.style.visibility = 'visible'
-        container.style.position = 'static'
-        container.style.left = 'auto'
-        container.style.top = 'auto'
-      }
-      
+      // Use the alternative element
       const opt = {
         margin: 0.5,
-        filename: `فاتورة-${currentInvoiceData.value?.invoiceNumber || 'invoice'}.pdf`,
+        filename: `فاتورة-${currentInvoiceData.value.invoiceNumber || 'invoice'}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
           scale: 2,
@@ -937,7 +893,9 @@ const downloadInvoicePDF = async () => {
           letterRendering: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          logging: false
+          logging: false,
+          width: 800,
+          height: 1000
         },
         jsPDF: { 
           unit: 'in', 
@@ -948,19 +906,65 @@ const downloadInvoicePDF = async () => {
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       }
       
-      await html2pdf().set(opt).from(element).save()
-      
-      // Close modal after successful download
-      showInvoiceModal.value = false
-      
-    } catch (elementError) {
-      console.error('Element not found:', elementError)
-      alert('لم يتم العثور على محتوى الفاتورة. يرجى التأكد من أن الفاتورة معروضة بشكل صحيح.')
+      await html2pdf().set(opt).from(altElement).save()
+      return
     }
+    
+    // Ensure element is visible
+    element.style.display = 'block'
+    element.style.visibility = 'visible'
+    element.style.position = 'static'
+    element.style.width = '100%'
+    element.style.height = 'auto'
+    
+    // Create a temporary container for better PDF generation
+    const tempContainer = document.createElement('div')
+    tempContainer.style.position = 'absolute'
+    tempContainer.style.left = '-9999px'
+    tempContainer.style.top = '0'
+    tempContainer.style.width = '800px'
+    tempContainer.style.backgroundColor = '#ffffff'
+    tempContainer.innerHTML = element.innerHTML
+    
+    document.body.appendChild(tempContainer)
+    
+    try {
+      const opt = {
+        margin: 0.5,
+        filename: `فاتورة-${currentInvoiceData.value.invoiceNumber || 'invoice'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+          width: 800,
+          height: 1000
+        },
+        jsPDF: { 
+          unit: 'in', 
+          format: 'a4', 
+          orientation: 'portrait',
+          compress: true
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      }
+      
+      await html2pdf().set(opt).from(tempContainer).save()
+      
+    } finally {
+      // Clean up temporary container
+      document.body.removeChild(tempContainer)
+    }
+    
+    // Close modal after successful download
+    showInvoiceModal.value = false
     
   } catch (error) {
     console.error('Error generating PDF:', error)
-    alert('حدث خطأ أثناء إنشاء ملف PDF')
+    alert('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message)
   }
 }
 

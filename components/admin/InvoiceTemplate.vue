@@ -275,15 +275,13 @@ onMounted(() => {
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
 
 .invoice-container {
-  position: absolute;
-  left: -9999px;
-  top: -9999px;
   width: 210mm;
   min-height: 297mm;
   background: white;
   font-family: 'Cairo', 'Arial', sans-serif;
   direction: rtl;
   text-align: right;
+  margin: 0 auto;
 }
 
 .invoice-template {
@@ -291,6 +289,8 @@ onMounted(() => {
   background: white;
   color: #333;
   line-height: 1.6;
+  display: block;
+  visibility: visible;
 }
 
 /* Header Styles */
