@@ -43,7 +43,8 @@ export default defineEventHandler(async (event) => {
         email: admin.email,
         name: admin.name,
         role: admin.role,
-        last_login: admin.last_login
+        last_login: admin.last_login,
+        created_at: admin.created_at
       }
     }
   } catch (error: any) {

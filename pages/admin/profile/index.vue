@@ -391,17 +391,30 @@
 const activeTab = ref('personal')
 
 const profile = ref({
+  id: '',
   name: 'مدير النظام',
-  email: 'admin@wonderland.com',
-  phone: '+966500000000',
+  email: 'info@worldtripagency.com',
+  phone: '+966500982394',
   position: 'مدير عام',
-  department: 'management',
+  department: 'الإدارة',
   birthDate: '1990-01-01',
   role: 'super_admin',
   status: 'active',
-  lastLogin: '2024-01-21 10:30',
-  memberSince: '2024-01-01',
-  avatar: null
+  lastLogin: '',
+  memberSince: '',
+  avatar: null,
+  preferences: {
+    darkMode: false,
+    language: 'ar',
+    timezone: 'Asia/Riyadh',
+    emailNotifications: true,
+    systemNotifications: true,
+    bookingNotifications: true
+  },
+  securitySettings: {
+    twoFactor: false,
+    loginNotifications: true
+  }
 })
 
 const passwordForm = ref({
@@ -414,52 +427,12 @@ const showCurrentPassword = ref(false)
 const showNewPassword = ref(false)
 const showConfirmPassword = ref(false)
 
-const securitySettings = ref({
-  twoFactor: false,
-  loginNotifications: true
-})
-
-const preferences = ref({
-  darkMode: false,
-  language: 'ar',
-  timezone: 'Asia/Riyadh',
-  emailNotifications: true,
-  systemNotifications: true,
-  bookingNotifications: true
-})
+const securitySettings = computed(() => profile.value.securitySettings)
+const preferences = computed(() => profile.value.preferences)
 
 const activityFilter = ref('')
 
-const activities = ref([
-  {
-    id: '1',
-    type: 'login',
-    description: 'تسجيل الدخول',
-    details: 'تم تسجيل الدخول بنجاح من المتصفح',
-    timestamp: '2024-01-21T10:30:00Z'
-  },
-  {
-    id: '2',
-    type: 'update',
-    description: 'تحديث البيانات',
-    details: 'تم تحديث معلومات الملف الشخصي',
-    timestamp: '2024-01-20T15:45:00Z'
-  },
-  {
-    id: '3',
-    type: 'create',
-    description: 'إنشاء باقة جديدة',
-    details: 'تم إنشاء باقة "رحلة إلى دبي"',
-    timestamp: '2024-01-19T09:20:00Z'
-  },
-  {
-    id: '4',
-    type: 'logout',
-    description: 'تسجيل الخروج',
-    details: 'تم تسجيل الخروج من النظام',
-    timestamp: '2024-01-18T17:30:00Z'
-  }
-])
+const activities = ref([])
 
 const tabs = ref([
   { id: 'personal', name: 'المعلومات الشخصية', icon: 'lucide:user' },
@@ -520,20 +493,31 @@ const formatDateTime = (dateString: string) => {
 
 const loadProfileData = async () => {
   try {
-    const response = await $fetch('/api/admin/settings')
-    if (response.success && response.data.general) {
-      const generalSettings = response.data.general
-      profile.value.email = generalSettings.contactEmail || profile.value.email
-      profile.value.phone = generalSettings.contactPhone || profile.value.phone
-      
-      // Parse address to extract position and department if available
-      if (generalSettings.contactAddress && typeof generalSettings.contactAddress === 'string') {
-        const addressParts = generalSettings.contactAddress.split(' - ')
-        if (addressParts.length >= 2) {
-          profile.value.position = addressParts[0]
-          profile.value.department = addressParts[1]
-        }
+    const { getAuthHeaders } = useAdminAuth()
+    const headers = getAuthHeaders()
+    
+    // Load user profile data
+    const profileResponse = await $fetch('/api/admin/auth/me', { headers })
+    if (profileResponse.success && profileResponse.user) {
+      const user = profileResponse.user
+      profile.value = {
+        ...profile.value,
+        id: user.id,
+        name: user.name || 'مدير النظام',
+        email: user.email,
+        role: user.role || 'super_admin',
+        lastLogin: user.last_login ? new Date(user.last_login).toLocaleString('ar-SA') : '',
+        memberSince: user.created_at ? new Date(user.created_at).toLocaleDateString('ar-SA') : ''
       }
+    }
+
+    // Load activity log
+    const activityResponse = await $fetch('/api/admin/auth/activity', { 
+      headers,
+      query: { limit: 20 }
+    })
+    if (activityResponse.success && activityResponse.activities) {
+      activities.value = activityResponse.activities
     }
   } catch (error) {
     console.error('Error loading profile data:', error)
@@ -553,36 +537,34 @@ const saveProfile = async () => {
       saveBtn.innerHTML = '<Icon name="lucide:loader-2" class="btn-icon animate-spin" /> جاري الحفظ...'
     }
 
-    // Save profile data to admin settings
-    const response = await $fetch('/api/admin/settings', {
+    const { getAuthHeaders } = useAdminAuth()
+    const headers = getAuthHeaders()
+
+    // Save profile data
+    const response = await $fetch('/api/admin/auth/profile', {
       method: 'PUT',
+      headers,
       body: {
-        general: {
-          contactEmail: profile.value.email,
-          contactPhone: profile.value.phone,
-          contactAddress: profile.value.position + ' - ' + profile.value.department
-        }
+        name: profile.value.name,
+        email: profile.value.email
       }
     })
 
     if (response.success) {
+      // Update local profile data
+      profile.value = { ...profile.value, ...response.user }
+      
       // Show success message
       alert('تم حفظ معلومات الملف الشخصي بنجاح!')
       
-      // Add activity log entry
-      activities.value.unshift({
-        id: Date.now().toString(),
-        type: 'update',
-        description: 'تحديث الملف الشخصي',
-        details: 'تم تحديث معلومات الملف الشخصي بنجاح',
-        timestamp: new Date().toISOString()
-      })
+      // Reload activity log
+      await loadProfileData()
     } else {
       throw new Error('Failed to save profile')
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error saving profile:', error)
-    alert('حدث خطأ أثناء حفظ الملف الشخصي')
+    alert(error.data?.message || 'حدث خطأ أثناء حفظ الملف الشخصي')
   } finally {
     // Reset button state
     const saveBtn = document.querySelector('.save-btn') as HTMLButtonElement
@@ -593,19 +575,96 @@ const saveProfile = async () => {
   }
 }
 
-const changePassword = () => {
+const changePassword = async () => {
   if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
     alert('كلمة المرور الجديدة وتأكيدها غير متطابقتين')
     return
   }
-  console.log('Changing password...', passwordForm.value)
-}
 
-const logoutAllDevices = () => {
-  if (confirm('هل أنت متأكد من تسجيل الخروج من جميع الأجهزة؟')) {
-    console.log('Logging out from all devices...')
+  if (passwordForm.value.newPassword.length < 6) {
+    alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل')
+    return
+  }
+
+  try {
+    const { getAuthHeaders } = useAdminAuth()
+    const headers = getAuthHeaders()
+
+    const response = await $fetch('/api/admin/auth/profile', {
+      method: 'PUT',
+      headers,
+      body: {
+        currentPassword: passwordForm.value.currentPassword,
+        newPassword: passwordForm.value.newPassword
+      }
+    })
+
+    if (response.success) {
+      alert('تم تغيير كلمة المرور بنجاح!')
+      passwordForm.value = {
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      }
+      await loadProfileData()
+    } else {
+      throw new Error('Failed to change password')
+    }
+  } catch (error: any) {
+    console.error('Error changing password:', error)
+    alert(error.data?.message || 'حدث خطأ أثناء تغيير كلمة المرور')
   }
 }
+
+const logoutAllDevices = async () => {
+  if (confirm('هل أنت متأكد من تسجيل الخروج من جميع الأجهزة؟')) {
+    try {
+      const { logout } = useAdminAuth()
+      await logout()
+      await navigateTo('/admin/login')
+    } catch (error) {
+      console.error('Error logging out:', error)
+    }
+  }
+}
+
+// Save preferences
+const savePreferences = async () => {
+  try {
+    const { getAuthHeaders } = useAdminAuth()
+    const headers = getAuthHeaders()
+
+    const response = await $fetch('/api/admin/auth/preferences', {
+      method: 'PUT',
+      headers,
+      body: {
+        preferences: preferences.value,
+        securitySettings: securitySettings.value
+      }
+    })
+
+    if (response.success) {
+      alert('تم حفظ التفضيلات بنجاح!')
+      await loadProfileData()
+    } else {
+      throw new Error('Failed to save preferences')
+    }
+  } catch (error: any) {
+    console.error('Error saving preferences:', error)
+    alert(error.data?.message || 'حدث خطأ أثناء حفظ التفضيلات')
+  }
+}
+
+// Watch for changes in preferences and security settings
+watch([preferences, securitySettings], () => {
+  // Auto-save preferences after 2 seconds of no changes
+  clearTimeout(saveTimeout.value)
+  saveTimeout.value = setTimeout(() => {
+    savePreferences()
+  }, 2000)
+}, { deep: true })
+
+const saveTimeout = ref(null)
 
 // Load profile data on mount
 onMounted(() => {

@@ -29,7 +29,7 @@
                 type="email"
                 required
                 class="block w-full pr-10 pl-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
-                placeholder="admin@wonderland.com"
+                placeholder="info@worldtripagency.com"
                 :disabled="isLoading"
               />
             </div>
