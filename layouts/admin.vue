@@ -49,6 +49,14 @@ onMounted(() => {
   })
 })
 
+// Watch for route changes and close sidebar on mobile
+const route = useRoute()
+watch(() => route.path, () => {
+  if (isMobile.value) {
+    closeSidebar()
+  }
+})
+
 // Apply admin auth middleware
 definePageMeta({
   middleware: 'admin-auth'
