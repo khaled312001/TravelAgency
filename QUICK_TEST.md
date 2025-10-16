@@ -17,7 +17,7 @@ https://www.worldtripagency.com
 ```
 https://www.worldtripagency.com/admin/content
 ```
-- سجل الدخول: `admin@wonderland.com` / `admin123`
+- سجل الدخول: `info@worldtripagency.com` / `admin123`
 - يجب أن تظهر جميع الحقول
 - يجب أن تظهر حقول الفيديو والصور
 

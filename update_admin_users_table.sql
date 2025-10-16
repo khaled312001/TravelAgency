@@ -29,7 +29,7 @@ SET
     "twoFactor": false,
     "loginNotifications": true
   }'
-WHERE email = 'admin@wonderland.com';
+WHERE email = 'info@worldtripagency.com';
 
 -- إنشاء حساب إداري جديد بالبريد الإلكتروني الصحيح
 INSERT INTO admin_users (

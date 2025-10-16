@@ -13,7 +13,7 @@
 
 ### 2. تحقق من صفحة إدارة المحتوى
 - اذهب إلى: `https://www.worldtripagency.com/admin/content`
-- سجل الدخول: `admin@wonderland.com` / `admin123`
+- سجل الدخول: `info@worldtripagency.com` / `admin123`
 - تأكد من ظهور جميع الحقول (النصوص والفيديو والصور)
 
 ### 3. اختبر التعديل والحفظ

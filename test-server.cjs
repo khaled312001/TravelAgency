@@ -11,7 +11,7 @@ const options = {
 }
 
 const postData = JSON.stringify({
-  email: 'admin@wonderland.com',
+  email: 'info@worldtripagency.com',
   password: 'admin123'
 })
 

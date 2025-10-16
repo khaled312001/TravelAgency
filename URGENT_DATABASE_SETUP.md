@@ -118,7 +118,7 @@ CREATE TRIGGER update_site_content_updated_at
 ### الخطوة 3: اختبار النظام
 
 1. **اذهب إلى**: `https://www.worldtripagency.com/admin/content`
-2. **سجل الدخول**: `admin@wonderland.com` / `admin123`
+2. **سجل الدخول**: `info@worldtripagency.com` / `admin123`
 3. **عدّل أي نص**
 4. **اضغط على "حفظ جميع التغييرات"**
 5. **تأكد من عدم ظهور خطأ 500**

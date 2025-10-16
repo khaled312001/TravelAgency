@@ -16,7 +16,7 @@ async function updateAdmin() {
         email: 'info@worldtripagency.com',
         name: 'مدير النظام'
       })
-      .eq('email', 'admin@wonderland.com');
+      .eq('email', 'info@worldtripagency.com');
     
     if (updateError) {
       console.log('خطأ في تحديث الحساب:', updateError.message);

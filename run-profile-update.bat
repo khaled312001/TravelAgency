@@ -57,7 +57,7 @@ async function updateDatabase() {
           loginNotifications: true
         }
       })
-      .eq('email', 'admin@wonderland.com');
+      .eq('email', 'info@worldtripagency.com');
     
     if (updateError) {
       console.log('خطأ في تحديث الحساب:', updateError.message);

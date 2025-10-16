@@ -111,7 +111,7 @@ CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
 
 -- Insert default admin user (password: admin123)
 INSERT INTO admin_users (email, password_hash, name, role) 
-VALUES ('admin@wonderland.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin User', 'super_admin')
+VALUES ('info@worldtripagency.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin User', 'super_admin')
 ON CONFLICT (email) DO NOTHING;
 
 -- Create updated_at trigger function

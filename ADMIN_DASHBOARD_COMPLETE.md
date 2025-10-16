@@ -108,7 +108,7 @@
 
 ### 1. **تسجيل الدخول**
 ```
-البريد: admin@wonderland.com
+البريد: info@worldtripagency.com
 كلمة المرور: admin123
 ```
 

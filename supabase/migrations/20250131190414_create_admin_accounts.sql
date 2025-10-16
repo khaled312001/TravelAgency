@@ -2,10 +2,10 @@
 -- This migration creates additional admin accounts and ensures the default admin exists
 
 -- Insert default admin user (password: admin123)
--- Email: admin@wonderland.com
+-- Email: info@worldtripagency.com
 -- Password: admin123
 INSERT INTO admin_users (email, password_hash, name, role) 
-VALUES ('admin@wonderland.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'مدير النظام', 'super_admin')
+VALUES ('info@worldtripagency.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'مدير النظام', 'super_admin')
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert additional admin users for different roles
@@ -122,7 +122,7 @@ SELECT
   'New booking received from customer Ahmed Mohammed',
   'info',
   au.id
-FROM admin_users au WHERE au.email = 'admin@wonderland.com'
+FROM admin_users au WHERE au.email = 'info@worldtripagency.com'
 LIMIT 1;
 
 INSERT INTO notifications (title, title_en, message, message_en, type, admin_user_id)
@@ -133,7 +133,7 @@ SELECT
   'New message received from customer Sara Ahmed',
   'info',
   au.id
-FROM admin_users au WHERE au.email = 'admin@wonderland.com'
+FROM admin_users au WHERE au.email = 'info@worldtripagency.com'
 LIMIT 1;
 
 -- Create some sample SEO settings
@@ -146,4 +146,4 @@ VALUES
 -- Update admin user last login to show they are active
 UPDATE admin_users 
 SET last_login = NOW() 
-WHERE email = 'admin@wonderland.com';
+WHERE email = 'info@worldtripagency.com';

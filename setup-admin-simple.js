@@ -15,7 +15,7 @@ async function setupAdmin() {
     const { data: adminUser, error: adminUserError } = await supabase
       .from('admin_users')
       .upsert({
-        email: 'admin@wonderland.com',
+        email: 'info@worldtripagency.com',
         password_hash: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
         name: 'مدير النظام',
         role: 'super_admin',
@@ -28,7 +28,7 @@ async function setupAdmin() {
       console.error('❌ خطأ في إدراج حساب الإدارة:', adminUserError)
     } else {
       console.log('✅ تم إنشاء حساب الإدارة الرئيسي بنجاح')
-      console.log('📧 البريد الإلكتروني: admin@wonderland.com')
+      console.log('📧 البريد الإلكتروني: info@worldtripagency.com')
       console.log('🔑 كلمة المرور: admin123')
     }
 

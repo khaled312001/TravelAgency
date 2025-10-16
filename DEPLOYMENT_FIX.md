@@ -54,7 +54,7 @@
    SALES_MANAGER_PHONE=+966500982394
    PUBLIC_SITE_URL=https://worldtripagency.com/
    NODE_ENV=production
-   ADMIN_EMAIL=admin@wonderland.com
+   ADMIN_EMAIL=info@worldtripagency.com
    ADMIN_PASSWORD=admin123
    ```
 

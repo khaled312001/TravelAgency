@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS admin_activity_logs (
 -- إدراج حساب الإدارة الرئيسي
 INSERT INTO admin_users (email, password_hash, name, role, is_active)
 VALUES (
-    'admin@wonderland.com', 
+    'info@worldtripagency.com', 
     '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
     'مدير النظام', 
     'super_admin', 

@@ -26,7 +26,7 @@ http://localhost:3000/admin/login
 ```
 
 ### بيانات الدخول:
-- **البريد الإلكتروني:** `admin@wonderland.com`
+- **البريد الإلكتروني:** `info@worldtripagency.com`
 - **كلمة المرور:** `admin123`
 
 **أو:**
@@ -72,7 +72,7 @@ http://localhost:3000/admin/login
 2. ✅ انقر على "إنشاء نظام الإدارة بالكامل"
 3. ✅ انتظر رسالة النجاح
 4. ✅ اذهب إلى `http://localhost:3000/admin/login`
-5. ✅ سجل دخول باستخدام `admin@wonderland.com` / `admin123`
+5. ✅ سجل دخول باستخدام `info@worldtripagency.com` / `admin123`
 6. ✅ استمتع بلوحة التحكم الكاملة!
 
 ---

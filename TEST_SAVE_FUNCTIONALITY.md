@@ -15,7 +15,7 @@ https://www.worldtripagency.com/admin/content
 ```
 
 ### 2. سجل الدخول
-- البريد الإلكتروني: `admin@wonderland.com`
+- البريد الإلكتروني: `info@worldtripagency.com`
 - كلمة المرور: `admin123`
 
 ### 3. عدّل أي نص

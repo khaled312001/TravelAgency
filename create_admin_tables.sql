@@ -54,11 +54,11 @@ CREATE TRIGGER update_admin_users_updated_at
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- إدراج حساب الإدارة الرئيسي
--- البريد الإلكتروني: admin@wonderland.com
+-- البريد الإلكتروني: info@worldtripagency.com
 -- كلمة المرور: admin123
 INSERT INTO admin_users (email, password_hash, name, role) 
 VALUES (
-  'admin@wonderland.com', 
+  'info@worldtripagency.com', 
   '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
   'مدير النظام', 
   'super_admin'

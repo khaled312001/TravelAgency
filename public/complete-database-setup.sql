@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS notifications (
 -- إدراج حسابات الإدارة
 INSERT INTO admin_users (email, password_hash, name, role, is_active)
 VALUES 
-    ('admin@wonderland.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'مدير النظام', 'super_admin', true),
+    ('info@worldtripagency.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'مدير النظام', 'super_admin', true),
     ('manager@wonderland.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'مدير المحتوى', 'admin', true)
 ON CONFLICT (email) DO UPDATE SET
     password_hash = EXCLUDED.password_hash,

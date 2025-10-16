@@ -61,7 +61,7 @@
           </div>
           <div class="user-info">
             <p class="user-name">{{ user?.name || 'مدير النظام' }}</p>
-            <p class="user-email">{{ user?.email || 'admin@wonderland.com' }}</p>
+            <p class="user-email">{{ user?.email || 'info@worldtripagency.com' }}</p>
           </div>
           <Icon name="lucide:chevron-down" class="dropdown-icon" />
         </button>
@@ -74,7 +74,7 @@
             </div>
             <div class="dropdown-user-info">
               <p class="dropdown-name">{{ user?.name || 'مدير النظام' }}</p>
-              <p class="dropdown-email">{{ user?.email || 'admin@wonderland.com' }}</p>
+              <p class="dropdown-email">{{ user?.email || 'info@worldtripagency.com' }}</p>
             </div>
           </div>
           

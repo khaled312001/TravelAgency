@@ -16,7 +16,7 @@
 
 ### 1. **الوصول لصفحة إدارة المحتوى**
 - اذهب إلى: `https://www.worldtripagency.com/admin/content`
-- سجل الدخول: `admin@wonderland.com` / `admin123`
+- سجل الدخول: `info@worldtripagency.com` / `admin123`
 
 ### 2. **رفع الفيديو**
 - **فيديو سطح المكتب**: اسحب فيديو أو اضغط للاختيار

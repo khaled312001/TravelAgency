@@ -35,7 +35,7 @@ npm run dev
 
 ## بعد الإعداد:
 - اذهب إلى: `http://localhost:3000/admin/login`
-- استخدم: `admin@wonderland.com` / `admin123`
+- استخدم: `info@worldtripagency.com` / `admin123`
 
 ## ملاحظة:
 Service Role Key يبدأ عادة بـ `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` ويحتوي على `"role":"service_role"`

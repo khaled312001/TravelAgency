@@ -85,7 +85,7 @@
 
 1. اذهب إلى: `http://localhost:3000/admin/login`
 2. سجل الدخول بالبيانات:
-   - البريد: `admin@wonderland.com`
+   - البريد: `info@worldtripagency.com`
    - كلمة المرور: `admin123`
 3. اضغط على "إدارة SEO" في السايدبار
 4. **أو اذهب مباشرة إلى: `http://localhost:3000/admin/seo`**

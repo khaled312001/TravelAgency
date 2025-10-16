@@ -24,7 +24,7 @@ PUBLIC_SITE_URL=http://localhost:3000
 NODE_ENV=development
 
 # Admin Default Credentials (for development only)
-ADMIN_EMAIL=admin@wonderland.com
+ADMIN_EMAIL=info@worldtripagency.com
 ADMIN_PASSWORD=admin123
 ```
 

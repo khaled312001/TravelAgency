@@ -8,7 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 async function testLogin() {
   try {
-    const email = 'admin@wonderland.com'
+    const email = 'info@worldtripagency.com'
     const password = 'admin123'
     
     console.log('Testing login with:', email)

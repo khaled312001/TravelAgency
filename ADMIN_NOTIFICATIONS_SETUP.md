@@ -54,7 +54,7 @@ npm install web-push
 
 ### 3. **تفعيل الإشعارات للإدمن**:
 - اذهب إلى: `https://www.worldtripagency.com/admin/notifications/setup`
-- سجل الدخول: `admin@wonderland.com` / `admin123`
+- سجل الدخول: `info@worldtripagency.com` / `admin123`
 - اضغط "تفعيل الإشعارات"
 - امنح الإذن للمتصفح
 

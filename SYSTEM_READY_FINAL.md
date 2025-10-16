@@ -28,7 +28,7 @@
 ```
 https://www.worldtripagency.com/admin/content
 ```
-- سجل الدخول: `admin@wonderland.com` / `admin123`
+- سجل الدخول: `info@worldtripagency.com` / `admin123`
 - عدّل أي نص
 - احفظ التغييرات
 - تحقق من ظهور رسالة النجاح

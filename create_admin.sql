@@ -4,7 +4,7 @@
 -- إدراج حساب الإدارة الرئيسي
 INSERT INTO admin_users (email, password_hash, name, role) 
 VALUES (
-  'admin@wonderland.com', 
+  'info@worldtripagency.com', 
   '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
   'مدير النظام', 
   'super_admin'
@@ -12,6 +12,6 @@ VALUES (
 ON CONFLICT (email) DO NOTHING;
 
 -- معلومات الحساب:
--- البريد الإلكتروني: admin@wonderland.com
+-- البريد الإلكتروني: info@worldtripagency.com
 -- كلمة المرور: admin123
 -- الصلاحيات: مدير عام (جميع الصلاحيات)

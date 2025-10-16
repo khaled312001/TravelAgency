@@ -34,7 +34,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 اذهب إلى: `http://localhost:3000/admin/login`
 
 **بيانات الدخول:**
-- **البريد:** `admin@wonderland.com`
+- **البريد:** `info@worldtripagency.com`
 - **كلمة المرور:** `admin123`
 
 ## 📊 ما سيتم إنشاؤه:
@@ -114,7 +114,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 3. ✅ احصل على Service Role Key
 4. ✅ أضفه إلى ملف `.env`
 5. ✅ اذهب إلى `http://localhost:3000/admin/login`
-6. ✅ سجل دخول باستخدام `admin@wonderland.com` / `admin123`
+6. ✅ سجل دخول باستخدام `info@worldtripagency.com` / `admin123`
 7. ✅ استمتع بالنظام الكامل!
 
 ---

@@ -13,7 +13,7 @@ async function testFinalAPI() {
     const { data: adminUser, error: userError } = await supabase
       .from('admin_users')
       .select('*')
-      .eq('email', 'admin@wonderland.com')
+      .eq('email', 'info@worldtripagency.com')
       .eq('is_active', true)
       .single()
 

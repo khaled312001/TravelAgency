@@ -18,13 +18,13 @@ async function createAdminAccount() {
     await supabase
       .from('admin_users')
       .delete()
-      .eq('email', 'admin@wonderland.com')
+      .eq('email', 'info@worldtripagency.com')
     
     // Create new admin user
     const { data, error } = await supabase
       .from('admin_users')
       .insert({
-        email: 'admin@wonderland.com',
+        email: 'info@worldtripagency.com',
         password_hash: hashedPassword,
         name: 'مدير النظام',
         role: 'super_admin',

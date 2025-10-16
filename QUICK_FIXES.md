@@ -28,7 +28,7 @@
 
 ### 2. تحقق من صفحة إدارة المحتوى
 - اذهب إلى: `https://www.worldtripagency.com/admin/content`
-- سجل الدخول: `admin@wonderland.com` / `admin123`
+- سجل الدخول: `info@worldtripagency.com` / `admin123`
 - حاول تعديل نص وحفظه
 - إذا ظهر خطأ 500، فهذا يعني أن Service Role Key غير صحيح
 

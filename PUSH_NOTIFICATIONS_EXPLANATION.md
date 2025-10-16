@@ -42,7 +42,7 @@
 
 ### 2. **إرسال إشعار تجريبي**:
 - اذهب إلى: `https://www.worldtripagency.com/admin/notifications`
-- سجل الدخول: `admin@wonderland.com` / `admin123`
+- سجل الدخول: `info@worldtripagency.com` / `admin123`
 - اكتب عنوان ورسالة
 - اضغط "إرسال الإشعار"
 

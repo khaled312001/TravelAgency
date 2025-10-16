@@ -189,7 +189,7 @@
 
 5. **الوصول للوحة التحكم:**
    - اذهب إلى: `http://localhost:3000/admin/login`
-   - استخدم: `admin@wonderland.com` / `admin123`
+   - استخدم: `info@worldtripagency.com` / `admin123`
 
 ## 📋 الملفات المهمة
 

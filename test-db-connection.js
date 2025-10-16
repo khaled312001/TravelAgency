@@ -26,7 +26,7 @@ async function testConnection() {
     const { data: adminData, error: adminError } = await supabase
       .from('admin_users')
       .select('*')
-      .eq('email', 'admin@wonderland.com')
+      .eq('email', 'info@worldtripagency.com')
       .single()
     
     if (adminError) {

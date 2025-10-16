@@ -14,7 +14,7 @@
 
 ### 1. **اذهب إلى صفحة إدارة المحتوى**
 - الرابط: `https://www.worldtripagency.com/admin/content`
-- سجل الدخول: `admin@wonderland.com` / `admin123`
+- سجل الدخول: `info@worldtripagency.com` / `admin123`
 
 ### 2. **عدّل أي نص**
 - غيّر عنوان الهيرو
