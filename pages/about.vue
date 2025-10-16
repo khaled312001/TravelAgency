@@ -1,21 +1,16 @@
 <template>
   <div class="about-page">
     <!-- First section: Hero with background image -->
-    <AboutHeroSection
-      title="about.hero.title"
-      subtitle="about.hero.subtitle"
-      cta="about.hero.cta"
-      backgroundImage="/images/about/hero.jpg"
-    />
+    <AboutHeroSection :content="aboutContent" />
     
     <!-- Second section: Dark background -->
-    <AgencyOverview />
+    <AgencyOverview :content="aboutContent" />
     
     <!-- Third section: Light background -->
-    <AboutMissionSection />
+    <AboutMissionSection :content="aboutContent" />
     
     <!-- Fourth section: Dark background -->
-    <CoreValuesGrid />
+    <CoreValuesGrid :content="aboutContent" />
     
     <!-- Fifth section: Light background -->
     <!-- <HistoryTimeline /> -->
@@ -29,14 +24,32 @@ import AboutMissionSection from '~/components/ui/about/AboutMissionSection.vue';
 import CoreValuesGrid from '~/components/ui/about/CoreValuesGrid.vue';
 // import HistoryTimeline from '~/components/ui/about/HistoryTimeline.vue';
 
-// Load about content on page mount
-const { loadAboutContent, aboutContent, reloadAboutContent } = useAboutContent()
+// Load about content using useAsyncData for proper SSR
+const { data: aboutContent, refresh: reloadAboutContent } = await useAsyncData(
+  'about-content',
+  () => $fetch('/api/admin/content/about').then(res => res.data),
+  {
+    lazy: false,
+    server: true,
+    // Transform the data to ensure it's reactive
+    transform: (data) => {
+      console.log('About content transformed:', data)
+      return data
+    }
+  }
+)
 
-onMounted(async () => {
-  console.log('About page mounted, loading content...')
-  await loadAboutContent()
-  console.log('About content loaded:', aboutContent.value)
+onMounted(() => {
+  console.log('About page mounted, content:', aboutContent.value)
+  console.log('Hero title AR:', aboutContent.value?.hero?.title?.ar)
+  console.log('Hero title EN:', aboutContent.value?.hero?.title?.en)
 })
+
+// Watch aboutContent changes
+watch(aboutContent, (newVal) => {
+  console.log('aboutContent changed in about.vue:', newVal)
+  console.log('New hero title AR:', newVal?.hero?.title?.ar)
+}, { deep: true, immediate: true })
 
 // Watch for route changes and reload content
 watch(() => useRoute().path, async () => {

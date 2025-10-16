@@ -3,6 +3,16 @@ import { ref, onUnmounted } from 'vue';
 
 // Following our DOM reference safety patterns
 const missionSection = ref<HTMLElement | null>(null);
+const localePath = useLocalePath();
+const { locale } = useI18n();
+
+// Receive content as prop from parent
+const props = defineProps<{
+  content?: any
+}>()
+
+// For backward compatibility with template
+const aboutContent = computed(() => props.content)
 
 // Safely clean up resources when component unmounts
 onUnmounted(() => {
@@ -18,10 +28,10 @@ onUnmounted(() => {
     <div class="container mx-auto px-4 md:px-8 lg:px-12">
       <div class="max-w-4xl mx-auto text-center">
         <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6">
-          {{ $t('about.mission.title') }}
+          {{ aboutContent?.mission?.title?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.mission.title') }}
         </h2>
-        <p class="text-gray-300 text-lg mb-10">
-          {{ $t('about.mission.subtitle') }}
+        <p class="text-gray-300 text-lg mb-10 whitespace-pre-wrap">
+          {{ aboutContent?.mission?.subtitle?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.mission.subtitle') }}
         </p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
@@ -33,10 +43,10 @@ onUnmounted(() => {
               </div>
             </div>
             <h3 class="text-xl font-semibold mb-4 text-white">
-              {{ $t('about.mission.mission_title') }}
+              {{ aboutContent?.mission?.mission_title?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.mission.mission_title') }}
             </h3>
-            <p class="text-gray-300">
-              {{ $t('about.mission.mission_text') }}
+            <p class="text-gray-300 whitespace-pre-wrap">
+              {{ aboutContent?.mission?.mission_text?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.mission.mission_text') }}
             </p>
           </div>
           
@@ -48,10 +58,10 @@ onUnmounted(() => {
               </div>
             </div>
             <h3 class="text-xl font-semibold mb-4 text-white">
-              {{ $t('about.mission.vision_title') }}
+              {{ aboutContent?.mission?.vision_title?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.mission.vision_title') }}
             </h3>
-            <p class="text-gray-300">
-              {{ $t('about.mission.vision_text') }}
+            <p class="text-gray-300 whitespace-pre-wrap">
+              {{ aboutContent?.mission?.vision_text?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.mission.vision_text') }}
             </p>
           </div>
         </div>

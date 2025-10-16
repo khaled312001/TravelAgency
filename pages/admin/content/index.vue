@@ -67,11 +67,27 @@
                 />
               </div>
               <div class="form-group">
-                <label class="form-label">فيديو الخلفية</label>
+                <label class="form-label">فيديو الخلفية (Desktop)</label>
                 <ClientFileUpload
-                  v-model="content.hero.video"
+                  v-model="content.hero.video_desktop"
                   accept="video/*"
                   :max-size="50"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">فيديو الخلفية (Mobile)</label>
+                <ClientFileUpload
+                  v-model="content.hero.video_mobile"
+                  accept="video/*"
+                  :max-size="50"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">صورة الملصق</label>
+                <ClientFileUpload
+                  v-model="content.hero.poster_image"
+                  accept="image/*"
+                  :max-size="10"
                 />
               </div>
             </div>
@@ -112,11 +128,27 @@
                 />
               </div>
               <div class="form-group">
-                <label class="form-label">Background Video</label>
+                <label class="form-label">Background Video (Desktop)</label>
                 <ClientFileUpload
-                  v-model="content.hero.video"
+                  v-model="content.hero.video_desktop"
                   accept="video/*"
                   :max-size="50"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Background Video (Mobile)</label>
+                <ClientFileUpload
+                  v-model="content.hero.video_mobile"
+                  accept="video/*"
+                  :max-size="50"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Poster Image</label>
+                <ClientFileUpload
+                  v-model="content.hero.poster_image"
+                  accept="image/*"
+                  :max-size="10"
                 />
               </div>
             </div>
@@ -383,6 +415,10 @@
           <p class="section-description">تعديل محتوى صفحة عن الشركة</p>
         </div>
         
+        <!-- Hero Section -->
+        <div class="subsection-header">
+          <h3 class="subsection-title">قسم البطل الرئيسي</h3>
+        </div>
         <div class="content-grid">
           <!-- Arabic Content -->
           <div class="content-card">
@@ -409,6 +445,86 @@
                   placeholder="النص الفرعي للبطل"
                 ></textarea>
               </div>
+              <div class="form-group">
+                <label class="form-label">عنوان زر الدعوة لاتخاذ إجراء</label>
+                <input
+                  v-model="content.about.hero.cta_title.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="عنوان زر الدعوة لاتخاذ إجراء"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">نص زر الدعوة لاتخاذ إجراء</label>
+                <input
+                  v-model="content.about.hero.cta.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="نص زر الدعوة لاتخاذ إجراء"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- English Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">English Content</h3>
+              <div class="language-badge english">English</div>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label class="form-label">Hero Title</label>
+                <input
+                  v-model="content.about.hero.title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Hero title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hero Subtitle</label>
+                <textarea
+                  v-model="content.about.hero.subtitle.en"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="Hero subtitle"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">CTA Title</label>
+                <input
+                  v-model="content.about.hero.cta_title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="CTA title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">CTA Button Text</label>
+                <input
+                  v-model="content.about.hero.cta.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="CTA button text"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overview Section -->
+        <div class="subsection-header">
+          <h3 class="subsection-title">قسم النظرة العامة</h3>
+        </div>
+        <div class="content-grid">
+          <!-- Arabic Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">المحتوى العربي</h3>
+              <div class="language-badge arabic">العربية</div>
+            </div>
+            <div class="card-content">
               <div class="form-group">
                 <label class="form-label">عنوان نظرة عامة</label>
                 <input
@@ -454,6 +570,24 @@
                   placeholder="نص عن الشركة"
                 ></textarea>
               </div>
+              <div class="form-group">
+                <label class="form-label">لماذا نحن</label>
+                <input
+                  v-model="content.about.overview.why_us.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="لماذا نحن"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">النص الختامي</label>
+                <textarea
+                  v-model="content.about.overview.closing.ar"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="النص الختامي"
+                ></textarea>
+              </div>
             </div>
           </div>
 
@@ -464,24 +598,6 @@
               <div class="language-badge english">English</div>
             </div>
             <div class="card-content">
-              <div class="form-group">
-                <label class="form-label">Hero Title</label>
-                <input
-                  v-model="content.about.hero.title.en"
-                  type="text"
-                  class="form-input"
-                  placeholder="Hero title"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Hero Subtitle</label>
-                <textarea
-                  v-model="content.about.hero.subtitle.en"
-                  class="form-textarea"
-                  rows="3"
-                  placeholder="Hero subtitle"
-                ></textarea>
-              </div>
               <div class="form-group">
                 <label class="form-label">Overview Title</label>
                 <input
@@ -526,6 +642,350 @@
                   rows="4"
                   placeholder="About text"
                 ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Why Us</label>
+                <input
+                  v-model="content.about.overview.why_us.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Why us"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Closing Text</label>
+                <textarea
+                  v-model="content.about.overview.closing.en"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="Closing text"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="subsection-header">
+          <h3 class="subsection-title">المزايا (6 عناصر)</h3>
+        </div>
+        <div class="content-grid">
+          <!-- Arabic Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">المحتوى العربي</h3>
+              <div class="language-badge arabic">العربية</div>
+            </div>
+            <div class="card-content">
+              <div v-for="index in 6" :key="`benefit-ar-${index}`" class="form-group">
+                <label class="form-label">ميزة {{ index }}</label>
+                <textarea
+                  v-model="content.about.overview.benefits[index - 1].ar"
+                  class="form-textarea"
+                  rows="2"
+                  :placeholder="`نص الميزة ${index}`"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- English Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">English Content</h3>
+              <div class="language-badge english">English</div>
+            </div>
+            <div class="card-content">
+              <div v-for="index in 6" :key="`benefit-en-${index}`" class="form-group">
+                <label class="form-label">Benefit {{ index }}</label>
+                <textarea
+                  v-model="content.about.overview.benefits[index - 1].en"
+                  class="form-textarea"
+                  rows="2"
+                  :placeholder="`Benefit ${index} text`"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reasons Section -->
+        <div class="subsection-header">
+          <h3 class="subsection-title">الأسباب (4 عناصر)</h3>
+        </div>
+        <div class="content-grid">
+          <!-- Arabic Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">المحتوى العربي</h3>
+              <div class="language-badge arabic">العربية</div>
+            </div>
+            <div class="card-content">
+              <div v-for="index in 4" :key="`reason-ar-${index}`" class="form-group">
+                <label class="form-label">سبب {{ index }}</label>
+                <input
+                  v-model="content.about.overview.reasons[index - 1].ar"
+                  type="text"
+                  class="form-input"
+                  :placeholder="`نص السبب ${index}`"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- English Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">English Content</h3>
+              <div class="language-badge english">English</div>
+            </div>
+            <div class="card-content">
+              <div v-for="index in 4" :key="`reason-en-${index}`" class="form-group">
+                <label class="form-label">Reason {{ index }}</label>
+                <input
+                  v-model="content.about.overview.reasons[index - 1].en"
+                  type="text"
+                  class="form-input"
+                  :placeholder="`Reason ${index} text`"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mission & Vision Section -->
+        <div class="subsection-header">
+          <h3 class="subsection-title">المهمة والرؤية</h3>
+        </div>
+        <div class="content-grid">
+          <!-- Arabic Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">المحتوى العربي</h3>
+              <div class="language-badge arabic">العربية</div>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label class="form-label">عنوان القسم</label>
+                <input
+                  v-model="content.about.mission.title.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="عنوان القسم"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">العنوان الفرعي</label>
+                <input
+                  v-model="content.about.mission.subtitle.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="العنوان الفرعي"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">عنوان المهمة</label>
+                <input
+                  v-model="content.about.mission.mission_title.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="عنوان المهمة"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">نص المهمة</label>
+                <textarea
+                  v-model="content.about.mission.mission_text.ar"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="نص المهمة"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">عنوان الرؤية</label>
+                <input
+                  v-model="content.about.mission.vision_title.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="عنوان الرؤية"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">نص الرؤية</label>
+                <textarea
+                  v-model="content.about.mission.vision_text.ar"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="نص الرؤية"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- English Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">English Content</h3>
+              <div class="language-badge english">English</div>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label class="form-label">Section Title</label>
+                <input
+                  v-model="content.about.mission.title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Section title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Subtitle</label>
+                <input
+                  v-model="content.about.mission.subtitle.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Subtitle"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mission Title</label>
+                <input
+                  v-model="content.about.mission.mission_title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Mission title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mission Text</label>
+                <textarea
+                  v-model="content.about.mission.mission_text.en"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="Mission text"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Vision Title</label>
+                <input
+                  v-model="content.about.mission.vision_title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Vision title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Vision Text</label>
+                <textarea
+                  v-model="content.about.mission.vision_text.en"
+                  class="form-textarea"
+                  rows="3"
+                  placeholder="Vision text"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Values Section -->
+        <div class="subsection-header">
+          <h3 class="subsection-title">القيم الأساسية (6 قيم)</h3>
+        </div>
+        <div class="content-grid">
+          <!-- Arabic Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">المحتوى العربي</h3>
+              <div class="language-badge arabic">العربية</div>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label class="form-label">عنوان القسم</label>
+                <input
+                  v-model="content.about.values.title.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="عنوان القسم"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">العنوان الفرعي</label>
+                <input
+                  v-model="content.about.values.subtitle.ar"
+                  type="text"
+                  class="form-input"
+                  placeholder="العنوان الفرعي"
+                />
+              </div>
+              <div v-for="index in 6" :key="`value-ar-${index}`" class="form-group-set">
+                <h4 class="form-group-title">القيمة {{ index }}</h4>
+                <div class="form-group">
+                  <label class="form-label">العنوان</label>
+                  <input
+                    v-model="content.about.values.items[index - 1].title.ar"
+                    type="text"
+                    class="form-input"
+                    :placeholder="`عنوان القيمة ${index}`"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">الوصف</label>
+                  <textarea
+                    v-model="content.about.values.items[index - 1].description.ar"
+                    class="form-textarea"
+                    rows="2"
+                    :placeholder="`وصف القيمة ${index}`"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- English Content -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3 class="card-title">English Content</h3>
+              <div class="language-badge english">English</div>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label class="form-label">Section Title</label>
+                <input
+                  v-model="content.about.values.title.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Section title"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Subtitle</label>
+                <input
+                  v-model="content.about.values.subtitle.en"
+                  type="text"
+                  class="form-input"
+                  placeholder="Subtitle"
+                />
+              </div>
+              <div v-for="index in 6" :key="`value-en-${index}`" class="form-group-set">
+                <h4 class="form-group-title">Value {{ index }}</h4>
+                <div class="form-group">
+                  <label class="form-label">Title</label>
+                  <input
+                    v-model="content.about.values.items[index - 1].title.en"
+                    type="text"
+                    class="form-input"
+                    :placeholder="`Value ${index} title`"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Description</label>
+                  <textarea
+                    v-model="content.about.values.items[index - 1].description.en"
+                    class="form-textarea"
+                    rows="2"
+                    :placeholder="`Value ${index} description`"
+                  ></textarea>
+                </div>
               </div>
             </div>
           </div>
@@ -589,14 +1049,52 @@ const content = ref({
   about: {
     hero: {
       title: { ar: '', en: '' },
-      subtitle: { ar: '', en: '' }
+      subtitle: { ar: '', en: '' },
+      cta_title: { ar: '', en: '' },
+      cta: { ar: '', en: '' }
     },
     overview: {
       title: { ar: '', en: '' },
       intro: { ar: '', en: '' },
       why_choose_us: { ar: '', en: '' },
       about_title: { ar: '', en: '' },
-      about_text: { ar: '', en: '' }
+      about_text: { ar: '', en: '' },
+      why_us: { ar: '', en: '' },
+      closing: { ar: '', en: '' },
+      benefits: [
+        { ar: '', en: '' },
+        { ar: '', en: '' },
+        { ar: '', en: '' },
+        { ar: '', en: '' },
+        { ar: '', en: '' },
+        { ar: '', en: '' }
+      ],
+      reasons: [
+        { ar: '', en: '' },
+        { ar: '', en: '' },
+        { ar: '', en: '' },
+        { ar: '', en: '' }
+      ]
+    },
+    mission: {
+      title: { ar: '', en: '' },
+      subtitle: { ar: '', en: '' },
+      mission_title: { ar: '', en: '' },
+      mission_text: { ar: '', en: '' },
+      vision_title: { ar: '', en: '' },
+      vision_text: { ar: '', en: '' }
+    },
+    values: {
+      title: { ar: '', en: '' },
+      subtitle: { ar: '', en: '' },
+      items: [
+        { title: { ar: '', en: '' }, description: { ar: '', en: '' } },
+        { title: { ar: '', en: '' }, description: { ar: '', en: '' } },
+        { title: { ar: '', en: '' }, description: { ar: '', en: '' } },
+        { title: { ar: '', en: '' }, description: { ar: '', en: '' } },
+        { title: { ar: '', en: '' }, description: { ar: '', en: '' } },
+        { title: { ar: '', en: '' }, description: { ar: '', en: '' } }
+      ]
     }
   }
 })
@@ -605,7 +1103,7 @@ const content = ref({
 const loadContent = async () => {
   try {
     // Load main content
-    const response = await $fetch('/api/admin/content')
+    const response: any = await $fetch('/api/admin/content')
     const data = response.data || response
     if (data) {
       content.value = { ...content.value, ...data }
@@ -613,7 +1111,7 @@ const loadContent = async () => {
     
     // Load about page content
     try {
-      const aboutResponse = await $fetch('/api/admin/content/about')
+      const aboutResponse: any = await $fetch('/api/admin/content/about')
       console.log('About content loaded from API:', aboutResponse.data)
       if (aboutResponse.data) {
         content.value.about = aboutResponse.data
@@ -647,7 +1145,9 @@ const loadDefaultContent = () => {
         ar: 'استكشف باقاتنا',
         en: 'Explore Our Packages'
       },
-      video: '/videos/hero/desktop/hero-desktop.webm'
+      video_desktop: '/videos/hero/desktop/hero-desktop.webm',
+      video_mobile: '/videos/hero/mobile/hero-mobile.webm',
+      poster_image: '/images/hero-poster.jpg'
     },
     search: {
       title: { 
@@ -704,6 +1204,14 @@ const loadDefaultContent = () => {
         subtitle: { 
           ar: 'اكتشف تجربة السفر مع World Trip Agency - حيث تتحول كل رحلة إلى مغامرة لا تُنسى',
           en: 'Discover the travel experience with World Trip Agency – where every journey transforms into an unforgettable adventure'
+        },
+        cta_title: {
+          ar: 'هل أنت مهتم بمعرفة المزيد عن باقاتنا؟',
+          en: 'Are you interested in learning more about our packages?'
+        },
+        cta: {
+          ar: 'استكشف باقاتنا',
+          en: 'Explore Our Packages'
         }
       },
       overview: {
@@ -726,7 +1234,139 @@ const loadDefaultContent = () => {
         about_text: { 
           ar: 'تأسست World Trip Agency للسفر والسياحة في عام 2019، لتكون بوابتك إلى رحلات فريدة وتجارب سفر استثنائية. نحن متخصصون في تقديم خدمات سفر شاملة تضمن تجربة سلسة ومريحة لكل مسافر - سواء كانت إجازات عائلية، أو جولات فاخرة، أو استكشافات مغامرة.',
           en: 'World Trip Agency Travel & Tourism was established in 2019 as your gateway to unique trips and exceptional travel experiences. We specialize in offering comprehensive travel services that ensure a seamless and comfortable experience for every traveler – whether it\'s family vacations, luxury tours, or adventurous explorations.'
+        },
+        why_us: {
+          ar: 'لماذا نحن؟',
+          en: 'Why Us?'
+        },
+        closing: {
+          ar: 'نؤمن بأن السفر ليس مجرد رحلة - إنه تجربة تُذكر. نسعى جاهدين لملء كل رحلة بلحظات سعيدة وذكريات جميلة.',
+          en: 'We believe that travel is not just a journey - it\'s an experience to remember. We strive to fill every trip with happy moments and beautiful memories.'
+        },
+        benefits: [
+          { 
+            ar: 'أسعار لا تُقاوم: نقدم أفضل العروض على تذاكر الطيران والفنادق بأقل الأسعار دون المساس بالجودة.',
+            en: 'Irresistible Prices: We offer the best deals on flights and hotels at the lowest prices without compromising quality.'
+          },
+          { 
+            ar: 'خيارات حجز مخصصة: سواء كنت تفضل خيارات فاخرة أو اقتصادية، لدينا الخيارات المثالية لتلبية احتياجاتك.',
+            en: 'Customized Booking Options: Whether you prefer luxury or budget options, we have the perfect choices to meet your needs.'
+          },
+          { 
+            ar: 'خدمات تأشيرة سريعة: نساعدك في الحصول على التأشيرات بسرعة وسهولة، بغض النظر عن وجهتك.',
+            en: 'Fast Visa Services: We help you get visas quickly and easily, regardless of your destination.'
+          },
+          { 
+            ar: 'تأمين سفر شامل: استمتع براحة البال في رحلتك مع تغطية التأمين الشاملة.',
+            en: 'Comprehensive Travel Insurance: Enjoy peace of mind on your trip with comprehensive insurance coverage.'
+          },
+          { 
+            ar: 'رخصة قيادة دولية: احصل على حرية القيادة في الخارج بثقة مع رخصة القيادة الدولية المعترف بها.',
+            en: 'International Driving License: Get the freedom to drive abroad with confidence with a recognized international driving license.'
+          },
+          { 
+            ar: 'خدمة عملاء على مدار الساعة: فريقنا المخصص متاح دائمًا لمساعدتك، في أي وقت وفي أي مكان.',
+            en: '24/7 Customer Service: Our dedicated team is always available to help you, anytime, anywhere.'
+          }
+        ],
+        reasons: [
+          { 
+            ar: 'خبرة واسعة في صناعة السفر',
+            en: 'Extensive experience in the travel industry'
+          },
+          { 
+            ar: 'دعم عملاء ممتاز على مدار الساعة',
+            en: 'Excellent 24/7 customer support'
+          },
+          { 
+            ar: 'باقات سفر وعروض تنافسية',
+            en: 'Competitive travel packages and offers'
+          },
+          { 
+            ar: 'شراكات مع أفضل الفنادق وشركات الطيران',
+            en: 'Partnerships with top hotels and airlines'
+          }
+        ]
+      },
+      mission: {
+        title: {
+          ar: 'مهمتنا ورؤيتنا',
+          en: 'Our Mission & Vision'
+        },
+        subtitle: {
+          ar: 'مسترشدين بالتزامنا بالتميز ورضا العملاء',
+          en: 'Guided by our commitment to excellence and customer satisfaction'
+        },
+        mission_title: {
+          ar: 'مهمتنا',
+          en: 'Our Mission'
+        },
+        mission_text: {
+          ar: 'تقديم تجارب سفر استثنائية تفوق توقعات عملائنا من خلال خدمة شخصية، والاهتمام بالتفاصيل، وحلول سفر شاملة.',
+          en: 'To deliver exceptional travel experiences that exceed our customers\' expectations through personalized service, attention to detail, and comprehensive travel solutions.'
+        },
+        vision_title: {
+          ar: 'رؤيتنا',
+          en: 'Our Vision'
+        },
+        vision_text: {
+          ar: 'أن نصبح وكالة السفر الرائدة المعروفة بتحويل الرحلات العادية إلى رحلات استثنائية، وخلق ذكريات تدوم مدى الحياة لعملائنا حول العالم.',
+          en: 'To become the leading travel agency known for transforming ordinary trips into extraordinary journeys, creating lifelong memories for our customers around the world.'
         }
+      },
+      values: {
+        title: {
+          ar: 'قيمنا الأساسية',
+          en: 'Our Core Values'
+        },
+        subtitle: {
+          ar: 'المبادئ التي توجه كل ما نقوم به',
+          en: 'The principles that guide everything we do'
+        },
+        items: [
+          {
+            title: { ar: 'التميز', en: 'Excellence' },
+            description: { 
+              ar: 'نسعى للتميز في كل جانب من جوانب خدمتنا، من الاستفسار الأول حتى اليوم الأخير من رحلتك.',
+              en: 'We strive for excellence in every aspect of our service, from the first inquiry to the last day of your trip.'
+            }
+          },
+          {
+            title: { ar: 'النزاهة', en: 'Integrity' },
+            description: { 
+              ar: 'نعمل بشفافية وأمانة كاملة، مما يضمن ثقة عملائنا بنا في كل خطوة من الطريق.',
+              en: 'We operate with complete transparency and honesty, ensuring our customers trust us every step of the way.'
+            }
+          },
+          {
+            title: { ar: 'الابتكار', en: 'Innovation' },
+            description: { 
+              ar: 'نبحث باستمرار عن طرق جديدة وأفضل لتعزيز تجربة السفر من خلال التكنولوجيا والحلول الإبداعية.',
+              en: 'We continuously seek new and better ways to enhance the travel experience through technology and creative solutions.'
+            }
+          },
+          {
+            title: { ar: 'التخصيص', en: 'Personalization' },
+            description: { 
+              ar: 'ندرك أن كل مسافر فريد من نوعه، ونقوم بتخصيص خدماتنا لتلبية الاحتياجات والتفضيلات الفردية.',
+              en: 'We recognize that every traveler is unique, and we customize our services to meet individual needs and preferences.'
+            }
+          },
+          {
+            title: { ar: 'الاستدامة', en: 'Sustainability' },
+            description: { 
+              ar: 'نلتزم بممارسات سفر مسؤولة تحترم وتحافظ على الوجهات للأجيال القادمة.',
+              en: 'We are committed to responsible travel practices that respect and preserve destinations for future generations.'
+            }
+          },
+          {
+            title: { ar: 'الشراكة', en: 'Partnership' },
+            description: { 
+              ar: 'نبني علاقات قوية مع عملائنا وموردينا والمجتمعات لخلق قيمة ونجاح متبادل.',
+              en: 'We build strong relationships with our customers, suppliers, and communities to create mutual value and success.'
+            }
+          }
+        ]
       }
     }
   }
@@ -942,6 +1582,22 @@ onMounted(() => {
 
 .message.error {
   @apply bg-red-100 text-red-800 border border-red-200;
+}
+
+.subsection-header {
+  @apply mt-6 mb-4 pt-4 border-t border-gray-200;
+}
+
+.subsection-title {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.form-group-set {
+  @apply p-4 bg-gray-50 rounded-lg mb-4 border border-gray-200;
+}
+
+.form-group-title {
+  @apply text-sm font-medium text-gray-700 mb-3 pb-2 border-b border-gray-300;
 }
 
 /* Responsive */

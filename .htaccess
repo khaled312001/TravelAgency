@@ -28,7 +28,7 @@ RewriteRule ^images/packages/home/packages-hero-bg\.jpeg$ - [L]
 # Handle client-side routing for Nuxt.js
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /index.html [QSA,L]
+RewriteRule ^(.*)$ / [QSA,L]
 
 # Enable compression
 <IfModule mod_deflate.c>

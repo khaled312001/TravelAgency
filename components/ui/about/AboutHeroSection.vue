@@ -14,10 +14,10 @@
     
     <div class="relative container mx-auto px-4 md:px-8 lg:px-12 text-center z-10">
       <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-        {{ aboutContent?.hero?.title?.[$i18n.locale.value] || $t('about.hero.title') }}
+        {{ props.content?.hero?.title?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.hero.title') }}
       </h1>
       <p class="text-base md:text-lg lg:text-xl text-white opacity-100 max-w-3xl mx-auto drop-shadow-md">
-        {{ aboutContent?.hero?.subtitle?.[$i18n.locale.value] || $t('about.hero.subtitle') }}
+        {{ props.content?.hero?.subtitle?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.hero.subtitle') }}
       </p>
       <NuxtLink 
         :to="localePath('packages')" 
@@ -30,12 +30,23 @@
 </template>
 <script setup lang="ts">
 const localePath = useLocalePath();
-const { aboutContent, loadAboutContent } = useAboutContent();
+const { locale } = useI18n();
 
-// Load about content on component mount (only if not already loaded)
-onMounted(async () => {
-  if (!aboutContent.value) {
-    await loadAboutContent();
-  }
-});
+// Receive content as prop from parent
+const props = defineProps<{
+  content?: any
+}>()
+
+// Debug
+watch(() => props.content, (newVal) => {
+  console.log('AboutHeroSection - props.content changed:', newVal)
+  console.log('AboutHeroSection - hero.title.ar:', newVal?.hero?.title?.ar)
+  console.log('AboutHeroSection - hero.title.en:', newVal?.hero?.title?.en)
+  console.log('AboutHeroSection - current locale:', locale.value)
+  
+  // Get the correct locale key
+  const localeKey = locale.value.startsWith('ar') ? 'ar' : 'en'
+  console.log('AboutHeroSection - locale key:', localeKey)
+  console.log('AboutHeroSection - will show:', newVal?.hero?.title?.[localeKey])
+}, { deep: true, immediate: true })
 </script>
