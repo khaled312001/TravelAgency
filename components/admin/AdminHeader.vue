@@ -120,9 +120,10 @@ const {
   setupNotificationListener 
 } = useNotifications()
 
+const { notificationCount, loadNotificationCount } = useAdminCounters()
+
 const searchQuery = ref('')
 const showUserMenu = ref(false)
-const notificationCount = ref(0)
 const previousNotificationCount = ref(0)
 
 const breadcrumb = computed(() => {
@@ -153,15 +154,14 @@ const toggleNotifications = () => {
   navigateTo('/admin/notifications')
 }
 
-// Load notification count
-const loadNotificationCount = async () => {
+// Enhanced notification count loading with sound and push notifications
+const loadNotificationCountWithSound = async () => {
   try {
     console.log('Loading notification count...')
     const response = await $fetch('/api/admin/notifications?status=unread')
     console.log('Notification count response:', response)
     
     if (response.success) {
-      // Fix: Use response.notifications instead of response.data
       const notifications = response.notifications || []
       const newCount = notifications.length
       
@@ -176,18 +176,17 @@ const loadNotificationCount = async () => {
         if (permission.value === 'granted') {
           showNotification('إشعار جديد', {
             body: `لديك ${newCount - previousNotificationCount.value} إشعار جديد`,
-            icon: '/favicon.ico'
+            icon: '/favicon.ico',
+            tag: 'new-notification',
+            requireInteraction: true
           })
         }
       }
       
-      notificationCount.value = newCount
       previousNotificationCount.value = newCount
     }
   } catch (error) {
     console.error('Error loading notification count:', error)
-    // Set count to 0 on error to prevent undefined issues
-    notificationCount.value = 0
   }
 }
 
@@ -216,7 +215,8 @@ onMounted(async () => {
   }
   
   // Load notification count on mount
-  loadNotificationCount()
+  await loadNotificationCount()
+  await loadNotificationCountWithSound()
   
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement
@@ -228,7 +228,10 @@ onMounted(async () => {
 
 // Refresh notification count every 30 seconds
 onMounted(() => {
-  const interval = setInterval(loadNotificationCount, 30000)
+  const interval = setInterval(async () => {
+    await loadNotificationCount()
+    await loadNotificationCountWithSound()
+  }, 30000)
   onUnmounted(() => clearInterval(interval))
 })
 

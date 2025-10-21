@@ -31,7 +31,10 @@
           >
             <Icon :name="item.icon" class="nav-icon" />
             <span class="nav-text">{{ item.name }}</span>
-            <Icon v-if="item.badge" name="lucide:circle" class="nav-badge" />
+            <div v-if="item.badge && item.count > 0" class="nav-counter">
+              {{ item.count }}
+            </div>
+            <Icon v-else-if="item.badge && item.count === 0" name="lucide:circle" class="nav-badge" />
           </NuxtLink>
         </li>
       </ul>
@@ -61,89 +64,106 @@
 import type { AdminUser } from '~/types/admin'
 
 const { user, logout } = useAdminAuth()
+const { notificationCount, messageCount, bookingCount, initialize } = useAdminCounters()
 
-const menuItems = [
+// Initialize counters on mount
+onMounted(() => {
+  initialize()
+})
+
+const menuItems = computed(() => [
   {
     name: 'لوحة المعلومات',
     path: '/admin',
     icon: 'lucide:layout-dashboard',
-    badge: false
+    badge: false,
+    count: 0
   },
   {
     name: 'إدارة الباقات',
     path: '/admin/packages',
     icon: 'lucide:package',
-    badge: false
+    badge: false,
+    count: 0
   },
   {
     name: 'إدارة الوجهات',
     path: '/admin/destinations',
     icon: 'lucide:map-pin',
-    badge: false
+    badge: false,
+    count: 0
   },
   {
     name: 'الحجوزات',
     path: '/admin/bookings',
     icon: 'lucide:calendar',
-    badge: true
+    badge: true,
+    count: bookingCount.value
   },
   {
     name: 'رسائل التواصل',
     path: '/admin/messages',
     icon: 'lucide:message-circle',
-    badge: true
+    badge: true,
+    count: messageCount.value
   },
   {
     name: 'الإشعارات',
     path: '/admin/notifications',
     icon: 'lucide:bell',
-    badge: true
+    badge: true,
+    count: notificationCount.value
   },
   {
     name: 'إعدادات الإشعارات',
     path: '/admin/notifications/settings',
     icon: 'lucide:bell-ring',
-    badge: false
+    badge: false,
+    count: 0
   },
   {
     name: 'إدارة المستخدمين',
     path: '/admin/users',
     icon: 'lucide:users',
-    badge: false
+    badge: false,
+    count: 0
   },
   {
     name: 'التقارير والإحصائيات',
     path: '/admin/reports',
     icon: 'lucide:bar-chart-3',
-    badge: false
+    badge: false,
+    count: 0
   },
-      {
-        name: 'إدارة المحتوى',
-        path: '/admin/content',
-        icon: 'lucide:edit-3',
-        badge: false
-      },
-   
+  {
+    name: 'إدارة المحتوى',
+    path: '/admin/content',
+    icon: 'lucide:edit-3',
+    badge: false,
+    count: 0
+  },
   {
     name: 'إدارة SEO',
     path: '/admin/seo',
     icon: 'lucide:search',
-    badge: false
+    badge: false,
+    count: 0
   },
   {
     name: 'QR Code الموقع',
     path: '/qr-code',
     icon: 'lucide:qr-code',
-    badge: false
+    badge: false,
+    count: 0
   },
-
   {
     name: 'الإعدادات',
     path: '/admin/settings',
     icon: 'lucide:settings',
-    badge: false
+    badge: false,
+    count: 0
   }
-]
+])
 
 const handleLogout = async () => {
   try {
@@ -228,6 +248,10 @@ const closeSidebar = () => {
 
 .nav-badge {
   @apply w-2 h-2 text-red-400 fill-current;
+}
+
+.nav-counter {
+  @apply bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5;
 }
 
 .sidebar-footer {

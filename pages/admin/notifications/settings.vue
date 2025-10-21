@@ -219,6 +219,10 @@
             <Icon name="lucide:send" class="btn-icon" />
             إرسال Push تجريبي
           </button>
+          <button @click="testSound" class="test-btn tertiary">
+            <Icon name="lucide:volume-2" class="btn-icon" />
+            اختبار الصوت
+          </button>
         </div>
       </div>
     </div>
@@ -292,9 +296,17 @@ const sendTestNotification = () => {
 
 const sendTestPush = async () => {
   try {
-    const success = await sendPushNotification('Push تجريبي', {
-      body: 'هذا إشعار Push تجريبي',
-      icon: '/favicon.ico'
+    const success = await sendPushNotification('إشعار تجريبي', {
+      body: 'هذا إشعار Push تجريبي من أرض العجائب للسفر',
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/icon-64x64.png',
+      tag: 'test-notification',
+      requireInteraction: true,
+      vibrate: [200, 100, 200],
+      data: {
+        url: '/admin/notifications',
+        timestamp: Date.now()
+      }
     })
     
     if (success) {
@@ -551,6 +563,10 @@ input:checked + .toggle-slider:before {
 
 .test-btn.secondary {
   @apply bg-gray-600 hover:bg-gray-700;
+}
+
+.test-btn.tertiary {
+  @apply bg-green-600 hover:bg-green-700;
 }
 
 .btn-icon {

@@ -37,9 +37,16 @@ export const useNotifications = () => {
     }
 
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js')
+      const reg = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/'
+      })
       registration.value = reg
       console.log('Service Worker registered:', reg)
+      
+      // Wait for service worker to be ready
+      await navigator.serviceWorker.ready
+      console.log('Service Worker is ready')
+      
       return true
     } catch (error) {
       console.error('Service Worker registration failed:', error)
@@ -50,14 +57,31 @@ export const useNotifications = () => {
   // Play notification sound
   const playNotificationSound = () => {
     try {
+      // Check if sound is enabled in localStorage
+      const soundEnabled = localStorage.getItem('notification-sound-enabled')
+      if (soundEnabled === 'false') {
+        console.log('Notification sound is disabled')
+        return
+      }
+
       // Try to play custom notification sound
       const audio = new Audio('/notification-sound.mp3')
-      audio.volume = 0.5
-      audio.play().catch(error => {
-        console.warn('Could not play custom notification sound, using system sound:', error)
-        // Fallback to system notification sound
-        playSystemNotificationSound()
-      })
+      audio.volume = parseFloat(localStorage.getItem('notification-sound-volume') || '0.5')
+      
+      // Ensure audio can play
+      audio.preload = 'auto'
+      
+      const playPromise = audio.play()
+      
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.log('Notification sound played successfully')
+        }).catch(error => {
+          console.warn('Could not play custom notification sound, using system sound:', error)
+          // Fallback to system notification sound
+          playSystemNotificationSound()
+        })
+      }
     } catch (error) {
       console.warn('Custom notification sound not available, using system sound:', error)
       playSystemNotificationSound()
@@ -127,27 +151,59 @@ export const useNotifications = () => {
 
     try {
       await registration.value.showNotification(title, {
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-64x64.png',
         tag: 'admin-notification',
         requireInteraction: true,
+        // vibrate: [200, 100, 200], // Not supported in all browsers
         actions: [
           {
-            action: 'view',
-            title: 'عرض',
-            icon: '/favicon.ico'
+            action: 'open',
+            title: 'فتح',
+            icon: '/icons/icon-64x64.png'
           },
           {
             action: 'close',
             title: 'إغلاق',
-            icon: '/favicon.ico'
+            icon: '/icons/icon-64x64.png'
           }
         ],
+        data: {
+          url: '/admin/notifications',
+          timestamp: Date.now()
+        },
         ...options
       })
       return true
     } catch (error) {
       console.error('Error sending push notification:', error)
+      return false
+    }
+  }
+
+  // Send push notification to all clients
+  const sendPushToAllClients = async (title: string, options: NotificationOptions = {}) => {
+    if (!registration.value) {
+      console.warn('Service Worker not registered')
+      return false
+    }
+
+    try {
+      // Send message to all clients via service worker
+      if (registration.value.active) {
+        registration.value.active.postMessage({
+          type: 'NEW_NOTIFICATION',
+          title,
+          body: options.body,
+          data: options.data
+        })
+      }
+
+      // Also show notification
+      await sendPushNotification(title, options)
+      return true
+    } catch (error) {
+      console.error('Error sending push to all clients:', error)
       return false
     }
   }
@@ -198,6 +254,7 @@ export const useNotifications = () => {
     playNotificationSound,
     showNotification,
     sendPushNotification,
+    sendPushToAllClients,
     initialize,
     setupNotificationListener
   }
