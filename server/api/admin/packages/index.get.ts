@@ -10,27 +10,27 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     console.log('Fetching packages from database with query:', query)
     
-    // Build the query
+    // Build the query - use current database schema
     let supabaseQuery = supabase
       .from('packages')
-      .select('id, title_ar, title_en, description_ar, description_en, price, duration_days, max_persons, travel_period, featured, image_url, hero_image_url, created_at, updated_at')
+      .select('id, title, description, price, duration_days, destination, image_url, created_at, updated_at')
     
     // Apply filters
     if (query.search) {
-      supabaseQuery = supabaseQuery.or(`title_ar.ilike.%${query.search}%,title_en.ilike.%${query.search}%,description_ar.ilike.%${query.search}%,description_en.ilike.%${query.search}%`)
+      supabaseQuery = supabaseQuery.or(`title.ilike.%${query.search}%,description.ilike.%${query.search}%,destination.ilike.%${query.search}%`)
     }
     
     if (query.status) {
-      const isFeatured = query.status === 'featured'
-      supabaseQuery = supabaseQuery.eq('featured', isFeatured)
+      // Since featured field doesn't exist in current schema, we'll skip this filter
+      console.log('Status filter not supported in current schema')
     }
     
     if (query.category) {
-      supabaseQuery = supabaseQuery.eq('travel_period', query.category)
+      supabaseQuery = supabaseQuery.eq('destination', query.category)
     }
     
     // Apply ordering
-    supabaseQuery = supabaseQuery.order('title_ar', { ascending: true })
+    supabaseQuery = supabaseQuery.order('title', { ascending: true })
     
     // Execute query
     const { data: packages, error } = await supabaseQuery

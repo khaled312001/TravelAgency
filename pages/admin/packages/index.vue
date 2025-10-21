@@ -73,17 +73,17 @@
           <div class="package-image">
             <img 
               :src="pkg.image_url || '/images/placeholder-package.jpg'" 
-              :alt="pkg.title_ar"
+              :alt="pkg.title"
               class="package-img"
             />
-            <div class="package-status" :class="pkg.featured ? 'featured' : 'normal'">
-              {{ getStatusText(pkg.featured) }}
+            <div class="package-status normal">
+              عادي
             </div>
           </div>
 
           <div class="package-content">
             <div class="package-header">
-              <h3 class="package-title">{{ pkg.title_ar }}</h3>
+              <h3 class="package-title">{{ pkg.title }}</h3>
               <div class="package-actions">
                 <button @click="editPackage(pkg)" class="action-btn edit">
                   <Icon name="lucide:edit" class="action-icon" />
@@ -94,7 +94,7 @@
               </div>
             </div>
 
-            <p class="package-description">{{ pkg.description_ar }}</p>
+            <p class="package-description">{{ pkg.description }}</p>
 
             <div class="package-details">
               <div class="detail-item">
@@ -102,16 +102,8 @@
                 <span>{{ pkg.duration_days }} أيام</span>
               </div>
               <div class="detail-item">
-                <Icon name="lucide:users" class="detail-icon" />
-                <span>{{ pkg.max_persons }} أشخاص</span>
-              </div>
-              <div class="detail-item">
-                <Icon name="lucide:clock" class="detail-icon" />
-                <span>{{ pkg.travel_period }}</span>
-              </div>
-              <div class="detail-item">
-                <Icon name="lucide:star" class="detail-icon" />
-                <span>{{ pkg.featured ? 'مميز' : 'عادي' }}</span>
+                <Icon name="lucide:map-pin" class="detail-icon" />
+                <span>{{ pkg.destination }}</span>
               </div>
             </div>
 
@@ -315,17 +307,12 @@
 <script setup lang="ts">
 interface Package {
   id: string
-  title_ar: string
-  title_en: string
-  description_ar: string
-  description_en: string
+  title: string
+  description: string
   price: number
   duration_days: number
-  max_persons: number
-  travel_period: string
-  featured: boolean
+  destination: string
   image_url?: string
-  hero_image_url?: string
   created_at: string
   updated_at: string
 }
@@ -360,19 +347,19 @@ const filteredPackages = computed(() => {
   if (searchQuery.value) {
     const searchLower = searchQuery.value.toLowerCase()
     filtered = filtered.filter(pkg => 
-      pkg.title_ar.toLowerCase().includes(searchLower) ||
-      pkg.title_en.toLowerCase().includes(searchLower) ||
-      pkg.description_ar.toLowerCase().includes(searchLower) ||
-      pkg.description_en.toLowerCase().includes(searchLower)
+      pkg.title.toLowerCase().includes(searchLower) ||
+      pkg.description.toLowerCase().includes(searchLower) ||
+      pkg.destination.toLowerCase().includes(searchLower)
     )
   }
 
   if (statusFilter.value) {
-    filtered = filtered.filter(pkg => pkg.featured === (statusFilter.value === 'featured'))
+    // Status filter not supported in current schema
+    console.log('Status filter not supported')
   }
 
   if (categoryFilter.value) {
-    filtered = filtered.filter(pkg => pkg.travel_period === categoryFilter.value)
+    filtered = filtered.filter(pkg => pkg.destination === categoryFilter.value)
   }
 
   return filtered
@@ -424,12 +411,25 @@ const loadPackages = async () => {
 
 const editPackage = (pkg: Package) => {
   editingPackage.value = pkg
-  packageForm.value = { ...pkg }
+  // Map database fields to form fields
+  packageForm.value = {
+    title_ar: pkg.title || '',
+    title_en: '',
+    description_ar: pkg.description || '',
+    description_en: '',
+    price: pkg.price || 0,
+    duration_days: pkg.duration_days || 0,
+    max_persons: 0,
+    travel_period: pkg.destination || '',
+    featured: false,
+    image_url: pkg.image_url || '',
+    hero_image_url: ''
+  }
   showEditModal.value = true
 }
 
 const deletePackage = async (pkg: Package) => {
-  if (confirm(`هل أنت متأكد من حذف الباقة "${pkg.title_ar}"؟`)) {
+  if (confirm(`هل أنت متأكد من حذف الباقة "${pkg.title}"؟`)) {
     try {
       await $fetch(`/api/admin/packages/${pkg.id}`, {
         method: 'DELETE'
@@ -445,19 +445,14 @@ const savePackage = async () => {
   try {
     saving.value = true
     
-    // Prepare the data for API
+    // Prepare the data for API - map to current database schema
     const packageData = {
-      title_ar: packageForm.value.title_ar,
-      title_en: packageForm.value.title_en,
-      description_ar: packageForm.value.description_ar,
-      description_en: packageForm.value.description_en,
+      title: packageForm.value.title_ar || 'عنوان الباقة',
+      description: packageForm.value.description_ar || 'وصف الباقة',
       price: Number(packageForm.value.price),
       duration_days: Number(packageForm.value.duration_days),
-      max_persons: Number(packageForm.value.max_persons) || null,
-      travel_period: packageForm.value.travel_period || null,
-      featured: packageForm.value.featured || false,
-      image_url: packageForm.value.image_url || null,
-      hero_image_url: packageForm.value.hero_image_url || null
+      destination: packageForm.value.travel_period || 'وجهة غير محددة',
+      image_url: packageForm.value.image_url || packageForm.value.hero_image_url || null
     }
     
     if (showEditModal.value && editingPackage.value) {
@@ -478,6 +473,7 @@ const savePackage = async () => {
     closeModal()
   } catch (error) {
     console.error('Error saving package:', error)
+    alert('حدث خطأ أثناء حفظ الباقة: ' + (error.message || 'خطأ غير معروف'))
   } finally {
     saving.value = false
   }

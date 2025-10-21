@@ -8,8 +8,8 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    // Validate required fields
-    const requiredFields = ['title_ar', 'title_en', 'description_ar', 'description_en', 'price', 'duration_days']
+    // Validate required fields based on current database schema
+    const requiredFields = ['title', 'description', 'price', 'duration_days', 'destination']
     for (const field of requiredFields) {
       if (!body[field]) {
         throw createError({
@@ -19,49 +19,26 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Create package
+    // Create package with current database schema
     const { data: packageData, error: packageError } = await supabase
       .from('packages')
       .insert({
-        title_ar: body.title_ar,
-        title_en: body.title_en,
-        description_ar: body.description_ar,
-        description_en: body.description_en,
+        title: body.title_ar || body.title || 'عنوان الباقة',
+        description: body.description_ar || body.description || 'وصف الباقة',
         price: Number(body.price),
         duration_days: Number(body.duration_days),
-        max_persons: Number(body.max_persons) || null,
-        travel_period: body.travel_period || null,
-        image_url: body.image_url || null,
-        featured: body.featured || false
-        // Note: status and category columns don't exist in the current schema
-        // status: body.status || 'active',
-        // category: body.category || 'international'
+        destination: body.destination || 'وجهة غير محددة',
+        image_url: body.image_url || body.hero_image_url || null
       })
       .select()
       .single()
 
     if (packageError) {
+      console.error('Package creation error:', packageError)
       throw createError({
         statusCode: 400,
         statusMessage: packageError.message
       })
-    }
-
-    // Create package options if provided
-    if (body.included_options) {
-      const { error: optionsError } = await supabase
-        .from('package_options')
-        .insert({
-          package_id: packageData.id,
-          flight: body.included_options.flight || false,
-          hotel: body.included_options.hotel || false,
-          transportation: body.included_options.transportation || false,
-          hotel_grade: body.included_options.hotelGrade || null
-        })
-
-      if (optionsError) {
-        console.warn('Failed to create package options:', optionsError.message)
-      }
     }
 
     return {
@@ -69,6 +46,7 @@ export default defineEventHandler(async (event) => {
       package: packageData
     }
   } catch (error) {
+    console.error('Error creating package:', error)
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to create package'
