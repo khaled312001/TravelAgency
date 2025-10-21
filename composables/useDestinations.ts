@@ -2,7 +2,24 @@ import { ref } from 'vue'
 import type { Destination } from '~/types/destination'
 
 export const useDestinations = () => {
-  const saudiDestinations = ref<Destination[]>([
+  // Fetch destinations from API
+  const { data: saudiDestinationsData } = await useAsyncData('saudi-destinations', () => 
+    $fetch('/api/destinations', {
+      query: { country: 'Saudi Arabia' }
+    })
+  )
+
+  const { data: globalDestinationsData } = await useAsyncData('global-destinations', () => 
+    $fetch('/api/destinations', {
+      query: { 'country.ne': 'Saudi Arabia' }
+    })
+  )
+
+  const saudiDestinations = ref<Destination[]>(saudiDestinationsData.value?.destinations || [])
+  const globalDestinations = ref<Destination[]>(globalDestinationsData.value?.destinations || [])
+
+  // Fallback static data if API fails
+  const fallbackSaudiDestinations = ref<Destination[]>([
     {
       id: 'riyadh',
       name: {
