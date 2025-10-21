@@ -268,15 +268,6 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">صورة البطل</label>
-              <ImageUpload 
-                v-model="packageForm.hero_image_url"
-                alt="صورة البطل"
-                @upload="onHeroImageUpload"
-                @error="onImageError"
-              />
-            </div>
 
             <div class="form-group">
               <label class="form-label">مميز</label>
@@ -424,7 +415,7 @@ const editPackage = (pkg: Package) => {
     travel_period: pkg.destination || '',
     featured: false,
     image_url: pkg.image_url || '',
-    hero_image_url: ''
+    hero_image_url: pkg.hero_image_url || ''
   }
   showEditModal.value = true
 }
@@ -453,7 +444,8 @@ const savePackage = async () => {
       price: Number(packageForm.value.price),
       duration_days: Number(packageForm.value.duration_days),
       destination: packageForm.value.travel_period || 'وجهة غير محددة',
-      image_url: packageForm.value.image_url || packageForm.value.hero_image_url || null
+      image_url: packageForm.value.image_url || null,
+      hero_image_url: packageForm.value.hero_image_url || packageForm.value.image_url || null
     }
     
     if (showEditModal.value && editingPackage.value) {

@@ -28,7 +28,8 @@ export default defineEventHandler(async (event) => {
         price: Number(body.price),
         duration_days: Number(body.duration_days),
         destination: body.destination || 'وجهة غير محددة',
-        image_url: body.image_url || body.hero_image_url || null
+        image_url: body.image_url || null,
+        hero_image_url: body.hero_image_url || body.image_url || null
       })
       .select()
       .single()
