@@ -1,0 +1,114 @@
+[
+  {
+    "destination": "riyadh",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067157/worldtripagency/destinations/riyadh-main.jpg",
+    "public_id": "worldtripagency/destinations/riyadh-main",
+    "path": "public/images/destinations/saudi/riyadh/Riyadh1.jpeg"
+  },
+  {
+    "destination": "jeddah",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067159/worldtripagency/destinations/jeddah-main.jpg",
+    "public_id": "worldtripagency/destinations/jeddah-main",
+    "path": "public/images/destinations/saudi/jeddah/Jeddah1.jpeg"
+  },
+  {
+    "destination": "makkah",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067161/worldtripagency/destinations/makkah-main.jpg",
+    "public_id": "worldtripagency/destinations/makkah-main",
+    "path": "public/images/destinations/saudi/Makkah/Makkah1.jpeg"
+  },
+  {
+    "destination": "medina",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067163/worldtripagency/destinations/medina-main.jpg",
+    "public_id": "worldtripagency/destinations/medina-main",
+    "path": "public/images/destinations/saudi/Medina/Medina1.jpeg"
+  },
+  {
+    "destination": "alula",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067165/worldtripagency/destinations/alula-main.jpg",
+    "public_id": "worldtripagency/destinations/alula-main",
+    "path": "public/images/destinations/saudi/alula/AlUla1.jpeg"
+  },
+  {
+    "destination": "barcelona",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067167/worldtripagency/destinations/barcelona-main.jpg",
+    "public_id": "worldtripagency/destinations/barcelona-main",
+    "path": "public/images/destinations/global/Barcelona/Barcelona1.jpeg"
+  },
+  {
+    "destination": "cairo",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067169/worldtripagency/destinations/cairo-main.jpg",
+    "public_id": "worldtripagency/destinations/cairo-main",
+    "path": "public/images/destinations/global/Cairo/Cairo1.jpeg"
+  },
+  {
+    "destination": "istanbul",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067171/worldtripagency/destinations/istanbul-main.jpg",
+    "public_id": "worldtripagency/destinations/istanbul-main",
+    "path": "public/images/destinations/global/Istanbul/Istanbul1.jpeg"
+  },
+  {
+    "destination": "london",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067173/worldtripagency/destinations/london-main.jpg",
+    "public_id": "worldtripagency/destinations/london-main",
+    "path": "public/images/destinations/global/London/London1.jpeg"
+  },
+  {
+    "destination": "madrid",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067174/worldtripagency/destinations/madrid-main.jpg",
+    "public_id": "worldtripagency/destinations/madrid-main",
+    "path": "public/images/destinations/global/Madrid/Madrid1.jpeg"
+  },
+  {
+    "destination": "morocco",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067176/worldtripagency/destinations/morocco-main.jpg",
+    "public_id": "worldtripagency/destinations/morocco-main",
+    "path": "public/images/destinations/global/Morocco/Morocco1.jpeg"
+  },
+  {
+    "destination": "paris",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067177/worldtripagency/destinations/paris-main.jpg",
+    "public_id": "worldtripagency/destinations/paris-main",
+    "path": "public/images/destinations/global/Paris/Paris1.jpeg"
+  },
+  {
+    "destination": "sharm-el-sheikh",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067179/worldtripagency/destinations/sharm-el-sheikh-main.jpg",
+    "public_id": "worldtripagency/destinations/sharm-el-sheikh-main",
+    "path": "public/images/destinations/global/SharmElSheikh/SharmElSheikh1.jpeg"
+  },
+  {
+    "destination": "thailand",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067181/worldtripagency/destinations/thailand-main.jpg",
+    "public_id": "worldtripagency/destinations/thailand-main",
+    "path": "public/images/destinations/global/Thailand/Thailand1.jpeg"
+  },
+  {
+    "destination": "georgia",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067183/worldtripagency/destinations/georgia-main.jpg",
+    "public_id": "worldtripagency/destinations/georgia-main",
+    "path": "public/images/destinations/global/Georgia/Georgia1.jpeg"
+  },
+  {
+    "destination": "red-sea",
+    "success": true,
+    "url": "https://res.cloudinary.com/dwpbixx3o/image/upload/v1761067184/worldtripagency/destinations/red-sea-main.jpg",
+    "public_id": "worldtripagency/destinations/red-sea-main",
+    "path": "https://images.pexels.com/photos/1320684/pexels-photo-1320684.jpeg"
+  }
+]

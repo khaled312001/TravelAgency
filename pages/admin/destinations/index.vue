@@ -124,10 +124,14 @@
         >
           <div class="destination-image">
             <img 
-              :src="destination.main_image || '/images/placeholder-destination.jpg'" 
+              v-if="destination.main_image"
+              :src="destination.main_image" 
               :alt="destination.name_ar"
               class="destination-img"
             />
+            <div v-else class="destination-img bg-gray-200 flex items-center justify-center">
+              <Icon name="material-symbols:image-outline" class="w-16 h-16 text-gray-400" />
+            </div>
             <div class="destination-badges">
               <div v-if="destination.featured" class="badge featured">
                 <Icon name="lucide:star" class="badge-icon" />
@@ -398,7 +402,7 @@ const destinations = ref<Destination[]>([])
 const loading = ref(true)
 const saving = ref(false)
 const searchQuery = ref('')
-const regionFilter = ref('')
+const statusFilter = ref('')
 const typeFilter = ref('')
 const featuredFilter = ref('')
 const showCreateModal = ref(false)
@@ -418,6 +422,7 @@ const destinationForm = ref({
   destination_type_en: '',
   main_image: '',
   featured: false,
+  status: 'active',
   gallery: [] as string[],
   tourist_spots: [] as any[],
   upcoming_events: [] as any[],
@@ -436,8 +441,8 @@ const filteredDestinations = computed(() => {
     )
   }
 
-  if (regionFilter.value) {
-    filtered = filtered.filter(dest => dest.region_ar === regionFilter.value)
+  if (statusFilter.value) {
+    filtered = filtered.filter(dest => dest.status === statusFilter.value)
   }
 
   if (typeFilter.value) {
@@ -508,19 +513,27 @@ const deleteDestination = async (destination: Destination) => {
     try {
       saving.value = true
       
-      // Since these are static destinations, we'll just show a message
-      console.log('Delete destination:', destination.id)
-      alert('لا يمكن حذف الوجهات الثابتة. يمكنك تعديلها فقط.')
+      const response = await $fetch(`/api/admin/destinations/${destination.id}`, {
+        method: 'DELETE'
+      })
       
-    } catch (error) {
+      if (response.success) {
+        alert('تم حذف الوجهة بنجاح!')
+        await loadDestinations()
+      } else {
+        alert('فشل في حذف الوجهة')
+      }
+      
+    } catch (error: any) {
       console.error('Error deleting destination:', error)
+      alert(`فشل في حذف الوجهة: ${error.message || 'خطأ غير معروف'}`)
     } finally {
       saving.value = false
     }
   }
 }
 
-const handleImageUpload = (event: Event) => {
+const handleImageUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
     // Validate file size (5MB max)
@@ -535,12 +548,28 @@ const handleImageUpload = (event: Event) => {
       return
     }
     
-    // Create preview URL
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      destinationForm.value.main_image = e.target?.result as string
+    try {
+      // Upload to Cloudinary
+      const { uploadFile } = useCloudinary()
+      const result = await uploadFile(file, 'destinations')
+      
+      if (result && result.image && result.image.url) {
+        destinationForm.value.main_image = result.image.url
+        console.log('Image uploaded to Cloudinary:', result.image.url)
+      } else {
+        throw new Error('Invalid response from Cloudinary')
+      }
+    } catch (error) {
+      console.error('Cloudinary upload error:', error)
+      alert('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.')
+      
+      // Fallback to base64 preview
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        destinationForm.value.main_image = e.target?.result as string
+      }
+      reader.readAsDataURL(file)
     }
-    reader.readAsDataURL(file)
   }
 }
 
@@ -569,17 +598,37 @@ const saveDestination = async () => {
     if (showEditModal.value && editingDestination.value) {
       // Update existing destination
       console.log('Update destination:', destinationForm.value)
-      alert('تم حفظ التعديلات بنجاح! (هذه بيانات ثابتة)')
+      const response = await $fetch(`/api/admin/destinations/${editingDestination.value.id}`, {
+        method: 'PUT',
+        body: destinationForm.value
+      })
+      
+      if (response.success) {
+        alert('تم حفظ التعديلات بنجاح!')
+        await loadDestinations()
+        closeModal()
+      } else {
+        alert('فشل في حفظ التعديلات')
+      }
     } else {
       // Create new destination
       console.log('Create destination:', destinationForm.value)
-      alert('تم إنشاء الوجهة بنجاح! (هذه بيانات ثابتة)')
+      const response = await $fetch('/api/admin/destinations', {
+        method: 'POST',
+        body: destinationForm.value
+      })
+      
+      if (response.success) {
+        alert('تم إنشاء الوجهة بنجاح!')
+        await loadDestinations()
+        closeModal()
+      } else {
+        alert('فشل في إنشاء الوجهة')
+      }
     }
-    
-    await loadDestinations()
-    closeModal()
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error saving destination:', error)
+    alert(`فشل في حفظ الوجهة: ${error.message || 'خطأ غير معروف'}`)
   } finally {
     saving.value = false
   }
@@ -602,6 +651,7 @@ const closeModal = () => {
     destination_type_en: '',
     main_image: '',
     featured: false,
+    status: 'active',
     gallery: [],
     tourist_spots: [],
     upcoming_events: [],

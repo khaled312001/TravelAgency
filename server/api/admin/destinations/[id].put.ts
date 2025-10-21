@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { uploadBase64Image } from '~/utils/cloudinary'
 
 const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
@@ -6,14 +7,28 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default defineEventHandler(async (event) => {
   try {
-    const id = getRouterParam(event, 'id')
+    const destinationId = getRouterParam(event, 'id')
     const body = await readBody(event)
+    console.log('Updating destination:', destinationId, body)
 
-    if (!id) {
+    if (!destinationId) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Destination ID is required'
       })
+    }
+
+    // Handle image upload to Cloudinary if it's a new base64 image
+    let mainImageUrl = body.main_image
+    if (body.main_image && body.main_image.startsWith('data:image/')) {
+      try {
+        const result = await uploadBase64Image(body.main_image, 'destinations')
+        mainImageUrl = result.secure_url
+        console.log('Image uploaded to Cloudinary:', mainImageUrl)
+      } catch (uploadError) {
+        console.error('Image upload failed:', uploadError)
+        // Continue with existing image if upload fails
+      }
     }
 
     // Update destination
@@ -22,39 +37,42 @@ export default defineEventHandler(async (event) => {
       .update({
         name_ar: body.name_ar,
         name_en: body.name_en,
-        description_ar: body.description_ar,
-        description_en: body.description_en,
-        country: body.country || null,
-        city: body.city || null,
-        image_url: body.image_url || null,
+        description_ar: body.description_ar || '',
+        description_en: body.description_en || '',
+        region_ar: body.region_ar,
+        region_en: body.region_en,
+        location_type_ar: body.location_type_ar,
+        location_type_en: body.location_type_en,
+        destination_type_ar: body.destination_type_ar,
+        destination_type_en: body.destination_type_en,
+        main_image: mainImageUrl,
         featured: body.featured || false,
         status: body.status || 'active',
-        type: body.type || 'international',
-        best_time_to_visit: body.best_time_to_visit || null,
-        average_temperature: body.average_temperature || null,
-        currency: body.currency || null,
-        language: body.language || null,
         updated_at: new Date().toISOString()
       })
-      .eq('id', id)
+      .eq('id', destinationId)
       .select()
       .single()
 
     if (destinationError) {
+      console.error('Supabase error:', destinationError)
       throw createError({
         statusCode: 400,
         statusMessage: destinationError.message
       })
     }
 
+    console.log('Destination updated successfully:', destinationData)
+
     return {
       success: true,
       destination: destinationData
     }
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Error updating destination:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to update destination'
+      statusMessage: `Failed to update destination: ${error.message}`
     })
   }
 })

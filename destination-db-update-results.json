@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1fd3d84c-200c-4d50-b1a7-eeccf7bb2723",
+    "name_ar": "باريس",
+    "name_en": "Paris",
+    "success": false,
+    "error": "Failed to update باريس: Could not find the 'main_image' column of 'destinations' in the schema cache"
+  },
+  {
+    "id": "6aa5b3cc-9eaa-432d-aa01-05a0af8865fb",
+    "name_ar": "لندن",
+    "name_en": "London",
+    "success": false,
+    "error": "Failed to update لندن: Could not find the 'main_image' column of 'destinations' in the schema cache"
+  },
+  {
+    "id": "cc5747e5-f1d4-4efd-a955-e7d691adc844",
+    "name_ar": "دبي",
+    "name_en": "Dubai",
+    "success": false,
+    "reason": "No matching image found"
+  },
+  {
+    "id": "7b7ab85c-7eb2-4297-9f21-7905c9266c81",
+    "name_ar": "اسطنبول",
+    "name_en": "Istanbul",
+    "success": false,
+    "error": "Failed to update اسطنبول: Could not find the 'main_image' column of 'destinations' in the schema cache"
+  },
+  {
+    "id": "504f13e5-2e06-41e5-bf9a-2ef2bfcfce18",
+    "name_ar": "الرياض",
+    "name_en": "Riyadh",
+    "success": false,
+    "error": "Failed to update الرياض: Could not find the 'main_image' column of 'destinations' in the schema cache"
+  }
+]

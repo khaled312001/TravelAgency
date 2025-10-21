@@ -6,9 +6,10 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default defineEventHandler(async (event) => {
   try {
-    const id = getRouterParam(event, 'id')
+    const destinationId = getRouterParam(event, 'id')
+    console.log('Deleting destination:', destinationId)
 
-    if (!id) {
+    if (!destinationId) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Destination ID is required'
@@ -19,23 +20,27 @@ export default defineEventHandler(async (event) => {
     const { error: destinationError } = await supabase
       .from('destinations')
       .delete()
-      .eq('id', id)
+      .eq('id', destinationId)
 
     if (destinationError) {
+      console.error('Supabase error:', destinationError)
       throw createError({
         statusCode: 400,
         statusMessage: destinationError.message
       })
     }
 
+    console.log('Destination deleted successfully:', destinationId)
+
     return {
       success: true,
       message: 'Destination deleted successfully'
     }
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Error deleting destination:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to delete destination'
+      statusMessage: `Failed to delete destination: ${error.message}`
     })
   }
 })
