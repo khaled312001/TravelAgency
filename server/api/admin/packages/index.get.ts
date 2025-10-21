@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
       // Try the complex schema
       supabaseQuery = supabase
         .from('packages')
-        .select('id, title_ar, title_en, description_ar, description_en, price, duration_days, max_persons, travel_period, featured, image_url, hero_image_url, created_at, updated_at')
+        .select('id, title_ar, title_en, description_ar, description_en, price, duration_days, max_persons, travel_period, featured, image_url, created_at, updated_at')
         .limit(1)
       
       const { data: complexTest, error: complexSchemaError } = await supabaseQuery
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
       // Use complex schema for the main query
       supabaseQuery = supabase
         .from('packages')
-        .select('id, title_ar, title_en, description_ar, description_en, price, duration_days, max_persons, travel_period, featured, image_url, hero_image_url, created_at, updated_at')
+        .select('id, title_ar, title_en, description_ar, description_en, price, duration_days, max_persons, travel_period, featured, image_url, created_at, updated_at')
     } else {
       console.log('Using simple schema')
       // Use simple schema for the main query
@@ -143,7 +143,7 @@ export default defineEventHandler(async (event) => {
           duration_days: pkg.duration_days,
           destination: pkg.travel_period || 'وجهة غير محددة',
           image_url: pkg.image_url || '',
-          hero_image_url: pkg.hero_image_url || '',
+          hero_image_url: pkg.image_url || '', // Use same image for hero since hero_image_url doesn't exist
           created_at: pkg.created_at,
           updated_at: pkg.updated_at
         }

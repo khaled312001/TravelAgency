@@ -14,30 +14,49 @@ export default defineEventHandler(async (event) => {
       duration_days: body.duration_days,
       destination: body.destination,
       hasImageUrl: !!body.image_url,
-      hasHeroImageUrl: !!body.hero_image_url
+      hasHeroImageUrl: !!body.hero_image_url,
+      image_url: body.image_url,
+      hero_image_url: body.hero_image_url
     })
 
-    // Validate required fields based on current database schema
-    const requiredFields = ['title', 'description', 'price', 'duration_days', 'destination']
-    for (const field of requiredFields) {
-      if (!body[field]) {
-        console.error(`Missing required field: ${field}`)
-        throw createError({
-          statusCode: 400,
-          statusMessage: `Field ${field} is required`
-        })
-      }
+    // Validate required fields based on current database schema (complex schema)
+    if (!body.title_ar && !body.title) {
+      console.error('Missing required field: title_ar')
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Field title_ar is required'
+      })
+    }
+    
+    if (!body.price) {
+      console.error('Missing required field: price')
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Field price is required'
+      })
+    }
+    
+    if (!body.duration_days) {
+      console.error('Missing required field: duration_days')
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Field duration_days is required'
+      })
     }
 
-    // Create package with current database schema
+    // Create package with current database schema (complex schema with hero_image_url)
     const insertData = {
-      title: body.title_ar || body.title || 'عنوان الباقة',
-      description: body.description_ar || body.description || 'وصف الباقة',
+      title_ar: body.title_ar || body.title || 'عنوان الباقة',
+      title_en: body.title_en || body.title || 'Package Title',
+      description_ar: body.description_ar || body.description || 'وصف الباقة',
+      description_en: body.description_en || body.description || 'Package Description',
       price: Number(body.price),
       duration_days: Number(body.duration_days),
-      destination: body.destination || 'وجهة غير محددة',
+      max_persons: body.max_persons || 1,
+      travel_period: body.travel_period || body.destination || 'طوال السنة',
       image_url: body.image_url || 'https://via.placeholder.com/400x300?text=No+Image',
-      hero_image_url: body.hero_image_url || body.image_url || 'https://via.placeholder.com/400x300?text=No+Hero+Image'
+      hero_image_url: body.hero_image_url || body.image_url || 'https://via.placeholder.com/400x300?text=No+Hero+Image',
+      featured: body.featured || false
     }
     
     console.log('Inserting package data:', insertData)
