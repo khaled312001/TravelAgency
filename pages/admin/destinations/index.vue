@@ -124,8 +124,8 @@
         >
           <div class="destination-image">
             <img 
-              v-if="destination.main_image"
-              :src="destination.main_image" 
+              v-if="destination.image_url"
+              :src="destination.image_url" 
               :alt="destination.name_ar"
               class="destination-img"
             />
@@ -289,7 +289,7 @@
             <div class="form-group">
               <label class="form-label">الصورة الرئيسية</label>
               <ImageUpload 
-                v-model="destinationForm.main_image"
+                v-model="destinationForm.image_url"
                 alt="الصورة الرئيسية للوجهة"
                 @upload="onImageUpload"
                 @error="onImageError"
@@ -336,8 +336,8 @@
             <div class="form-group full-width">
               <label class="form-label">صورة الوجهة الرئيسية *</label>
               <div class="image-upload-container">
-                <div v-if="destinationForm.main_image" class="current-image">
-                  <img :src="destinationForm.main_image" alt="صورة الوجهة الحالية" class="image-preview" />
+                <div v-if="destinationForm.image_url" class="current-image">
+                  <img :src="destinationForm.image_url" alt="صورة الوجهة الحالية" class="image-preview" />
                   <button type="button" @click="removeImage" class="remove-image-btn">
                     <Icon name="lucide:x" class="remove-icon" />
                   </button>
@@ -391,7 +391,7 @@ interface Destination {
   location_type_en: string
   destination_type_ar: string
   destination_type_en: string
-  main_image: string
+  image_url: string
   featured: boolean
   status: string
   created_at: string
@@ -420,7 +420,7 @@ const destinationForm = ref({
   location_type_en: '',
   destination_type_ar: '',
   destination_type_en: '',
-  main_image: '',
+  image_url: '',
   featured: false,
   status: 'active',
   gallery: [] as string[],
@@ -649,7 +649,7 @@ const closeModal = () => {
     location_type_en: '',
     destination_type_ar: '',
     destination_type_en: '',
-    main_image: '',
+    image_url: '',
     featured: false,
     status: 'active',
     gallery: [],

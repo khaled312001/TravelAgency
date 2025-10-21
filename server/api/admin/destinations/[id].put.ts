@@ -19,12 +19,12 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle image upload to Cloudinary if it's a new base64 image
-    let mainImageUrl = body.main_image
-    if (body.main_image && body.main_image.startsWith('data:image/')) {
+    let imageUrl = body.image_url
+    if (body.image_url && body.image_url.startsWith('data:image/')) {
       try {
-        const result = await uploadBase64Image(body.main_image, 'destinations')
-        mainImageUrl = result.secure_url
-        console.log('Image uploaded to Cloudinary:', mainImageUrl)
+        const result = await uploadBase64Image(body.image_url, 'destinations')
+        imageUrl = result.secure_url
+        console.log('Image uploaded to Cloudinary:', imageUrl)
       } catch (uploadError) {
         console.error('Image upload failed:', uploadError)
         // Continue with existing image if upload fails
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
         location_type_en: body.location_type_en,
         destination_type_ar: body.destination_type_ar,
         destination_type_en: body.destination_type_en,
-        main_image: mainImageUrl,
+        image_url: imageUrl,
         featured: body.featured || false,
         status: body.status || 'active',
         updated_at: new Date().toISOString()

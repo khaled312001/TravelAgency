@@ -22,21 +22,21 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle image upload to Cloudinary
-    let mainImageUrl = ''
-    if (body.main_image) {
-      if (body.main_image.startsWith('data:image/')) {
+    let imageUrl = ''
+    if (body.image_url) {
+      if (body.image_url.startsWith('data:image/')) {
         // Base64 image - upload to Cloudinary
         try {
-          const result = await uploadBase64Image(body.main_image, 'destinations')
-          mainImageUrl = result.secure_url
-          console.log('Image uploaded to Cloudinary:', mainImageUrl)
+          const result = await uploadBase64Image(body.image_url, 'destinations')
+          imageUrl = result.secure_url
+          console.log('Image uploaded to Cloudinary:', imageUrl)
         } catch (uploadError) {
           console.error('Image upload failed:', uploadError)
           // Continue without image if upload fails
         }
-      } else if (body.main_image.startsWith('http')) {
+      } else if (body.image_url.startsWith('http')) {
         // Already a URL - use directly
-        mainImageUrl = body.main_image
+        imageUrl = body.image_url
       }
     }
 
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
         location_type_en: body.location_type_en,
         destination_type_ar: body.destination_type_ar,
         destination_type_en: body.destination_type_en,
-        main_image: mainImageUrl,
+        image_url: imageUrl,
         featured: body.featured || false,
         status: body.status || 'active',
         created_at: new Date().toISOString(),
