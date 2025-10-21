@@ -312,7 +312,8 @@ interface Package {
   price: number
   duration_days: number
   destination: string
-  image_url?: string
+  image_url: string
+  hero_image_url: string
   created_at: string
   updated_at: string
 }
