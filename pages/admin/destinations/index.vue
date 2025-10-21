@@ -161,15 +161,11 @@
             <div class="destination-details">
               <div class="detail-item">
                 <Icon name="lucide:map-pin" class="detail-icon" />
-                <span>{{ destination.region_ar }}</span>
-              </div>
-              <div class="detail-item">
-                <Icon name="lucide:globe" class="detail-icon" />
-                <span>{{ destination.destination_type_ar }}</span>
+                <span>{{ destination.country }}</span>
               </div>
               <div class="detail-item">
                 <Icon name="lucide:tag" class="detail-icon" />
-                <span>{{ destination.location_type_ar }}</span>
+                <span>{{ destination.status === 'active' ? 'نشط' : 'غير نشط' }}</span>
               </div>
             </div>
 
@@ -223,78 +219,16 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">المنطقة (عربي) *</label>
+              <label class="form-label">البلد *</label>
               <input 
-                v-model="destinationForm.region_ar" 
+                v-model="destinationForm.country" 
                 type="text" 
                 class="form-input"
+                placeholder="مثال: السعودية، فرنسا، إسبانيا"
                 required
               />
             </div>
 
-            <div class="form-group">
-              <label class="form-label">المنطقة (إنجليزي) *</label>
-              <input 
-                v-model="destinationForm.region_en" 
-                type="text" 
-                class="form-input"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">نوع الموقع (عربي) *</label>
-              <input 
-                v-model="destinationForm.location_type_ar" 
-                type="text" 
-                class="form-input"
-                placeholder="مثال: مدينة، ساحلي، ديني"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">نوع الموقع (إنجليزي) *</label>
-              <input 
-                v-model="destinationForm.location_type_en" 
-                type="text" 
-                class="form-input"
-                placeholder="مثال: Urban, Coastal, Religious"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">نوع الوجهة (عربي) *</label>
-              <input 
-                v-model="destinationForm.destination_type_ar" 
-                type="text" 
-                class="form-input"
-                placeholder="مثال: حضري، ثقافي، تاريخي"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">نوع الوجهة (إنجليزي) *</label>
-              <input 
-                v-model="destinationForm.destination_type_en" 
-                type="text" 
-                class="form-input"
-                placeholder="مثال: Metropolitan, Cultural, Historical"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">الصورة الرئيسية</label>
-              <ImageUpload 
-                v-model="destinationForm.image_url"
-                alt="الصورة الرئيسية للوجهة"
-                @upload="onImageUpload"
-                @error="onImageError"
-              />
-            </div>
 
             <div class="form-group">
               <label class="form-label">الحالة</label>
@@ -385,12 +319,7 @@ interface Destination {
   name_en: string
   description_ar: string
   description_en: string
-  region_ar: string
-  region_en: string
-  location_type_ar: string
-  location_type_en: string
-  destination_type_ar: string
-  destination_type_en: string
+  country: string
   image_url: string
   featured: boolean
   status: string
@@ -414,19 +343,10 @@ const destinationForm = ref({
   name_en: '',
   description_ar: '',
   description_en: '',
-  region_ar: '',
-  region_en: '',
-  location_type_ar: '',
-  location_type_en: '',
-  destination_type_ar: '',
-  destination_type_en: '',
+  country: '',
   image_url: '',
   featured: false,
-  status: 'active',
-  gallery: [] as string[],
-  tourist_spots: [] as any[],
-  upcoming_events: [] as any[],
-  coordinates: { latitude: 0, longitude: 0 }
+  status: 'active'
 })
 
 const filteredDestinations = computed(() => {
@@ -504,7 +424,16 @@ const loadDestinations = async () => {
 
 const editDestination = (destination: Destination) => {
   editingDestination.value = destination
-  destinationForm.value = { ...destination }
+  destinationForm.value = {
+    name_ar: destination.name_ar,
+    name_en: destination.name_en,
+    description_ar: destination.description_ar,
+    description_en: destination.description_en,
+    country: destination.country,
+    image_url: destination.image_url,
+    featured: destination.featured,
+    status: destination.status
+  }
   showEditModal.value = true
 }
 
@@ -643,19 +572,10 @@ const closeModal = () => {
     name_en: '',
     description_ar: '',
     description_en: '',
-    region_ar: '',
-    region_en: '',
-    location_type_ar: '',
-    location_type_en: '',
-    destination_type_ar: '',
-    destination_type_en: '',
+    country: '',
     image_url: '',
     featured: false,
-    status: 'active',
-    gallery: [],
-    tourist_spots: [],
-    upcoming_events: [],
-    coordinates: { latitude: 0, longitude: 0 }
+    status: 'active'
   }
 }
 
