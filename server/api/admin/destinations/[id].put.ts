@@ -39,16 +39,9 @@ export default defineEventHandler(async (event) => {
         name_en: body.name_en,
         description_ar: body.description_ar || '',
         description_en: body.description_en || '',
-        region_ar: body.region_ar,
-        region_en: body.region_en,
-        location_type_ar: body.location_type_ar,
-        location_type_en: body.location_type_en,
-        destination_type_ar: body.destination_type_ar,
-        destination_type_en: body.destination_type_en,
+        country: body.country,
         image_url: imageUrl,
-        featured: body.featured || false,
-        status: body.status || 'active',
-        updated_at: new Date().toISOString()
+        featured: body.featured || false
       })
       .eq('id', destinationId)
       .select()

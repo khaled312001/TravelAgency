@@ -50,10 +50,7 @@ export default defineEventHandler(async (event) => {
         description_en: body.description_en || '',
         country: body.country,
         image_url: imageUrl,
-        featured: body.featured || false,
-        status: body.status || 'active',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        featured: body.featured || false
       })
       .select()
       .single()
