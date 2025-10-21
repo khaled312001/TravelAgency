@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { uploadBase64Image } from '~/utils/cloudinary'
 
 const supabaseUrl = 'https://ueofktshvaqtxjsxvisv.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlb2ZrdHNodmFxdHhqc3h2aXN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MjMxNzYsImV4cCI6MjA3NTQ5OTE3Nn0.f61pBbPa0QvCKRY-bF-iaIkrMrZ08NUbyrHvdazsIYA'
@@ -38,10 +39,36 @@ export default defineEventHandler(async (event) => {
     
     if (!body.duration_days) {
       console.error('Missing required field: duration_days')
-      throw createError({
-        statusCode: 400,
+        throw createError({
+          statusCode: 400,
         statusMessage: 'Field duration_days is required'
       })
+    }
+
+    // Upload images to Cloudinary if provided
+    let imageUrl = 'https://via.placeholder.com/400x300?text=No+Image'
+    let heroImageUrl = 'https://via.placeholder.com/400x300?text=No+Hero+Image'
+    
+    try {
+      if (body.image_url && body.image_url.startsWith('data:image/')) {
+        console.log('Uploading main image to Cloudinary...')
+        const imageResult = await uploadBase64Image(body.image_url, 'packages')
+        imageUrl = imageResult.secure_url
+        console.log('Main image uploaded:', imageResult.secure_url)
+      }
+      
+      if (body.hero_image_url && body.hero_image_url.startsWith('data:image/')) {
+        console.log('Uploading hero image to Cloudinary...')
+        const heroResult = await uploadBase64Image(body.hero_image_url, 'packages/hero')
+        heroImageUrl = heroResult.secure_url
+        console.log('Hero image uploaded:', heroResult.secure_url)
+      } else if (body.image_url && body.image_url.startsWith('data:image/')) {
+        // Use main image as hero image if no separate hero image provided
+        heroImageUrl = imageUrl
+      }
+    } catch (uploadError) {
+      console.error('Image upload failed, using placeholder images:', uploadError)
+      // Continue with placeholder images if upload fails
     }
 
     // Create package with current database schema (complex schema with hero_image_url)
@@ -54,8 +81,8 @@ export default defineEventHandler(async (event) => {
       duration_days: Number(body.duration_days),
       max_persons: body.max_persons || 1,
       travel_period: body.travel_period || body.destination || 'طوال السنة',
-      image_url: body.image_url || 'https://via.placeholder.com/400x300?text=No+Image',
-      hero_image_url: body.hero_image_url || body.image_url || 'https://via.placeholder.com/400x300?text=No+Hero+Image',
+      image_url: imageUrl,
+      hero_image_url: heroImageUrl,
       featured: body.featured || false
     }
     
@@ -80,7 +107,7 @@ export default defineEventHandler(async (event) => {
         statusMessage: packageError.message
       })
     }
-    
+
     console.log('Package created successfully:', packageData)
 
     return {

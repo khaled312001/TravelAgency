@@ -385,7 +385,7 @@ const loadPackages = async () => {
     const queryString = params.toString()
     const url = `/api/admin/packages${queryString ? `?${queryString}` : ''}`
     
-    const response = await $fetch(url)
+    const response = await $fetch(url) as { packages?: Package[] }
     
     if (response.packages) {
       // Use the data directly from database
@@ -439,11 +439,15 @@ const savePackage = async () => {
     
     // Prepare the data for API - map to current database schema
     const packageData = {
-      title: packageForm.value.title_ar || 'عنوان الباقة',
-      description: packageForm.value.description_ar || 'وصف الباقة',
+      title_ar: packageForm.value.title_ar || 'عنوان الباقة',
+      title_en: packageForm.value.title_en || packageForm.value.title_ar || 'Package Title',
+      description_ar: packageForm.value.description_ar || 'وصف الباقة',
+      description_en: packageForm.value.description_en || packageForm.value.description_ar || 'Package Description',
       price: Number(packageForm.value.price),
       duration_days: Number(packageForm.value.duration_days),
-      destination: packageForm.value.travel_period || 'وجهة غير محددة',
+      max_persons: packageForm.value.max_persons || 1,
+      travel_period: packageForm.value.travel_period || 'طوال السنة',
+      featured: packageForm.value.featured || false,
       image_url: packageForm.value.image_url || 'https://via.placeholder.com/400x300?text=No+Image',
       hero_image_url: packageForm.value.hero_image_url || packageForm.value.image_url || 'https://via.placeholder.com/400x300?text=No+Hero+Image'
     }
@@ -464,7 +468,7 @@ const savePackage = async () => {
     
     await loadPackages()
     closeModal()
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error saving package:', error)
     alert('حدث خطأ أثناء حفظ الباقة: ' + (error.message || 'خطأ غير معروف'))
   } finally {
@@ -472,7 +476,7 @@ const savePackage = async () => {
   }
 }
 
-const handleImageUpload = (event: Event) => {
+const handleImageUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
     // Validate file size (5MB max)
@@ -487,16 +491,34 @@ const handleImageUpload = (event: Event) => {
       return
     }
     
-    // Create preview URL
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      packageForm.value.image_url = e.target?.result as string
+    try {
+      // Show loading state
+      saving.value = true
+      
+      // Create preview URL first
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        packageForm.value.image_url = e.target?.result as string
+      }
+      reader.readAsDataURL(file)
+      
+      // Upload to Cloudinary in background
+      const { uploadFile } = useCloudinary()
+      const result = await uploadFile(file, 'packages')
+      
+      // Update with Cloudinary URL
+      packageForm.value.image_url = result.image.url
+      
+    } catch (error) {
+      console.error('Image upload failed:', error)
+      alert('فشل في رفع الصورة. سيتم استخدام الصورة المحلية.')
+    } finally {
+      saving.value = false
     }
-    reader.readAsDataURL(file)
   }
 }
 
-const handleHeroImageUpload = (event: Event) => {
+const handleHeroImageUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
     // Validate file size (5MB max)
@@ -511,12 +533,30 @@ const handleHeroImageUpload = (event: Event) => {
       return
     }
     
-    // Create preview URL
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      packageForm.value.hero_image_url = e.target?.result as string
+    try {
+      // Show loading state
+      saving.value = true
+      
+      // Create preview URL first
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        packageForm.value.hero_image_url = e.target?.result as string
+      }
+      reader.readAsDataURL(file)
+      
+      // Upload to Cloudinary in background
+      const { uploadFile } = useCloudinary()
+      const result = await uploadFile(file, 'packages/hero')
+      
+      // Update with Cloudinary URL
+      packageForm.value.hero_image_url = result.image.url
+      
+    } catch (error) {
+      console.error('Hero image upload failed:', error)
+      alert('فشل في رفع صورة البطل. سيتم استخدام الصورة المحلية.')
+    } finally {
+      saving.value = false
     }
-    reader.readAsDataURL(file)
   }
 }
 
