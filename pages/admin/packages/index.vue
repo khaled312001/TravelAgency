@@ -329,8 +329,8 @@ const packageForm = ref({
   max_persons: 0,
   travel_period: '',
   featured: false,
-  image_url: '',
-  hero_image_url: ''
+  image_url: 'https://picsum.photos/400/300?random=1',
+  hero_image_url: 'https://picsum.photos/400/300?random=2'
 })
 
 const filteredPackages = computed(() => {
@@ -448,8 +448,8 @@ const savePackage = async () => {
       max_persons: packageForm.value.max_persons || 1,
       travel_period: packageForm.value.travel_period || 'طوال السنة',
       featured: packageForm.value.featured || false,
-      image_url: packageForm.value.image_url || 'https://via.placeholder.com/400x300?text=No+Image',
-      hero_image_url: packageForm.value.hero_image_url || packageForm.value.image_url || 'https://via.placeholder.com/400x300?text=No+Hero+Image'
+      image_url: packageForm.value.image_url || 'https://picsum.photos/400/300?random=1',
+      hero_image_url: packageForm.value.hero_image_url || packageForm.value.image_url || 'https://picsum.photos/400/300?random=2'
     }
     
     if (showEditModal.value && editingPackage.value) {
@@ -502,12 +502,22 @@ const handleImageUpload = async (event: Event) => {
       }
       reader.readAsDataURL(file)
       
-      // Upload to Cloudinary in background
+      // Upload to Cloudinary
+      console.log('Uploading image to Cloudinary...')
       const { uploadFile } = useCloudinary()
+      console.log('useCloudinary composable loaded:', !!uploadFile)
+      
       const result = await uploadFile(file, 'packages')
+      console.log('Cloudinary upload result:', result)
       
       // Update with Cloudinary URL
-      packageForm.value.image_url = result.image.url
+      if (result && result.image && result.image.url) {
+        packageForm.value.image_url = result.image.url
+        console.log('Image URL updated to:', packageForm.value.image_url)
+      } else {
+        console.error('Invalid Cloudinary response:', result)
+        throw new Error('Invalid response from Cloudinary')
+      }
       
     } catch (error) {
       console.error('Image upload failed:', error)
@@ -544,12 +554,22 @@ const handleHeroImageUpload = async (event: Event) => {
       }
       reader.readAsDataURL(file)
       
-      // Upload to Cloudinary in background
+      // Upload to Cloudinary
+      console.log('Uploading hero image to Cloudinary...')
       const { uploadFile } = useCloudinary()
+      console.log('useCloudinary composable loaded for hero:', !!uploadFile)
+      
       const result = await uploadFile(file, 'packages/hero')
+      console.log('Cloudinary hero upload result:', result)
       
       // Update with Cloudinary URL
-      packageForm.value.hero_image_url = result.image.url
+      if (result && result.image && result.image.url) {
+        packageForm.value.hero_image_url = result.image.url
+        console.log('Hero image URL updated to:', packageForm.value.hero_image_url)
+      } else {
+        console.error('Invalid Cloudinary hero response:', result)
+        throw new Error('Invalid response from Cloudinary for hero image')
+      }
       
     } catch (error) {
       console.error('Hero image upload failed:', error)
@@ -561,7 +581,7 @@ const handleHeroImageUpload = async (event: Event) => {
 }
 
 const removeImage = () => {
-  packageForm.value.image_url = ''
+  packageForm.value.image_url = 'https://picsum.photos/400/300?random=1'
   // Reset file input
   const fileInput = document.getElementById('package-image-upload') as HTMLInputElement
   if (fileInput) {
@@ -570,7 +590,7 @@ const removeImage = () => {
 }
 
 const removeHeroImage = () => {
-  packageForm.value.hero_image_url = ''
+  packageForm.value.hero_image_url = 'https://picsum.photos/400/300?random=2'
   // Reset file input
   const fileInput = document.getElementById('package-hero-image-upload') as HTMLInputElement
   if (fileInput) {

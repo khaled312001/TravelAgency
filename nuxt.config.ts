@@ -230,6 +230,11 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Cloudinary configuration
+    cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || 'dwpbixx3o',
+    cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '457217934572426',
+    cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || 'p75oOG1U8c_mMf-TAqrziSbGxBA',
+    
     // Twilio configuration for WhatsApp notifications
     twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || '',
     twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || '',

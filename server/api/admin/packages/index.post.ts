@@ -46,8 +46,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Upload images to Cloudinary if provided
-    let imageUrl = 'https://via.placeholder.com/400x300?text=No+Image'
-    let heroImageUrl = 'https://via.placeholder.com/400x300?text=No+Hero+Image'
+    let imageUrl = 'https://picsum.photos/400/300?random=1'
+    let heroImageUrl = 'https://picsum.photos/400/300?random=2'
     
     try {
       if (body.image_url && body.image_url.startsWith('data:image/')) {
@@ -55,6 +55,10 @@ export default defineEventHandler(async (event) => {
         const imageResult = await uploadBase64Image(body.image_url, 'packages')
         imageUrl = imageResult.secure_url
         console.log('Main image uploaded:', imageResult.secure_url)
+      } else if (body.image_url && body.image_url.startsWith('http')) {
+        // If it's already a URL, use it directly
+        imageUrl = body.image_url
+        console.log('Using provided image URL:', imageUrl)
       }
       
       if (body.hero_image_url && body.hero_image_url.startsWith('data:image/')) {
@@ -62,7 +66,11 @@ export default defineEventHandler(async (event) => {
         const heroResult = await uploadBase64Image(body.hero_image_url, 'packages/hero')
         heroImageUrl = heroResult.secure_url
         console.log('Hero image uploaded:', heroResult.secure_url)
-      } else if (body.image_url && body.image_url.startsWith('data:image/')) {
+      } else if (body.hero_image_url && body.hero_image_url.startsWith('http')) {
+        // If it's already a URL, use it directly
+        heroImageUrl = body.hero_image_url
+        console.log('Using provided hero image URL:', heroImageUrl)
+      } else if (body.image_url && body.image_url.startsWith('http')) {
         // Use main image as hero image if no separate hero image provided
         heroImageUrl = imageUrl
       }
