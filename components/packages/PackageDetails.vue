@@ -64,21 +64,21 @@
     <div class="mb-12">
       <h2 class="text-2xl font-bold mb-6">{{ t('packages.details.included_services') }}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div v-if="package_?.included_options.flight" class="flex items-center gap-3 bg-gray-50 p-4 rounded-xl">
+        <div v-if="package_?.included_options?.flight" class="flex items-center gap-3 bg-gray-50 p-4 rounded-xl">
           <FlightIcon :size="24" class="text-primary" />
           <span class="font-medium">{{ t('packages.details.flight') }}</span>
         </div>
-        <div v-if="package_?.included_options.hotel" class="flex flex-col gap-1 bg-gray-50 p-4 rounded-xl">
+        <div v-if="package_?.included_options?.hotel" class="flex flex-col gap-1 bg-gray-50 p-4 rounded-xl">
           <div class="flex items-center gap-3">
             <Icon name="material-symbols:hotel-outline" class="h-6 w-6 text-primary" />
             <span class="font-medium">{{ t('packages.details.hotel') }}</span>
           </div>
-          <div v-if="package_?.included_options.hotelGrade" class="flex items-center gap-1 mt-1">
+          <div v-if="package_?.included_options?.hotelGrade" class="flex items-center gap-1 mt-1">
             <Icon v-for="n in package_.included_options.hotelGrade" :key="n" name="material-symbols:star" class="w-4 h-4 text-yellow-400" aria-label="star" />
             <span class="text-xs text-gray-700">{{ t('packages.details.hotel_grade', {grade: package_.included_options.hotelGrade}) }}</span>
           </div>
         </div>
-        <div v-if="package_?.included_options.transportation" class="flex items-center gap-3 bg-gray-50 p-4 rounded-xl">
+        <div v-if="package_?.included_options?.transportation" class="flex items-center gap-3 bg-gray-50 p-4 rounded-xl">
           <Icon name="material-symbols:directions-car-outline" class="h-6 w-6 text-primary" />
           <span class="font-medium">{{ t('packages.details.transportation') }}</span>
         </div>
@@ -100,7 +100,7 @@
               <span>{{ t('packages.details.custom_package.cta') }}</span>
             </button>
             <a 
-              :href="getWhatsAppUrl(`${t('whatsapp.messages.package_interest', { name: props.package_[`title_${locale.slice(0, 2)}`] })}`)"
+              :href="getWhatsAppUrl(`${t('whatsapp.messages.package_interest', { name: props.package_[`title_${locale.value.slice(0, 2)}`] })}`)"
               target="_blank"
               rel="noopener noreferrer"
               class="rounded-full bg-[#25D366] px-8 py-3 text-white hover:bg-[#128C7E] transition-colors flex items-center justify-center gap-2"

@@ -17,7 +17,7 @@
     </div>
 
     <div 
-      v-else-if="package_" 
+      v-else-if="package_ && package_.id" 
       class="relative min-h-screen"
     >
       <!-- Hero Section -->
@@ -81,9 +81,15 @@ const {
   error
 } = await useAsyncData<Package>(
   `package-${route.params.id}`,
-  () => getPackageById(route.params.id as string),
+  async () => {
+    console.log('Fetching package with ID:', route.params.id)
+    const packageData = await getPackageById(route.params.id as string)
+    console.log('Package data received:', packageData)
+    return packageData
+  },
   {
-    watch: [route.params.id]
+    watch: [route.params.id],
+    default: () => null
   }
 )
 
@@ -93,8 +99,8 @@ watch(package_, (newPackage) => {
     const packageTitle = newPackage.title_ar || newPackage.title_en
     const packageDescription = newPackage.description_ar || newPackage.description_en
     const packagePrice = newPackage.price || 0
-    const packageDuration = newPackage.duration || 'متغير'
-    const packageDestination = newPackage.destination || 'وجهة متعددة'
+    const packageDuration = newPackage.duration_days || 'متغير'
+    const packageDestination = newPackage.travel_period || 'وجهة متعددة'
     
     useHead({
       title: `${packageTitle} - أرض العجائب للسفر | باقات سفر متميزة`,
@@ -169,7 +175,15 @@ definePageMeta({
 // Watch for package data and redirect if not found
 watch(package_, (newPackage) => {
   if (!newPackage && !pending.value) {
+    console.log('Package not found, redirecting to packages page')
     useRouter().push('/packages')
+  }
+})
+
+// Watch for errors
+watch(error, (newError) => {
+  if (newError) {
+    console.error('Package fetch error:', newError)
   }
 })
 

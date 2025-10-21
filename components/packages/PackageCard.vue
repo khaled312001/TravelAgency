@@ -73,9 +73,9 @@
       <div class="mt-auto flex justify-between items-center">
         <!-- Included Options Icons -->
         <div v-if="props.package_.included_options" class="flex items-center gap-3">
-          <FlightIcon v-if="props.package_.included_options.flight" :size="24" class="text-primary" />
-          <Icon v-if="props.package_.included_options.hotel" name="material-symbols:hotel-outline" class="h-6 w-6 text-primary" />
-          <Icon v-if="props.package_.included_options.transportation" name="material-symbols:directions-car-outline" class="h-6 w-6 text-primary" />
+          <FlightIcon v-if="props.package_.included_options?.flight" :size="24" class="text-primary" />
+          <Icon v-if="props.package_.included_options?.hotel" name="material-symbols:hotel-outline" class="h-6 w-6 text-primary" />
+          <Icon v-if="props.package_.included_options?.transportation" name="material-symbols:directions-car-outline" class="h-6 w-6 text-primary" />
         </div>
         <span class="text-primary font-medium text-sm group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">
           {{ locale === 'ar-SA' ? $t('common.view_details')+ ' ←' : $t('common.view_details') + ' →' }}

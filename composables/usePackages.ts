@@ -52,7 +52,14 @@ export function usePackages() {
   const getPackages = () => packages.value || []
 
   // Get package by ID
-  const getPackageById = (id: string) => getPackages().find(p => p.id === id)
+  const getPackageById = (id: string) => {
+    const packages = getPackages()
+    console.log('Looking for package with ID:', id)
+    console.log('Available packages:', packages.map(p => ({ id: p.id, title: p.title_ar })))
+    const found = packages.find(p => p.id === id)
+    console.log('Found package:', found)
+    return found
+  }
 
   return {
     getPackages,

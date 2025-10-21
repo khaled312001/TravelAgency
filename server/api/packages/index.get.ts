@@ -148,6 +148,7 @@ export default defineEventHandler(async (event) => {
           price: pkg.price || 0,
           max_persons: pkg.max_persons || 1,
           featured: pkg.featured || false,
+          included_options: undefined, // No included options for now
           created_at: pkg.created_at,
           updated_at: pkg.updated_at
         }
@@ -166,6 +167,7 @@ export default defineEventHandler(async (event) => {
           price: pkg.price || 0,
           max_persons: 1,
           featured: false,
+          included_options: undefined, // No included options for now
           created_at: pkg.created_at,
           updated_at: pkg.updated_at
         }
