@@ -483,7 +483,7 @@ const handleImageUpload = async (event: Event) => {
       const result = await uploadFile(file, 'destinations')
       
       if (result && result.image && result.image.url) {
-        destinationForm.value.main_image = result.image.url
+        destinationForm.value.image_url = result.image.url
         console.log('Image uploaded to Cloudinary:', result.image.url)
       } else {
         throw new Error('Invalid response from Cloudinary')
@@ -495,7 +495,7 @@ const handleImageUpload = async (event: Event) => {
       // Fallback to base64 preview
       const reader = new FileReader()
       reader.onload = (e) => {
-        destinationForm.value.main_image = e.target?.result as string
+        destinationForm.value.image_url = e.target?.result as string
       }
       reader.readAsDataURL(file)
     }
@@ -503,7 +503,7 @@ const handleImageUpload = async (event: Event) => {
 }
 
 const removeImage = () => {
-  destinationForm.value.main_image = ''
+  destinationForm.value.image_url = ''
   // Reset file input
   const fileInput = document.getElementById('destination-image-upload') as HTMLInputElement
   if (fileInput) {
