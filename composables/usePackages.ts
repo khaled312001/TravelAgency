@@ -29,41 +29,23 @@ export interface Package {
 
 
 export function usePackages() {
-  const client = useSupabaseClient<Database>()
-  
-  // Fetch packages from Supabase directly (client-side)
-  const { data: packages, pending, error, refresh } = useAsyncData('packages-fixed', async () => {
-    const { data, error: fetchError } = await client
-      .from('packages')
-      .select(`
-        id, image_url, hero_image_url, title_ar, title_en, description_ar, description_en, travel_period, duration_days, price, max_persons, featured,
-        package_options:package_options (flight, hotel, transportation, hotel_grade)
-      `)
-      .order('created_at', { ascending: false })
-
-    if (fetchError) throw fetchError
-
-    // Format to match expected structure
-    return (data || []).map((pkg: any) => ({
-      id: pkg.id,
-      image_url: pkg.image_url,
-      hero_image_url: pkg.hero_image_url,
-      title_ar: pkg.title_ar,
-      title_en: pkg.title_en,
-      description_ar: pkg.description_ar,
-      description_en: pkg.description_en,
-      travel_period: pkg.travel_period,
-      duration_days: pkg.duration_days,
-      price: pkg.price,
-      max_persons: pkg.max_persons,
-      featured: pkg.featured,
-      included_options: pkg.package_options ? {
-        flight: pkg.package_options.flight,
-        hotel: pkg.package_options.hotel,
-        transportation: pkg.package_options.transportation,
-        hotelGrade: pkg.package_options.hotel_grade,
-      } : undefined,
-    })) as Package[]
+  // Fetch packages from public API endpoint
+  const { data: packages, pending, error, refresh } = useAsyncData('packages-public', async () => {
+    try {
+      console.log('Fetching packages from public API...')
+      const response = await $fetch('/api/packages')
+      
+      if (response.success && response.packages) {
+        console.log('Packages fetched successfully:', response.packages.length)
+        return response.packages as Package[]
+      } else {
+        console.error('Invalid response from packages API:', response)
+        return []
+      }
+    } catch (fetchError) {
+      console.error('Error fetching packages:', fetchError)
+      throw fetchError
+    }
   })
 
   // Get all packages
