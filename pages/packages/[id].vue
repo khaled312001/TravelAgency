@@ -189,19 +189,36 @@ watch(error, (newError) => {
 
 // SEO
 useHead({
-  title: computed(() => package_.value ? `${package_.value[`title_${locale.value.slice(0, 2)}`]} | World Trip Agency Agency` : 'Loading...'),
+  title: computed(() => {
+    if (!package_.value || !locale.value) return 'Loading...'
+    const lang = locale.value.slice(0, 2)
+    const title = package_.value[`title_${lang}`] || package_.value.title_ar || package_.value.title_en || 'Package'
+    return `${title} | World Trip Agency`
+  }),
   meta: [
     {
       name: 'description',
-      content: computed(() => package_.value?.[`description_${locale.value.slice(0, 2)}`] || '')
+      content: computed(() => {
+        if (!package_.value || !locale.value) return ''
+        const lang = locale.value.slice(0, 2)
+        return package_.value?.[`description_${lang}`] || package_.value?.description_ar || package_.value?.description_en || ''
+      })
     },
     {
       property: 'og:title',
-      content: computed(() => package_.value?.[`title_${locale.value.slice(0, 2)}`] || '')
+      content: computed(() => {
+        if (!package_.value || !locale.value) return ''
+        const lang = locale.value.slice(0, 2)
+        return package_.value?.[`title_${lang}`] || package_.value?.title_ar || package_.value?.title_en || ''
+      })
     },
     {
       property: 'og:description',
-      content: computed(() => package_.value?.[`description_${locale.value.slice(0, 2)}`] || '')
+      content: computed(() => {
+        if (!package_.value || !locale.value) return ''
+        const lang = locale.value.slice(0, 2)
+        return package_.value?.[`description_${lang}`] || package_.value?.description_ar || package_.value?.description_en || ''
+      })
     },
     {
       property: 'og:image',
@@ -217,7 +234,7 @@ useHead({
     },
     {
       property: 'og:price:amount',
-      content: computed(() => package_.value?.price.toString() || '')
+      content: computed(() => package_.value?.price?.toString() || '')
     },
     {
       property: 'og:price:currency',

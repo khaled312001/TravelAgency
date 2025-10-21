@@ -65,10 +65,10 @@
 
     <div class="flex flex-1 flex-col p-6">
       <h3 class="text-xl font-semibold mb-2 text-stone-750 transition-colors duration-300 group-hover:text-stone-950">
-        {{ locale === 'ar-SA' ? props.package_.title_ar : props.package_.title_en }}
+        {{ locale?.value === 'ar-SA' ? props.package_.title_ar : props.package_.title_en }}
       </h3>
       <p class="mb-4 text-sm text-gray-800 line-clamp-2">
-        {{ locale === 'ar-SA' ? props.package_.description_ar : props.package_.description_en }}
+        {{ locale?.value === 'ar-SA' ? props.package_.description_ar : props.package_.description_en }}
       </p>
       <div class="mt-auto flex justify-between items-center">
         <!-- Included Options Icons -->
@@ -78,7 +78,7 @@
           <Icon v-if="props.package_.included_options?.transportation" name="material-symbols:directions-car-outline" class="h-6 w-6 text-primary" />
         </div>
         <span class="text-primary font-medium text-sm group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">
-          {{ locale === 'ar-SA' ? $t('common.view_details')+ ' ←' : $t('common.view_details') + ' →' }}
+          {{ locale?.value === 'ar-SA' ? $t('common.view_details')+ ' ←' : $t('common.view_details') + ' →' }}
         </span>
       </div>
     </div>

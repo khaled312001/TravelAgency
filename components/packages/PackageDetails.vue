@@ -4,10 +4,10 @@
     <div class="mb-12">
       <h2 class="text-2xl font-bold mb-6">{{ t('packages.details.overview') }}</h2>
       <h1 class="mb-4 text-4xl font-bold">
-        {{ locale === 'ar-SA' ? package_.title_ar : package_.title_en }}
+        {{ locale?.value === 'ar-SA' ? package_.title_ar : package_.title_en }}
       </h1>
       <p class="mb-8 text-lg text-gray-700">
-        {{ locale === 'ar-SA' ? package_.description_ar : package_.description_en }}
+        {{ locale?.value === 'ar-SA' ? package_.description_ar : package_.description_en }}
       </p>
     </div>
 
@@ -54,7 +54,7 @@
           <Icon name="material-symbols:group-outline" class="h-6 w-6 text-primary" />
           <div>
             <div class="font-medium">{{ t('packages.details.travelers') }}</div>
-            <div class="text-gray-700">{{ t('packages.details.max_persons_qty', { count: package_?.max_persons }) }}</div>
+            <div class="text-gray-700">{{ t('packages.details.max_persons_qty', { count: package_?.max_persons || 1 }) }}</div>
           </div>
         </div>
       </div>
@@ -100,7 +100,7 @@
               <span>{{ t('packages.details.custom_package.cta') }}</span>
             </button>
             <a 
-              :href="getWhatsAppUrl(`${t('whatsapp.messages.package_interest', { name: props.package_[`title_${locale.value.slice(0, 2)}`] })}`)"
+              :href="getWhatsAppUrl(`${t('whatsapp.messages.package_interest', { name: props.package_[`title_${locale.value?.slice(0, 2) || 'ar'}`] })}`)"
               target="_blank"
               rel="noopener noreferrer"
               class="rounded-full bg-[#25D366] px-8 py-3 text-white hover:bg-[#128C7E] transition-colors flex items-center justify-center gap-2"
