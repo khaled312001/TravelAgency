@@ -36,9 +36,9 @@ export default defineEventHandler(async (event) => {
       .select('id, title, description, price, duration_days, destination, image_url, hero_image_url, created_at, updated_at')
       .limit(1)
     
-    const { data: testPackages, error: testError } = await supabaseQuery
+    const { data: testPackages, error: simpleSchemaError } = await supabaseQuery
     
-    if (testError) {
+    if (simpleSchemaError) {
       console.log('Simple schema failed, trying complex schema...')
       // Try the complex schema
       supabaseQuery = supabase
@@ -46,13 +46,13 @@ export default defineEventHandler(async (event) => {
         .select('id, title_ar, title_en, description_ar, description_en, price, duration_days, max_persons, travel_period, featured, image_url, hero_image_url, created_at, updated_at')
         .limit(1)
       
-      const { data: complexTest, error: complexError } = await supabaseQuery
+      const { data: complexTest, error: complexSchemaError } = await supabaseQuery
       
-      if (complexError) {
-        console.error('Both schemas failed:', { testError, complexError })
+      if (complexSchemaError) {
+        console.error('Both schemas failed:', { simpleSchemaError, complexSchemaError })
         throw createError({
           statusCode: 500,
-          statusMessage: `Database schema detection failed: ${testError.message}`
+          statusMessage: `Database schema detection failed: ${simpleSchemaError.message}`
         })
       }
       
@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
     
     // Apply filters based on detected schema
     if (query.search) {
-      if (testError) {
+      if (simpleSchemaError) {
         // Complex schema
         supabaseQuery = supabaseQuery.or(`title_ar.ilike.%${query.search}%,title_en.ilike.%${query.search}%,description_ar.ilike.%${query.search}%,description_en.ilike.%${query.search}%`)
       } else {
@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
     }
     
     if (query.status) {
-      if (testError) {
+      if (simpleSchemaError) {
         // Complex schema - use featured field
         const isFeatured = query.status === 'featured'
         supabaseQuery = supabaseQuery.eq('featured', isFeatured)
@@ -92,7 +92,7 @@ export default defineEventHandler(async (event) => {
     }
     
     if (query.category) {
-      if (testError) {
+      if (simpleSchemaError) {
         // Complex schema - use travel_period
         supabaseQuery = supabaseQuery.eq('travel_period', query.category)
       } else {
@@ -102,7 +102,7 @@ export default defineEventHandler(async (event) => {
     }
     
     // Apply ordering
-    if (testError) {
+    if (simpleSchemaError) {
       // Complex schema
       supabaseQuery = supabaseQuery.order('title_ar', { ascending: true })
     } else {
@@ -133,7 +133,7 @@ export default defineEventHandler(async (event) => {
 
     // Map packages to consistent format
     const mappedPackages = packages?.map(pkg => {
-      if (testError) {
+      if (simpleSchemaError) {
         // Complex schema - map to simple format
         return {
           id: pkg.id,
