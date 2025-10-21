@@ -19,7 +19,7 @@
           <Icon name="material-symbols:schedule-outline" class="h-6 w-6 text-primary" />
           <div>
             <div class="font-medium">{{ t('packages.details.duration') }}</div>
-            <div class="text-gray-700">{{ t('packages.details.duration', { count: package_?.duration_days }) }}</div>
+            <div class="text-gray-700">{{ t('packages.details.duration', { count: package_?.duration_days || 1 }) }}</div>
           </div>
         </div>
         
@@ -36,7 +36,7 @@
           <div>
             <div class="font-medium">{{$t('packages.details.price')}}</div>
             <div class="flex items-center gap-2 mt-1">
-              <span class="text-gray-700">{{ package_?.price.toLocaleString() }}</span>
+              <span class="text-gray-700">{{ (package_?.price || 0).toLocaleString() }}</span>
               <span class="text-base text-gray-700 font-normal">{{$t('packages.details.per_person')}}</span>
               <VTooltip :triggers="['hover', 'focus']" placement="top">
                 <Icon name="material-symbols:info-outline" class="w-5 h-5 text-gray-400 cursor-pointer" />
@@ -74,8 +74,8 @@
             <span class="font-medium">{{ t('packages.details.hotel') }}</span>
           </div>
           <div v-if="package_?.included_options?.hotelGrade" class="flex items-center gap-1 mt-1">
-            <Icon v-for="n in package_.included_options.hotelGrade" :key="n" name="material-symbols:star" class="w-4 h-4 text-yellow-400" aria-label="star" />
-            <span class="text-xs text-gray-700">{{ t('packages.details.hotel_grade', {grade: package_.included_options.hotelGrade}) }}</span>
+            <Icon v-for="n in (package_.included_options?.hotelGrade || 0)" :key="n" name="material-symbols:star" class="w-4 h-4 text-yellow-400" aria-label="star" />
+            <span class="text-xs text-gray-700">{{ t('packages.details.hotel_grade', {grade: package_.included_options?.hotelGrade || 0}) }}</span>
           </div>
         </div>
         <div v-if="package_?.included_options?.transportation" class="flex items-center gap-3 bg-gray-50 p-4 rounded-xl">
