@@ -24,13 +24,9 @@ export default defineEventHandler(async (event) => {
     }
 
     if (country) {
-      if (country === 'Saudi Arabia') {
-        supabaseQuery = supabaseQuery.eq('country', country)
-      } else if (query['country.ne']) {
-        supabaseQuery = supabaseQuery.neq('country', query['country.ne'])
-      } else {
-        supabaseQuery = supabaseQuery.eq('country', country)
-      }
+      supabaseQuery = supabaseQuery.eq('country', country)
+    } else if (query['country.ne']) {
+      supabaseQuery = supabaseQuery.neq('country', query['country.ne'])
     }
 
     // Execute query
