@@ -444,8 +444,8 @@ const savePackage = async () => {
       price: Number(packageForm.value.price),
       duration_days: Number(packageForm.value.duration_days),
       destination: packageForm.value.travel_period || 'وجهة غير محددة',
-      image_url: packageForm.value.image_url || null,
-      hero_image_url: packageForm.value.hero_image_url || packageForm.value.image_url || null
+      image_url: packageForm.value.image_url || 'https://via.placeholder.com/400x300?text=No+Image',
+      hero_image_url: packageForm.value.hero_image_url || packageForm.value.image_url || 'https://via.placeholder.com/400x300?text=No+Hero+Image'
     }
     
     if (showEditModal.value && editingPackage.value) {
