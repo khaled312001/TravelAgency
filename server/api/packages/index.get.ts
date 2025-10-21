@@ -137,8 +137,8 @@ export default defineEventHandler(async (event) => {
         // Complex schema - map to public format
         return {
           id: pkg.id,
-          image_url: pkg.image_url || 'https://picsum.photos/400/300?random=1',
-          hero_image_url: pkg.hero_image_url || pkg.image_url || 'https://picsum.photos/400/300?random=2',
+          image_url: pkg.image_url || '',
+          hero_image_url: pkg.hero_image_url || pkg.image_url || '',
           title_ar: pkg.title_ar || 'عنوان الباقة',
           title_en: pkg.title_en || 'Package Title',
           description_ar: pkg.description_ar || 'وصف الباقة',
@@ -155,8 +155,8 @@ export default defineEventHandler(async (event) => {
         // Simple schema - map to public format
         return {
           id: pkg.id,
-          image_url: pkg.image_url || 'https://picsum.photos/400/300?random=1',
-          hero_image_url: pkg.hero_image_url || pkg.image_url || 'https://picsum.photos/400/300?random=2',
+          image_url: pkg.image_url || '',
+          hero_image_url: pkg.hero_image_url || pkg.image_url || '',
           title_ar: pkg.title || 'عنوان الباقة',
           title_en: pkg.title || 'Package Title',
           description_ar: pkg.description || 'وصف الباقة',

@@ -5,11 +5,18 @@
   >
     <div class="relative h-[280px] overflow-hidden">
       <img
+        v-if="props.package_.image_url"
         :src="props.package_.image_url"
         :alt="props.package_.title_en"
         loading="lazy"
         class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
+      <div v-else class="h-full w-full bg-gray-200 flex items-center justify-center">
+        <div class="text-center text-gray-500">
+          <Icon name="material-symbols:image-outline" class="w-16 h-16 mx-auto mb-2" />
+          <p class="text-sm">{{ $t('packages.no_image') }}</p>
+        </div>
+      </div>
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
       
       <!-- Hotel Grade Badge -->

@@ -316,6 +316,7 @@
   "packages": {
     "title": "Travel Packages",
     "subtitle": "Discover our curated travel packages",
+    "no_image": "No Image",
     "filter": {
       "sort": "Sort by",
       "price_low_high": "Price: Low to High",

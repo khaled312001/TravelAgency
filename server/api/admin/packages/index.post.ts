@@ -46,8 +46,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Upload images to Cloudinary if provided
-    let imageUrl = 'https://picsum.photos/400/300?random=1'
-    let heroImageUrl = 'https://picsum.photos/400/300?random=2'
+    let imageUrl = ''
+    let heroImageUrl = ''
     
     try {
       if (body.image_url && body.image_url.startsWith('data:image/')) {
@@ -75,8 +75,8 @@ export default defineEventHandler(async (event) => {
         heroImageUrl = imageUrl
       }
     } catch (uploadError) {
-      console.error('Image upload failed, using placeholder images:', uploadError)
-      // Continue with placeholder images if upload fails
+      console.error('Image upload failed:', uploadError)
+      // Continue without images if upload fails
     }
 
     // Create package with current database schema (complex schema with hero_image_url)

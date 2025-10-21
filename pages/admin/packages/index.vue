@@ -329,8 +329,8 @@ const packageForm = ref({
   max_persons: 0,
   travel_period: '',
   featured: false,
-  image_url: 'https://picsum.photos/400/300?random=1',
-  hero_image_url: 'https://picsum.photos/400/300?random=2'
+  image_url: '',
+  hero_image_url: ''
 })
 
 const filteredPackages = computed(() => {
@@ -448,8 +448,8 @@ const savePackage = async () => {
       max_persons: packageForm.value.max_persons || 1,
       travel_period: packageForm.value.travel_period || 'طوال السنة',
       featured: packageForm.value.featured || false,
-      image_url: packageForm.value.image_url || 'https://picsum.photos/400/300?random=1',
-      hero_image_url: packageForm.value.hero_image_url || packageForm.value.image_url || 'https://picsum.photos/400/300?random=2'
+      image_url: packageForm.value.image_url || '',
+      hero_image_url: packageForm.value.hero_image_url || packageForm.value.image_url || ''
     }
     
     if (showEditModal.value && editingPackage.value) {
@@ -581,7 +581,7 @@ const handleHeroImageUpload = async (event: Event) => {
 }
 
 const removeImage = () => {
-  packageForm.value.image_url = 'https://picsum.photos/400/300?random=1'
+  packageForm.value.image_url = ''
   // Reset file input
   const fileInput = document.getElementById('package-image-upload') as HTMLInputElement
   if (fileInput) {
@@ -590,7 +590,7 @@ const removeImage = () => {
 }
 
 const removeHeroImage = () => {
-  packageForm.value.hero_image_url = 'https://picsum.photos/400/300?random=2'
+  packageForm.value.hero_image_url = ''
   // Reset file input
   const fileInput = document.getElementById('package-hero-image-upload') as HTMLInputElement
   if (fileInput) {
