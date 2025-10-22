@@ -567,10 +567,7 @@
           
           <!-- Action Buttons -->
           <div class="invoice-actions">
-            <button @click="downloadInvoicePDF" class="btn-primary">
-              <Icon name="lucide:download" class="btn-icon" />
-              تحميل PDF
-            </button>
+           
             <button @click="printInvoice" class="btn-secondary">
               <Icon name="lucide:printer" class="btn-icon" />
               طباعة
