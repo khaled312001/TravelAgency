@@ -203,7 +203,7 @@ Full guides included in:
 For any enhancements, technical support, or custom development:
 
 **Developer:** Khaled Ahmed
-**Email:** [khaledahmed312001@gmail.com](mailto:khaledahmed312001@gmail.com)
+**Email:** [khaledahmedhaggay@gmail.com](mailto:khaledahmedhaggay@gmail.com)
 **LinkedIn:** [https://www.linkedin.com/in/khaled312001](https://www.linkedin.com/in/khaled312001)
 **Website:** [https://khaledahmed.net](https://khaledahmed.net)
 
