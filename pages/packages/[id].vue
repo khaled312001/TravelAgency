@@ -30,7 +30,7 @@
         <img
           :src="package_.hero_image_url || package_.image_url"
           class="h-full w-full object-cover"
-          :alt="$i18n.locale === 'ar-SA' ? package_.title_ar : package_.title_en"
+          :alt="$i18n.locale?.startsWith('ar') ? package_.title_ar : package_.title_en"
           loading="eager"
         />
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
