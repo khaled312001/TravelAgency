@@ -36,10 +36,10 @@ const getValueIcon = (index: number): string => {
     <div class="container mx-auto px-4 md:px-8 lg:px-12">
       <div class="text-center max-w-3xl mx-auto mb-12">
         <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-          {{ aboutContent?.values?.title?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.values.title') }}
+          {{ aboutContent?.values?.title?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.values.title') }}
         </h2>
         <p class="text-base md:text-lg text-gray-700 whitespace-pre-wrap">
-          {{ aboutContent?.values?.subtitle?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.values.subtitle') }}
+          {{ aboutContent?.values?.subtitle?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.values.subtitle') }}
         </p>
       </div>
       

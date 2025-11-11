@@ -17,21 +17,21 @@ const aboutContent = computed(() => props.content)
       <!-- About Us Section - Moved to top for better flow -->
       <div class="max-w-4xl mx-auto mb-16">
         <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-6 text-center">
-          {{ aboutContent?.overview?.title?.[locale.startsWith('ar') ? 'ar' : 'en'.startsWith('ar') ? 'ar' : 'en'] || $t('about.overview.title') }}
+          {{ aboutContent?.overview?.title?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.overview.title') }}
         </h2>
         
         <div class="bg-gradient-to-r from-primary-50 to-primary-100 dark:from-gray-200 dark:to-gray-300 p-6 md:p-8 rounded-xl shadow-sm mb-8">
           <p class="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap">
-            {{ aboutContent?.overview?.intro?.[locale.startsWith('ar') ? 'ar' : 'en'.startsWith('ar') ? 'ar' : 'en'] || $t('about.overview.intro') }}
+            {{ aboutContent?.overview?.intro?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.overview.intro') }}
           </p>
         </div>
         
         <div class="bg-white dark:bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm border border-gray-100">
           <h3 class="text-xl font-semibold mb-4 text-primary-600">
-            {{ aboutContent?.overview?.about_title?.[locale.startsWith('ar') ? 'ar' : 'en'.startsWith('ar') ? 'ar' : 'en'] || $t('about.overview.about_title') }}
+            {{ aboutContent?.overview?.about_title?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.overview.about_title') }}
           </h3>
           <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">
-            {{ aboutContent?.overview?.about_text?.[locale.startsWith('ar') ? 'ar' : 'en'.startsWith('ar') ? 'ar' : 'en'] || $t('about.overview.about_text') }}
+            {{ aboutContent?.overview?.about_text?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.overview.about_text') }}
           </p>
         </div>
       </div>
@@ -39,7 +39,7 @@ const aboutContent = computed(() => props.content)
       <!-- Why Choose Us Section - Redesigned with cards -->
       <div class="max-w-5xl mx-auto mb-16">
         <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-8 text-center">
-          {{ aboutContent?.overview?.why_choose_us?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.overview.why_choose_us') }}
+          {{ aboutContent?.overview?.why_choose_us?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.overview.why_choose_us') }}
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -51,7 +51,7 @@ const aboutContent = computed(() => props.content)
                 <Icon name="mdi:check-circle" class="text-2xl" />
               </div>
             </div>
-            <p class="text-gray-700 flex-grow whitespace-pre-wrap">{{ benefit?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t(`about.overview.benefits.${index}`) }}</p>
+            <p class="text-gray-700 flex-grow whitespace-pre-wrap">{{ benefit?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t(`about.overview.benefits.${index}`) }}</p>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@ const aboutContent = computed(() => props.content)
       <!-- Why Us Section - Redesigned with alternating background -->
       <div class="max-w-4xl mx-auto">
         <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-8 text-center">
-          {{ aboutContent?.overview?.why_us?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.overview.why_us') }}
+          {{ aboutContent?.overview?.why_us?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.overview.why_us') }}
         </h3>
         
         <div class="space-y-4 mb-12">
@@ -73,7 +73,7 @@ const aboutContent = computed(() => props.content)
               </div>
             </div>
             <div class="flex-1 flex items-center">
-              <p class="text-gray-700 font-medium whitespace-pre-wrap">{{ reason?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t(`about.overview.reasons.${index}`) }}</p>
+              <p class="text-gray-700 font-medium whitespace-pre-wrap">{{ reason?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t(`about.overview.reasons.${index}`) }}</p>
             </div>
           </div>
         </div>

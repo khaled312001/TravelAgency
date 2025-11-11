@@ -7,7 +7,7 @@
       <img
         v-if="props.package_.image_url"
         :src="props.package_.image_url"
-        :alt="(locale?.value?.startsWith('ar') ? props.package_.title_ar : props.package_.title_en)"
+        :alt="(locale === 'ar-SA' ? props.package_.title_ar : props.package_.title_en)"
         loading="lazy"
         class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
@@ -65,10 +65,10 @@
 
     <div class="flex flex-1 flex-col p-6">
       <h3 class="text-xl font-semibold mb-2 text-stone-750 transition-colors duration-300 group-hover:text-stone-950">
-        {{ locale?.value?.startsWith('ar') ? props.package_.title_ar : props.package_.title_en }}
+        {{ locale === 'ar-SA' ? props.package_.title_ar : props.package_.title_en }}
       </h3>
       <p class="mb-4 text-sm text-gray-800 line-clamp-2">
-        {{ locale?.value?.startsWith('ar') ? props.package_.description_ar : props.package_.description_en }}
+        {{ locale === 'ar-SA' ? props.package_.description_ar : props.package_.description_en }}
       </p>
       <div class="mt-auto flex justify-between items-center">
         <!-- Included Options Icons -->

@@ -4,10 +4,10 @@
     <div class="mb-12">
       <h2 class="text-2xl font-bold mb-6">{{ t('packages.details.overview') }}</h2>
       <h1 class="mb-4 text-4xl font-bold">
-        {{ locale?.value?.startsWith('ar') ? package_.title_ar : package_.title_en }}
+        {{ locale === 'ar-SA' ? package_.title_ar : package_.title_en }}
       </h1>
       <p class="mb-8 text-lg text-gray-700">
-        {{ locale?.value?.startsWith('ar') ? package_.description_ar : package_.description_en }}
+        {{ locale === 'ar-SA' ? package_.description_ar : package_.description_en }}
       </p>
     </div>
 
