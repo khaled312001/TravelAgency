@@ -25,15 +25,16 @@
 
 <script setup lang="ts">
 import PackageCard from '~/components/packages/PackageCard.vue'
-import { usePackages } from '~/composables/usePackages'
+import type { Package } from '~/composables/usePackages'
 
-import { onMounted } from 'vue'
-const packages = usePackages()
-const featuredPackages = computed(() =>
-  packages.getPackages().filter(pkg => pkg.featured === true)
-)
-
-onMounted(() => {
-  packages.refresh()
-})
+// Fetch only featured packages from public API to reflect admin "مميز"
+const {
+  data: featuredPackages,
+  pending,
+  error,
+  refresh
+} = await useAsyncData<Package[]>('featured-packages', async () => {
+  const res = await $fetch('/api/packages?featured=true')
+  return (res?.packages || []) as Package[]
+}, { default: () => [] })
 </script>
