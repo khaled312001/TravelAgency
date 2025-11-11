@@ -80,20 +80,20 @@ const aboutContent = computed(() => props.content)
         
         <div class="bg-primary-50 dark:bg-gray-200 p-6 rounded-xl italic text-center mb-12">
           <p class="text-gray-700 text-lg whitespace-pre-wrap">
-            {{ aboutContent?.overview?.closing?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.overview.closing') }}
+            {{ aboutContent?.overview?.closing?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.overview.closing') }}
           </p>
         </div>
         
         <!-- CTA Section - Softened design -->
         <div class="text-center py-8 px-6 border border-primary-100 rounded-xl mb-8">
           <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-4 whitespace-pre-wrap">
-            {{ aboutContent?.hero?.cta_title?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.hero.cta_title') }}
+            {{ aboutContent?.hero?.cta_title?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.hero.cta_title') }}
           </h3>
           <NuxtLink 
             :to="localePath('packages')" 
             class="inline-block bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-8 rounded-md transition duration-300 shadow-sm"
           >
-            {{ aboutContent?.hero?.cta?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t('about.hero.cta') }}
+            {{ aboutContent?.hero?.cta?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t('about.hero.cta') }}
           </NuxtLink>
         </div>
       </div>

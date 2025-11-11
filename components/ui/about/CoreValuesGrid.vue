@@ -54,10 +54,10 @@ const getValueIcon = (index: number): string => {
             </div>
           </div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">
-            {{ valueItem?.title?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t(`about.values.items.${index}.title`) }}
+            {{ valueItem?.title?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t(`about.values.items.${index}.title`) }}
           </h3>
           <p class="text-gray-700 whitespace-pre-wrap">
-            {{ valueItem?.description?.[locale.startsWith('ar') ? 'ar' : 'en'] || $t(`about.values.items.${index}.description`) }}
+            {{ valueItem?.description?.[locale === 'ar-SA' ? 'ar' : 'en'] || $t(`about.values.items.${index}.description`) }}
           </p>
         </div>
       </div>
