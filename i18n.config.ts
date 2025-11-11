@@ -9,7 +9,8 @@ import en from './locales/en-US.json'
 
 export default defineI18nConfig(() => ({
   legacy: false,
-  // locale: 'ar',
+  locale: 'ar',
+  fallbackLocale: 'ar',
   messages: {
     en,
     ar
