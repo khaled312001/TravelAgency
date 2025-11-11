@@ -76,8 +76,8 @@
               :alt="pkg.title"
               class="package-img"
             />
-            <div class="package-status normal">
-              عادي
+            <div class="package-status" :class="pkg.featured ? 'featured' : 'normal'">
+              {{ getStatusText(!!pkg.featured) }}
             </div>
           </div>
 
@@ -307,6 +307,14 @@ interface Package {
   hero_image_url: string
   created_at: string
   updated_at: string
+  // additional fields from API (for edit form)
+  title_ar?: string
+  title_en?: string
+  description_ar?: string
+  description_en?: string
+  max_persons?: number | null
+  travel_period?: string
+  featured?: boolean
 }
 
 const packages = ref<Package[]>([])
@@ -405,15 +413,15 @@ const editPackage = (pkg: Package) => {
   editingPackage.value = pkg
   // Map database fields to form fields
   packageForm.value = {
-    title_ar: pkg.title || '',
-    title_en: '',
-    description_ar: pkg.description || '',
-    description_en: '',
+    title_ar: pkg.title_ar || pkg.title || '',
+    title_en: pkg.title_en || '',
+    description_ar: pkg.description_ar || pkg.description || '',
+    description_en: pkg.description_en || '',
     price: pkg.price || 0,
     duration_days: pkg.duration_days || 0,
-    max_persons: 0,
-    travel_period: pkg.destination || '',
-    featured: false,
+    max_persons: pkg.max_persons || 0,
+    travel_period: pkg.travel_period || pkg.destination || '',
+    featured: !!pkg.featured,
     image_url: pkg.image_url || '',
     hero_image_url: pkg.hero_image_url || ''
   }

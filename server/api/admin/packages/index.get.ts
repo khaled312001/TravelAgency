@@ -134,22 +134,39 @@ export default defineEventHandler(async (event) => {
     // Map packages to consistent format
     const mappedPackages = packages?.map(pkg => {
       if (simpleSchemaError) {
-        // Complex schema - map to simple format
+        // Complex schema - expose both AR/EN fields + unified fields for listing
         return {
           id: pkg.id,
+          // unified fields used by the list UI
           title: pkg.title_ar || pkg.title_en || 'عنوان الباقة',
           description: pkg.description_ar || pkg.description_en || 'وصف الباقة',
-          price: pkg.price,
-          duration_days: pkg.duration_days,
           destination: pkg.travel_period || 'وجهة غير محددة',
           image_url: pkg.image_url || '',
-          hero_image_url: pkg.image_url || '', // Use same image for hero since hero_image_url doesn't exist
+          hero_image_url: pkg.image_url || '',
+          price: pkg.price,
+          duration_days: pkg.duration_days,
           created_at: pkg.created_at,
-          updated_at: pkg.updated_at
+          updated_at: pkg.updated_at,
+          // full fields needed by edit modal
+          title_ar: pkg.title_ar || '',
+          title_en: pkg.title_en || '',
+          description_ar: pkg.description_ar || '',
+          description_en: pkg.description_en || '',
+          max_persons: pkg.max_persons || null,
+          travel_period: pkg.travel_period || '',
+          featured: pkg.featured || false
         }
       } else {
-        // Simple schema - return as is
-        return pkg
+        // Simple schema - keep as-is and also mirror to AR/EN for edit modal
+        return {
+          ...pkg,
+          title_ar: pkg.title || '',
+          title_en: pkg.title || '',
+          description_ar: pkg.description || '',
+          description_en: pkg.description || '',
+          travel_period: pkg.destination || '',
+          featured: false
+        }
       }
     }) || []
 
